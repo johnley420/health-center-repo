@@ -8,6 +8,7 @@ import AdminMedication from "../../../pages/admin/Medication";
 
 import AdminPregnant from "../../../pages/admin/Pregnant";
 import AdminFamilyPlanning from "../../../pages/admin/FamilyPlanning";
+import AdminViewMap from "../../../pages/admin/ViewMap";
 
 export {
   AdminDashboard,
@@ -17,4 +18,5 @@ export {
   AdminMedication,
   AdminPregnant,
   AdminFamilyPlanning,
+  AdminViewMap,
 };

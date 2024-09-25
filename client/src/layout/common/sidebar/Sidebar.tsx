@@ -17,10 +17,7 @@ const Sidebar = ({ role }: roleType) => {
     <div className="w-80 h-screen bg-green-100 shadow-lg px-5 py-7 flex flex-col justify-between">
       <div>
         <div className="flex items-center gap-5 mb-12">
-          <Avatar
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            size="md"
-          />
+          <Avatar src="/logo.png" size="lg" />
           <h1 className="text-2xl font-semibold">Health Center</h1>
         </div>
 

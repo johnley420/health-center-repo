@@ -4,9 +4,10 @@ import Chart from "react-apexcharts";
 
 interface ColumnChartProps {
   data: { day: string; completed: number; pending: number }[];
+  height: number;
 }
 
-const ColumnChart: React.FC<ColumnChartProps> = ({ data }) => {
+const ColumnChart: React.FC<ColumnChartProps> = ({ data, height }) => {
   const options: ApexOptions = {
     chart: {
       type: "bar",
@@ -52,7 +53,7 @@ const ColumnChart: React.FC<ColumnChartProps> = ({ data }) => {
     },
   ];
 
-  return <Chart options={options} series={series} type="bar" height={350} />;
+  return <Chart options={options} series={series} type="bar" height={height} />;
 };
 
 export default ColumnChart;

@@ -29,3 +29,7 @@
 .markOdd:nth-child(odd) {
   @apply bg-[#e4e3e533];
 }
+
+.scrolless::-webkit-scrollbar {
+  display: none;
+}

@@ -17,3 +17,5 @@ export const clientColumn = [
   "Date Registered",
   "Action",
 ];
+
+export const CategoryFilter = ["Pregnant", "Analgesics", "Vaccine"];

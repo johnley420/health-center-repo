@@ -10,6 +10,7 @@ import {
   AdminMedication,
   AdminFamilyPlanning,
   AdminPregnant,
+  AdminViewMap,
 } from "./admin/index";
 // admin
 import { WorkerDashboard, WorkerList } from "./worker/index";
@@ -48,6 +49,10 @@ const PrivateRoutes = () => {
       {
         path: "/pregnant",
         element: <AdminPregnant />,
+      },
+      {
+        path: "/view-map",
+        element: <AdminViewMap />,
       },
     ],
     worker: [

@@ -77,7 +77,7 @@ const index = () => {
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]  bg-white col-span-2">
           <h1 className="text-xl font-bold">Age Segmentation</h1>
 
-          <ColumnChart data={sampleData} />
+          <ColumnChart data={sampleData} height={350} />
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
           <h1 className="text-xl font-bold">Recent Client</h1>

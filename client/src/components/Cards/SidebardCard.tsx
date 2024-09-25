@@ -1,8 +1,16 @@
-import React from 'react'
+import React from "react";
 
-import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image} from "@nextui-org/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Divider,
+  Link,
+  Image,
+} from "@nextui-org/react";
 
- const SidebarCard =() =>{
+const SidebarCard = () => {
   return (
     <Card className="max-w-[400px] bg-green-500">
       <CardHeader className="flex gap-3">
@@ -10,31 +18,33 @@ import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image} from "@nex
           alt="nextui logo"
           height={40}
           radius="sm"
-          src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
+          src="/logo2.png"
           width={40}
         />
         <div className="flex flex-col">
-          <p className="text-md text-green-100 text-xl font-semibold">Welcome</p>
+          <p className="text-md text-green-100 text-xl font-semibold">
+            Welcome
+          </p>
           <p className="text-small text-green-200">Wellness Center</p>
         </div>
       </CardHeader>
-      <Divider/>
+      <Divider />
       <CardBody>
-        <p className='text-green-100'>Your partner in health and wellness</p>
+        <p className="text-green-100">Your partner in health and wellness</p>
       </CardBody>
-      <Divider/>
+      <Divider />
       <CardFooter>
         <Link
           isExternal
           showAnchorIcon
           href="https://github.com/nextui-org/nextui"
-          className='text-green-100 text-xs'
+          className="text-green-100 text-xs"
         >
           Supporting our community's health and care
         </Link>
       </CardFooter>
     </Card>
   );
-}
+};
 
 export default SidebarCard;
