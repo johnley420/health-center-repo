@@ -30,3 +30,14 @@ export type clientTypes = {
   philhealthId: string;
   dateRegistered: string;
 };
+
+export interface workerTypes {
+  firstName: string;
+  lastName: string;
+  sex: string; // or use 'Other' if you want to allow more options
+  age: number;
+  address: string;
+  birthdate: string; // YYYY-MM-DD format
+  placeAssigned: string;
+  username: string;
+}

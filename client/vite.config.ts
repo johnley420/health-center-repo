@@ -7,7 +7,7 @@ export default {
   plugins: [],
   server: {
     fs: {
-      allow: ["C:/Users/acer/Documents/proj1/client"],
+      allow: ["C:/Users/acer/Documents/GitHub/freelance/health-center"],
     },
   },
 };

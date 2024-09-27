@@ -1,8 +1,8 @@
 import { RxDashboard } from "react-icons/rx";
-import { FiUsers, FiSettings } from "react-icons/fi";
-import { AiOutlineBarChart, AiOutlineMedicineBox } from "react-icons/ai";
-import { IoBookOutline } from "react-icons/io5";
-import { FaPersonPregnant } from "react-icons/fa6";
+import { FiUsers } from "react-icons/fi";
+import { AiOutlineMedicineBox } from "react-icons/ai";
+import { HiDocumentReport } from "react-icons/hi";
+import { FaPersonPregnant, FaMapLocationDot } from "react-icons/fa6";
 import { MdFamilyRestroom } from "react-icons/md";
 import { LuUsers } from "react-icons/lu";
 import { TbReportSearch } from "react-icons/tb";
@@ -62,8 +62,23 @@ export const userLinks = {
     },
     {
       path: "/list",
-      label: "List",
+      label: "Manage Workers",
       Icon: FiUsers,
+    },
+    {
+      path: "/account",
+      label: "Announcement",
+      Icon: TfiAnnouncement,
+    },
+    {
+      path: "/mapping",
+      label: "Mapping",
+      Icon: FaMapLocationDot,
+    },
+    {
+      path: "/report",
+      label: "Report",
+      Icon: HiDocumentReport,
     },
   ],
 };
