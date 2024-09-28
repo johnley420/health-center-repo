@@ -14,7 +14,7 @@ import {
   AdminViewCateoryTable,
 } from "./admin/index";
 // admin
-import { WorkerDashboard, WorkerList } from "./worker/index";
+import { WorkerAccount, WorkerDashboard, WorkerList, WorkerMapping, WorkerReports } from "./worker/index";
 
 import { Route, Routes } from "react-router-dom";
 import Rootlayout from "../../layout/Rootlayout";
@@ -69,20 +69,32 @@ const PrivateRoutes = () => {
         path: "/list",
         element: <WorkerList />,
       },
+      {
+        path: "/mapping",
+        element: <WorkerMapping />,
+      },
+      {
+        path: "/account",
+        element: <WorkerAccount />,
+      },
+      {
+        path: "/report",
+        element: <WorkerReports />,
+      },
     ],
   };
 
-  const [role, setRole] = useState<"admin" | "worker">("admin");
+  const [role, setRole] = useState<"admin" | "worker">("worker");
   const isLogged = true;
 
-  const userPath = userRoutes.admin;
+  const userPath = userRoutes.worker;
 
   console.log(userPath);
 
   return (
     <>
       <Routes>
-        {!isLogged ? (
+        {isLogged ? (
           <Route
             path="/"
             element={

@@ -19,6 +19,16 @@ export const clientColumn = [
   "Date Registered",
   "Action",
 ];
+export const workerColumn = [
+  "No",
+  "Name",
+  "Username",
+  "Address",
+  "Sex",
+  "Birth",
+  "Place Assigned",
+  "Action",
+];
 
 export const CategoryFilter = ["Pregnant", "Analgesics", "Vaccine"];
 
