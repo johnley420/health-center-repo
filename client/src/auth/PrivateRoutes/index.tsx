@@ -11,6 +11,7 @@ import {
   AdminFamilyPlanning,
   AdminPregnant,
   AdminViewMap,
+  AdminViewCateoryTable,
 } from "./admin/index";
 // admin
 import { WorkerDashboard, WorkerList } from "./worker/index";
@@ -31,8 +32,12 @@ const PrivateRoutes = () => {
         element: <AdminManageClient />,
       },
       {
-        path: "/medication-update",
+        path: "/medication",
         element: <AdminMedication />,
+      },
+      {
+        path: "/view-category",
+        element: <AdminViewCateoryTable />,
       },
       {
         path: "/announcement",

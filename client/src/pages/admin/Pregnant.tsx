@@ -7,13 +7,13 @@ import DashboardCountContainer from "../../components/dashboardCountContainer";
 
 const Pregnant = () => {
   const sampleData = [
-    { day: "Monday", completed: 20, pending: 5 },
-    { day: "Tuesday", completed: 30, pending: 15 },
-    { day: "Wednesday", completed: 25, pending: 10 },
-    { day: "Thursday", completed: 40, pending: 20 },
-    { day: "Friday", completed: 35, pending: 10 },
-    { day: "Saturday", completed: 50, pending: 5 },
-    { day: "Sunday", completed: 60, pending: 0 },
+    { day: "Monday", male: 20, female: 5 },
+    { day: "Tuesday", male: 30, female: 15 },
+    { day: "Wednesday", male: 25, female: 10 },
+    { day: "Thursday", male: 40, female: 20 },
+    { day: "Friday", male: 35, female: 10 },
+    { day: "Saturday", male: 50, female: 5 },
+    { day: "Sunday", male: 60, female: 0 },
   ];
   const linegraph1 = [
     {
@@ -41,19 +41,24 @@ const Pregnant = () => {
   //   count box data
   const countData = [
     {
-      label: " Segmentation",
-      value: 76,
+      label: "Total Clients",
+      value: 72,
       description: "Lorem ipsum dolor sit.",
       active: true,
+      withVariant: {
+        male: 52,
+        female: 20,
+      },
     },
+
     {
-      label: "New Registered",
+      label: " Medicine",
       value: 76,
       description: "Lorem ipsum dolor sit.",
       active: false,
     },
     {
-      label: "Updated",
+      label: "Total Workers",
       value: 76,
       description: "Lorem ipsum dolor sit.",
       active: false,

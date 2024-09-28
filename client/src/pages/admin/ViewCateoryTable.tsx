@@ -1,31 +1,38 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { clientTypes } from "../../types/index";
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
   Input,
   Select,
   SelectItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
 } from "@nextui-org/react";
+import { MdLocationPin } from "react-icons/md";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { LuPencil } from "react-icons/lu";
+import { useCategoryStore } from "../../components/store";
+import { useNavigate } from "react-router-dom";
 import { CategoryFilter, clientColumn } from "../../constants";
 import { clientData } from "../../services/Data";
-import { clientTypes } from "../../types";
 import { IoSearch } from "react-icons/io5";
-import { LuPencil } from "react-icons/lu";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { MdLocationPin } from "react-icons/md";
 
-const ManageClient = () => {
+const ViewCateoryTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { categoryField } = useCategoryStore();
+  const navigate = useNavigate();
+  console.log(categoryField);
+
+  const { category, data, fields } = categoryField;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  const filteredClients = clientData.filter(
+  const filteredClients = data.filter(
     (user: clientTypes) =>
       user.name.toLowerCase().includes(searchQuery) ||
       user.address.toLowerCase().includes(searchQuery) ||
@@ -33,10 +40,14 @@ const ManageClient = () => {
       user.philhealthId.toLowerCase().includes(searchQuery)
   );
 
+  // useEffect(() => {
+  //   if (!categoryField.category || !categoryField.data || categoryField.fields)
+  //     navigate("/medication");
+  // }, []);
   return (
     <div className="w-full p-2">
       <div className="flex items-center justify-between w-full mb-7">
-        <h1 className="text-3xl font-bold pl-3">BHW List</h1>
+        <h1 className="text-3xl font-bold pl-3">Pregnant List</h1>
         <div className="flex items-center justify-center gap-5 max-w-xl w-full">
           <Input
             size="lg"
@@ -54,9 +65,10 @@ const ManageClient = () => {
           </Select>
         </div>
       </div>
+
       <Table isStriped aria-label="Example static collection table">
         <TableHeader>
-          {clientColumn.map((item, index) => (
+          {fields.map((item, index) => (
             <TableColumn key={index} className="text-lg text-black py-4 pl-4">
               {item}
             </TableColumn>
@@ -105,4 +117,4 @@ const ManageClient = () => {
   );
 };
 
-export default ManageClient;
+export default ViewCateoryTable;

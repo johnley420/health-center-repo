@@ -20,6 +20,11 @@ export type countTypes = {
   label: string;
   value: number;
   description: string;
+  active: boolean;
+  withVariant?: {
+    male?: number;
+    female?: number;
+  };
 };
 
 export type clientTypes = {
@@ -29,4 +34,10 @@ export type clientTypes = {
   birth: string;
   philhealthId: string;
   dateRegistered: string;
+};
+
+export type categoryFieldTypes = {
+  category: string;
+  data: any;
+  fields: string[];
 };
