@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type roleType = {
   role: "admin" | "worker";
 };
@@ -50,4 +51,13 @@ export interface workerTypes {
   birthdate: string; // YYYY-MM-DD format
   placeAssigned: string;
   username: string;
+}
+
+export interface Medicine {
+  id: number;
+  name: string;
+  category: string;
+  quantity: string;
+  expirationDate: string;
+  image:any;
 }

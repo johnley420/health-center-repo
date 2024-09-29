@@ -3,7 +3,7 @@ import { FiUsers } from "react-icons/fi";
 import { AiOutlineMedicineBox } from "react-icons/ai";
 import { HiDocumentReport } from "react-icons/hi";
 import { FaPersonPregnant, FaMapLocationDot } from "react-icons/fa6";
-import { MdFamilyRestroom } from "react-icons/md";
+import { MdFamilyRestroom, MdOutlineInventory2 } from "react-icons/md";
 import { LuUsers } from "react-icons/lu";
 import { TbReportSearch } from "react-icons/tb";
 import { TfiAnnouncement } from "react-icons/tfi";
@@ -74,6 +74,11 @@ export const userLinks = {
       path: "/mapping",
       label: "Mapping",
       Icon: FaMapLocationDot,
+    },
+    {
+      path: "/inventory",
+      label: "Inventory",
+      Icon: MdOutlineInventory2,
     },
     {
       path: "/report",

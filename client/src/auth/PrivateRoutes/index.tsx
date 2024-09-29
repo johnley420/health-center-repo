@@ -17,7 +17,7 @@ import {
 import {
   WorkerAccount,
   WorkerDashboard,
-  WorkerList,
+  WorkerInventroy, WorkerList,
   WorkerMapping,
   WorkerReports,
 } from "./worker/index";
@@ -86,6 +86,10 @@ const PrivateRoutes = () => {
       {
         path: "/report",
         element: <WorkerReports />,
+      },
+      {
+        path: "/inventory",
+        element: <WorkerInventroy />,
       },
     ],
   };
