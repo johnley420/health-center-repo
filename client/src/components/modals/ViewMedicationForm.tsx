@@ -16,12 +16,14 @@ type propsTypes = {
   isOpen: boolean;
   onClose: () => void;
   medicationType: string;
+  data: any;
 };
 
 const ViewMedicationForm = ({
   isOpen,
   onClose,
   medicationType,
+  data,
 }: propsTypes) => {
   // Define formFields with arrays for datePrenatalVisit, dateNextPrenatalVisit, and LMPData
   const formFields = {
@@ -47,6 +49,8 @@ const ViewMedicationForm = ({
       { label: "B. Current Dose", value: "seenCurrent" },
     ],
   };
+
+  console.log("viw", data);
 
   return (
     <div>

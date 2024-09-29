@@ -11,8 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@nextui-org/react";
-
+import { MdLocationPin } from "react-icons/md";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { LuPencil } from "react-icons/lu";
 import { useCategoryStore } from "../../components/store";
+import { useNavigate } from "react-router-dom";
+import { CategoryFilter, clientColumn } from "../../constants";
+import { clientData } from "../../services/Data";
 import { IoSearch } from "react-icons/io5";
 import ViewMedicationForm from "../../components/modals/ViewMedicationForm";
 
@@ -21,8 +26,10 @@ const ViewCateoryTable = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { categoryField } = useCategoryStore();
+  const navigate = useNavigate();
+  console.log(categoryField);
 
-  const { category, data } = categoryField;
+  const { category, data, fields } = categoryField;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
@@ -36,6 +43,12 @@ const ViewCateoryTable = () => {
       user.philhealthId.toLowerCase().includes(searchQuery)
   );
 
+  // useEffect(() => {
+  //   if (!categoryField.category || !categoryField.data || categoryField.fields)
+  //     navigate("/medication");
+  // }, []);
+
+  const test = ["no", "name"];
   return (
     <div className="w-full p-2">
       <div className="flex items-center justify-between w-full mb-7">
@@ -53,58 +66,51 @@ const ViewCateoryTable = () => {
 
       <Table isStriped aria-label="Example static collection table">
         <TableHeader>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            No.
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Name
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Address
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Phone No.
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Birthday
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Philhealth
-          </TableColumn>
-          <TableColumn className="text-lg text-black py-4 pl-4">
-            Date of Registered
-          </TableColumn>
+          {fields.map((item, index) => (
+            <TableColumn key={index} className="text-lg text-black py-4 pl-4">
+              {item}
+            </TableColumn>
+          ))}
         </TableHeader>
         <TableBody>
-          {filteredClients?.map((user: clientTypes, index: number) => (
-            <TableRow
-              onClick={() => setIsOpen(true)}
-              key={index}
-              className="hover:border-b cursor-pointer duration-300 ease-in-out"
-            >
-              <TableCell className="text-base text-black font-bold py-4 pl-4 ">
-                {index + 1}.
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.name}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.address}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.phone}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.birth}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.philhealthId}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
-                {user.dateRegistered}
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredClients?.map((user: clientTypes, index: number) =>
+            test.map((t, i) => (
+              <TableRow key={index}>
+                <TableCell className="text-base text-black font-bold py-4 pl-4">
+                  {index + 1}.
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.name}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.address}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.phone}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.birth}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.philhealthId}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4">
+                  {user.dateRegistered}
+                </TableCell>
+                <TableCell className="text-base text-black py-4 pl-4 flex items-center gap-5">
+                  <button>
+                    <MdLocationPin size={24} className="text-yellow-500" />
+                  </button>
+                  <button>
+                    <FaRegTrashCan size={22} className="text-red-500" />
+                  </button>
+                  <button>
+                    <LuPencil size={24} className="text-green-500" />
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
 
@@ -112,6 +118,7 @@ const ViewCateoryTable = () => {
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         medicationType={category}
+        data={[]}
       />
     </div>
   );

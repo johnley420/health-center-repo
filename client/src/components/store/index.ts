@@ -14,6 +14,7 @@ export const useCategoryStore = create<CategoryState>()(
         categoryField: {
           category: "",
           data: [],
+          fields: [],
         },
 
         setCategoryField: (newCategoryField: categoryFieldTypes) =>

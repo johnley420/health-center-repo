@@ -91,7 +91,7 @@ const PrivateRoutes = () => {
   };
 
   const [role, setRole] = useState<"admin" | "worker">("admin");
-  const isLogged = false;
+  const isLogged = true;
 
   const userPath = userRoutes.admin;
 
