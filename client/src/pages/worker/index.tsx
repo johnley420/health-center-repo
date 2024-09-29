@@ -7,8 +7,6 @@ import { week } from "../../constants";
 import CategoryPieChart from "../../components/charts/PieChartWithMultiple";
 import RegisteredUserLineGraph from "../../components/charts/LineChartRegisted";
 
-
-
 const index = () => {
   const countData = [
     {
@@ -32,15 +30,14 @@ const index = () => {
   ];
 
   const sampleData = [
-    { day: "Monday", completed: 20, pending: 5 },
-    { day: "Tuesday", completed: 30, pending: 15 },
-    { day: "Wednesday", completed: 25, pending: 10 },
-    { day: "Thursday", completed: 40, pending: 20 },
-    { day: "Friday", completed: 35, pending: 10 },
-    { day: "Saturday", completed: 50, pending: 5 },
-    { day: "Sunday", completed: 60, pending: 0 },
+    { day: "Monday", male: 20, female: 5 },
+    { day: "Tuesday", male: 30, female: 15 },
+    { day: "Wednesday", male: 25, female: 10 },
+    { day: "Thursday", male: 40, female: 20 },
+    { day: "Friday", male: 35, female: 10 },
+    { day: "Saturday", male: 50, female: 5 },
+    { day: "Sunday", male: 60, female: 0 },
   ];
-
 
   const linegraph2 = [
     {
@@ -74,7 +71,6 @@ const index = () => {
           <ColumnChart data={sampleData} height={350} />
         </div>
 
-
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
           <h1 className="text-xl font-bold">
             {" "}
@@ -85,16 +81,15 @@ const index = () => {
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] col-span-2   bg-white">
           <h1 className="text-xl font-bold">New Registered</h1>
-          <RegisteredUserLineGraph /> 
+          <RegisteredUserLineGraph />
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
           <h1 className="text-xl font-bold">Updated</h1>
           <LineChart data={linegraph2} sizeHeight={350} />
         </div>
-
       </div>
     </div>
   );
-}
+};
 
-export default index
+export default index;

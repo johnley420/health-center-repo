@@ -1,3 +1,5 @@
+import { clientData } from "../services/Data";
+
 export const week = [
   "Monday",
   "Tuesday",
@@ -30,3 +32,20 @@ export const workerColumn = [
 ];
 
 export const CategoryFilter = ["Pregnant", "Analgesics", "Vaccine"];
+
+export const categoryForm = [
+  {
+    category: "Pregnant",
+    data: clientData,
+    fields: [
+      "No",
+      "Name",
+      "Address",
+      "Phone No.",
+      "Birth",
+      "Philealth Id",
+      "Date Registered",
+      "Action",
+    ],
+  },
+];

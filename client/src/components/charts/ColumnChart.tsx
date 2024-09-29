@@ -3,7 +3,7 @@ import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 
 interface ColumnChartProps {
-  data: { day: string; completed: number; pending: number }[];
+  data: { day: string; male: number; female: number }[];
   height: number;
 }
 
@@ -11,8 +11,7 @@ const ColumnChart: React.FC<ColumnChartProps> = ({ data, height }) => {
   const options: ApexOptions = {
     chart: {
       type: "bar",
-      height: 400,
-      width: 800,
+      height: height,
       toolbar: {
         show: false,
       },
@@ -27,29 +26,26 @@ const ColumnChart: React.FC<ColumnChartProps> = ({ data, height }) => {
       enabled: false,
     },
     xaxis: {
-      categories: data?.map((item) => item.day),
+      categories: data.map((item) => item.day),
     },
-
     fill: {
       opacity: 1,
     },
     tooltip: {
       y: {
-        formatter: function (val: number) {
-          return val + " Client";
-        },
+        formatter: (val: number) => `${val} Clients`,
       },
     },
   };
 
   const series = [
     {
-      name: "Completed",
-      data: data?.map((item) => item.completed),
+      name: "Male",
+      data: data.map((item) => item.male),
     },
     {
-      name: "Pending",
-      data: data?.map((item) => item.pending),
+      name: "Female",
+      data: data.map((item) => item.female),
     },
   ];
 

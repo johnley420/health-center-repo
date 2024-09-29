@@ -10,13 +10,18 @@ const index = () => {
   const countData = [
     {
       label: "Total Workers",
-      value: 76,
+      value: 72,
       description: "Lorem ipsum dolor sit.",
       active: true,
+      withVariant: {
+        male: 52,
+        female: 20,
+      },
     },
     {
       label: "Total Clients",
       value: 76,
+
       description: "Lorem ipsum dolor sit.",
       active: false,
     },
@@ -35,13 +40,13 @@ const index = () => {
   ];
 
   const sampleData = [
-    { day: "Monday", completed: 20, pending: 5 },
-    { day: "Tuesday", completed: 30, pending: 15 },
-    { day: "Wednesday", completed: 25, pending: 10 },
-    { day: "Thursday", completed: 40, pending: 20 },
-    { day: "Friday", completed: 35, pending: 10 },
-    { day: "Saturday", completed: 50, pending: 5 },
-    { day: "Sunday", completed: 60, pending: 0 },
+    { day: "Monday", male: 20, female: 5 },
+    { day: "Tuesday", male: 30, female: 15 },
+    { day: "Wednesday", male: 25, female: 10 },
+    { day: "Thursday", male: 40, female: 20 },
+    { day: "Friday", male: 35, female: 10 },
+    { day: "Saturday", male: 50, female: 5 },
+    { day: "Sunday", male: 60, female: 0 },
   ];
 
   // line gerapj
@@ -68,14 +73,15 @@ const index = () => {
     },
   ];
 
-  // recent
+  // category
+  const taskData = [10, 20, 15, 5, 8, 12, 6, 18, 9, 14, 11, 17, 13];
 
   return (
     <div className="">
       <DashboardCountContainer data={countData} />
       <div className="w-full grid grid-cols-3 gap-3 mt-3">
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]  bg-white col-span-2">
-          <h1 className="text-xl font-bold">Age Segmentation</h1>
+          <h1 className="text-xl font-bold">Age Segmentation(5-9 yrs old)</h1>
 
           <ColumnChart data={sampleData} height={350} />
         </div>
@@ -126,7 +132,7 @@ const index = () => {
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
           <h1 className="text-xl font-bold">Percentage of Categories</h1>
-          <TaskPieChart completedTasks={45} pendingTasks={65} />
+          <TaskPieChart taskData={taskData} />
         </div>
       </div>
     </div>

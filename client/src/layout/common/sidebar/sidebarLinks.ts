@@ -39,7 +39,7 @@ export const userLinks = {
       Icon: LuUsers,
     },
     {
-      path: "/medication-update",
+      path: "/medication",
       label: "Medication Update",
       Icon: AiOutlineMedicineBox,
     },

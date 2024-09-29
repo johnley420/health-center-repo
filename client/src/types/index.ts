@@ -20,6 +20,11 @@ export type countTypes = {
   label: string;
   value: number;
   description: string;
+  active: boolean;
+  withVariant?: {
+    male?: number;
+    female?: number;
+  };
 };
 
 export type clientTypes = {
@@ -31,6 +36,11 @@ export type clientTypes = {
   dateRegistered: string;
 };
 
+export type categoryFieldTypes = {
+  category: string;
+  data: any;
+  fields: string[];
+};
 export interface workerTypes {
   firstName: string;
   lastName: string;
