@@ -7,6 +7,8 @@ import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
 import "@arcgis/core/assets/esri/themes/light/main.css";
 import axios from "axios";
 import { Select, SelectItem } from "@nextui-org/react";
+import { Link, NavLink } from "react-router-dom";
+import { FaAngleLeft } from "react-icons/fa6";
 
 interface ClientData {
   id: number;
@@ -118,6 +120,13 @@ const ViewMap: React.FC = () => {
 
   return (
     <div className="flex flex-col items-start p-3">
+      <Link
+        to="/client-list"
+        className="text-lg text-green-500 flex items-center mb-3"
+      >
+        <FaAngleLeft size={20} />
+        Back
+      </Link>
       <div className="flex items-center justify-between w-full mb-5">
         <h1 className="text-3xl font-bold pl-3">Client Address</h1>
 

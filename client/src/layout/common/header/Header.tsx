@@ -5,8 +5,14 @@ import { format } from "date-fns";
 import { FcCalendar } from "react-icons/fc";
 
 import { HiMenuAlt2 } from "react-icons/hi";
-import { IoSearch, IoNotificationsOutline } from "react-icons/io5";
+import {
+  IoSearch,
+  IoNotificationsOutline,
+  IoCalendarOutline,
+} from "react-icons/io5";
 import Avatar from "../../../components/ui/Avatar";
+import Logs from "../../../components/headerContent/Logs";
+import Notification from "../../../components/headerContent/Notification";
 const Header = () => {
   const currentDateTime = new Date();
   const monthName = format(currentDateTime, "MMMM dd, yyyy");
@@ -17,8 +23,8 @@ const Header = () => {
         <img src="/image.webp" className="w-14" alt="" />
       </h1>
       <div className="flex items-center gap-5">
-        {" "}
-        <IoNotificationsOutline size={25} className="text-green-500" />
+        <Logs />
+        <Notification />
         <Avatar />
       </div>
     </div>

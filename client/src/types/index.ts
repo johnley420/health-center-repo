@@ -39,12 +39,11 @@ export type clientTypes = {
 export type categoryFieldTypes = {
   category: string;
   data: any;
-  fields: string[];
 };
 export interface workerTypes {
   firstName: string;
   lastName: string;
-  sex: string; // or use 'Other' if you want to allow more options
+  sex: string;
   age: number;
   address: string;
   birthdate: string; // YYYY-MM-DD format
