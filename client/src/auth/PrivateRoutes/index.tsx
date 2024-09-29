@@ -89,7 +89,7 @@ const PrivateRoutes = () => {
   return (
     <>
       <Routes>
-        {isLogged ? (
+        {!isLogged ? (
           <Route
             path="/"
             element={
