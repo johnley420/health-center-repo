@@ -14,7 +14,7 @@ import {
   AdminViewCateoryTable,
 } from "./admin/index";
 // admin
-import { WorkerAccount, WorkerDashboard, WorkerList, WorkerMapping, WorkerReports } from "./worker/index";
+import { WorkerAccount, WorkerDashboard, WorkerInventroy, WorkerList, WorkerMapping, WorkerReports } from "./worker/index";
 
 import { Route, Routes } from "react-router-dom";
 import Rootlayout from "../../layout/Rootlayout";
@@ -80,6 +80,10 @@ const PrivateRoutes = () => {
       {
         path: "/report",
         element: <WorkerReports />,
+      },
+      {
+        path: "/inventory",
+        element: <WorkerInventroy />,
       },
     ],
   };
