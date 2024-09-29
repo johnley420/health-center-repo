@@ -20,7 +20,6 @@ const Medication = () => {
     const newCategory: categoryFieldTypes = {
       category: category.category,
       data: category.data,
-      fields: category.fields,
     };
 
     setCategoryField(newCategory);

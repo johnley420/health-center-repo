@@ -5,6 +5,14 @@ import TaskPieChart from "../../components/charts/PieChart";
 import LineChart from "../../components/charts/LineChart";
 import { lineGraphData, recentClient } from "../../services/Data";
 import { week } from "../../constants";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@nextui-org/react";
 
 const index = () => {
   const countData = [
@@ -81,42 +89,41 @@ const index = () => {
       <DashboardCountContainer data={countData} />
       <div className="w-full grid grid-cols-3 gap-3 mt-3">
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]  bg-white col-span-2">
-          <h1 className="text-xl font-bold">Age Segmentation(5-9 yrs old)</h1>
+          <h1 className="text-xl font-bold">Age Segmentation</h1>
 
           <ColumnChart data={sampleData} height={350} />
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
-          <h1 className="text-xl font-bold">Recent Client</h1>
-          <table className="w-full">
-            <thead>
-              <tr className="h-14">
-                <th className="text-left pl-2 text-lg font-semibold  tracking-wider">
-                  No.
-                </th>
-                <th className="text-left pl-2 text-lg font-semibold  tracking-wider">
-                  Name
-                </th>
-                <th className="text-left pl-2 text-lg font-semibold  tracking-wider">
-                  Purpose
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentClient.map((item, index) => (
-                <tr className="h-16">
-                  <td className="markOdd text-left pl-2 text-lg text-gray-500 font-bold tracking-wider">
+          <h1 className="text-xl font-bold mb-3 pl-2">Recent Client</h1>
+
+          <Table isStriped aria-label="Example static collection table">
+            <TableHeader>
+              <TableColumn className="text-lg text-black py-3 pl-3">
+                No.
+              </TableColumn>
+              <TableColumn className="text-lg text-black py-3 pl-3">
+                Name
+              </TableColumn>
+              <TableColumn className="text-lg text-black py-3 pl-3">
+                Purpose
+              </TableColumn>
+            </TableHeader>
+            <TableBody>
+              {recentClient?.map((user: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell className="text-base text-black font-bold py-3 pl-3">
                     {index + 1}.
-                  </td>
-                  <td className="markOdd text-left pl-2 text-lg text-gray-500 font-medium tracking-wider">
-                    {item.name}
-                  </td>
-                  <td className="markOdd text-left pl-2 text-lg text-gray-500 font-medium tracking-wider">
-                    {item.purpose}
-                  </td>
-                </tr>
+                  </TableCell>
+                  <TableCell className="text-base text-black py-3 pl-3">
+                    {user.name}
+                  </TableCell>
+                  <TableCell className="text-base text-black py-3 pl-3">
+                    {user.purpose}
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
         <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
           <h1 className="text-xl font-bold">
