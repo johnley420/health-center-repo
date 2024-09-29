@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableHeader,
@@ -9,6 +9,7 @@ import {
   Input,
   Select,
   SelectItem,
+  Button,
 } from "@nextui-org/react";
 import { CategoryFilter, workerColumn } from "../../constants";
 import { workersData } from "../../services/Data";
@@ -17,8 +18,10 @@ import { IoSearch } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
+import ViewWorkerForm from "../../components/modals/ViewWorkerForm";
 
 const List = () => {
+  const [isOpen,setIsOpen] = useState(false)
   return (
     <div className="w-full p-2">
       <div className="flex items-center justify-between w-full mb-7">
@@ -37,6 +40,9 @@ const List = () => {
               <SelectItem key={index}>{items}</SelectItem>
             ))}
           </Select>
+          <Button color="primary" size="lg" onClick={() => setIsOpen(true)}>
+            Add worker
+          </Button>
         </div>
       </div>
       <Table isStriped aria-label="Example static collection table">
@@ -63,13 +69,17 @@ const List = () => {
                 {user.address}
               </TableCell>
               <TableCell className="text-base text-black py-4 pl-4">
-                {user.birthdate}
-              </TableCell>
-              <TableCell className="text-base text-black py-4 pl-4">
                 {user.sex}
               </TableCell>
               <TableCell className="text-base text-black py-4 pl-4">
+                {user.birthdate}
+              </TableCell>
+
+              <TableCell className="text-base text-black py-4 pl-4">
                 {user.placeAssigned}
+              </TableCell>
+              <TableCell className="text-base text-black py-4 pl-4">
+                {user.username}
               </TableCell>
               <TableCell className="text-base text-black py-4 pl-4 flex items-center gap-5">
                 <button>
@@ -86,6 +96,7 @@ const List = () => {
           ))}
         </TableBody>
       </Table>
+      <ViewWorkerForm isOpen={isOpen} onClose={() => setIsOpen(false)}  />
     </div>
   );
 }

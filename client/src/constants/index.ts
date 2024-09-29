@@ -22,11 +22,12 @@ export const clientColumn = [
 export const workerColumn = [
   "No",
   "Name",
-  "Username",
+  "Age",
   "Address",
   "Sex",
   "Birth",
   "Place Assigned",
+  "Username",
   "Action",
 ];
 
