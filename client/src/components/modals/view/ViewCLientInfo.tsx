@@ -6,7 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 
 type propsTypes = {
   isOpen: boolean;
@@ -14,6 +14,7 @@ type propsTypes = {
   data: any;
 };
 const ViewCLientInfo = ({ isOpen, onClose, data }: propsTypes) => {
+  const [tab, setTab] = useState(1);
   // client info
   const clientInfo = [
     {
@@ -41,8 +42,6 @@ const ViewCLientInfo = ({ isOpen, onClose, data }: propsTypes) => {
       value: data.dateRegistered,
     },
   ];
-
-  console.log("s", clientInfo);
 
   return (
     <div>

@@ -16,10 +16,10 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { LuPencil } from "react-icons/lu";
 import { useCategoryStore } from "../../components/store";
 import { useNavigate } from "react-router-dom";
-import { CategoryFilter, clientColumn } from "../../constants";
+import { basicInfoField } from "../../constants";
 import { clientData } from "../../services/Data";
 import { IoSearch } from "react-icons/io5";
-import ViewMedicationForm from "../../components/modals/ViewMedicationForm";
+import ViewMedicationForm from "../../components/modals/view/ViewMedicationForm";
 
 const ViewCateoryTable = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +29,7 @@ const ViewCateoryTable = () => {
   const navigate = useNavigate();
   console.log(categoryField);
 
-  const { category, data, fields } = categoryField;
+  const { category, data } = categoryField;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
@@ -42,11 +42,6 @@ const ViewCateoryTable = () => {
       user.phone.toLowerCase().includes(searchQuery) ||
       user.philhealthId.toLowerCase().includes(searchQuery)
   );
-
-  // useEffect(() => {
-  //   if (!categoryField.category || !categoryField.data || categoryField.fields)
-  //     navigate("/medication");
-  // }, []);
 
   const test = ["no", "name"];
   return (
@@ -66,7 +61,7 @@ const ViewCateoryTable = () => {
 
       <Table isStriped aria-label="Example static collection table">
         <TableHeader>
-          {fields.map((item, index) => (
+          {basicInfoField.map((item: string, index: number) => (
             <TableColumn key={index} className="text-lg text-black py-4 pl-4">
               {item}
             </TableColumn>
@@ -98,14 +93,13 @@ const ViewCateoryTable = () => {
                   {user.dateRegistered}
                 </TableCell>
                 <TableCell className="text-base text-black py-4 pl-4 flex items-center gap-5">
-                  <button>
-                    <MdLocationPin size={24} className="text-yellow-500" />
-                  </button>
-                  <button>
-                    <FaRegTrashCan size={22} className="text-red-500" />
-                  </button>
-                  <button>
-                    <LuPencil size={24} className="text-green-500" />
+                  <button
+                    onClick={() => {
+                      setIsOpen(true);
+                    }}
+                    className="text-xs text-white font-medium py-2 px-4 rounded-full bg-green-500"
+                  >
+                    Add Form
                   </button>
                 </TableCell>
               </TableRow>

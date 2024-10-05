@@ -35,12 +35,13 @@ export type clientTypes = {
   birth: string;
   philhealthId: string;
   dateRegistered: string;
+  medicationForm?: any;
+  categoryType: string;
 };
 
 export type categoryFieldTypes = {
   category: string;
   data: any;
-  fields: string[];
 };
 export interface workerTypes {
   firstName: string;
@@ -59,5 +60,5 @@ export interface Medicine {
   category: string;
   quantity: string;
   expirationDate: string;
-  image:any;
+  image: any;
 }
