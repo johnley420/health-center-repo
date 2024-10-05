@@ -1,149 +1,122 @@
-import React from "react";
-import DashboardCountContainer from "../../components/dashboardCountContainer";
-import ColumnChart from "../../components/charts/ColumnChart";
-import TaskPieChart from "../../components/charts/PieChart";
-import LineChart from "../../components/charts/LineChart";
-import { lineGraphData, recentClient } from "../../services/Data";
-import { week } from "../../constants";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-} from "@nextui-org/react";
+import React, { useState } from "react";
+import MainDashboard from "./dashboards/index";
+import PersonWithDisability from "./dashboards/PersonWithDisability";
+import Pregnant from "./dashboards/Pregnant";
+import SchistomiasisProgramServices from "./dashboards/SchistomiasisProgramServices";
+import SeniorCitizen from "./dashboards/SeniorCitizen";
+import FamilyPlanning from "./dashboards/FamilyPlanning";
+import HypertensiveDiabeties from "./dashboards/HypertensiveDiabeties";
+import FilariasisProgramService from "./dashboards/FilariasisProgramService";
+import CurrentSmokers from "./dashboards/CurrentSmokers";
+import MonthsInfant011 from "./dashboards/MonthsInfant011";
+import MonthsChildren059 from "./dashboards/MonthsChildren059";
+import YearsScreened059 from "./dashboards/YearsScreened059";
+import YearsChildren59 from "./dashboards/yearsChildren59";
+import YearsOld1019 from "./dashboards/yearsOld1019";
+import { Select, SelectItem } from "@nextui-org/react";
 
-const index = () => {
-  const countData = [
-    {
-      label: "Total Workers",
-      value: 72,
-      description: "Lorem ipsum dolor sit.",
-      active: true,
-      withVariant: {
-        male: 52,
-        female: 20,
-      },
-    },
-    {
-      label: "Total Clients",
-      value: 76,
+const Index = () => {
+  const [value, setValue] = useState(1); // Default to Pregnant
 
-      description: "Lorem ipsum dolor sit.",
-      active: false,
+  const categoryData = [
+    {
+      category: "All",
+      value: 0,
+      component: <MainDashboard />,
     },
     {
-      label: " Medicine",
-      value: 76,
-      description: "Lorem ipsum dolor sit.",
-      active: false,
+      category: "Pregnant",
+      value: 1,
+      component: <Pregnant />,
     },
     {
-      label: "Total Workers",
-      value: 76,
-      description: "Lorem ipsum dolor sit.",
-      active: false,
+      category: "Person With Disabilities",
+      value: 2,
+      component: <PersonWithDisability />,
+    },
+    {
+      category: "Schistomiasis Program Services",
+      value: 3,
+      component: <SchistomiasisProgramServices />,
+    },
+    {
+      category: "Senior Citizen",
+      value: 4,
+      component: <SeniorCitizen />,
+    },
+    {
+      category: "Family Planning",
+      value: 5,
+      component: <FamilyPlanning />,
+    },
+    {
+      category: "Hypertensive And Type 2 Diabetes",
+      value: 6,
+      component: <HypertensiveDiabeties />,
+    },
+    {
+      category: "Filariasis Program Services",
+      value: 7,
+      component: <FilariasisProgramService />,
+    },
+    {
+      category: "Current Smokers",
+      value: 8,
+      component: <CurrentSmokers />,
+    },
+    {
+      category: "0-11 Months Old Infants",
+      value: 9,
+      component: <MonthsInfant011 />,
+    },
+    {
+      category: "0-59 Months Old Children",
+      value: 10,
+      component: <MonthsChildren059 />,
+    },
+    {
+      category: "0-59 years Old Screened For Visual Activity",
+      value: 11,
+      component: <YearsScreened059 />,
+    },
+    {
+      category: "5-9 years Old Children (School Aged Children)",
+      value: 12,
+      component: <YearsChildren59 />,
+    },
+    {
+      category: "10-19 Years Old (Adolescents)",
+      value: 13,
+      component: <YearsOld1019 />,
     },
   ];
 
-  const sampleData = [
-    { day: "Monday", male: 20, female: 5 },
-    { day: "Tuesday", male: 30, female: 15 },
-    { day: "Wednesday", male: 25, female: 10 },
-    { day: "Thursday", male: 40, female: 20 },
-    { day: "Friday", male: 35, female: 10 },
-    { day: "Saturday", male: 50, female: 5 },
-    { day: "Sunday", male: 60, female: 0 },
-  ];
+  const handleSelectChange = (e: any) => {
+    setValue(Number(e.target.value));
+  };
 
-  // line gerapj
-  const linegraph1 = [
-    {
-      name: "Client",
-      data: week.map(
-        (item) =>
-          lineGraphData.filter((clientItem) => clientItem.day === item).length
-      ),
-      color: "#7638FD",
-      fillColor: "rgba(255, 0, 0, 0.3)",
-    },
-  ];
-  const linegraph2 = [
-    {
-      name: "Client",
-      data: week.map(
-        (item) =>
-          lineGraphData.filter((clientItem) => clientItem.day === item).length
-      ),
-      color: "#22c55e",
-      fillColor: "rgba(255, 0, 0, 0.3)",
-    },
-  ];
-
-  // category
-  const taskData = [10, 20, 15, 5, 8, 12, 6, 18, 9, 14, 11, 17, 13];
+  console.log("g", value);
 
   return (
     <div className="">
-      <DashboardCountContainer data={countData} />
-      <div className="w-full grid grid-cols-3 gap-3 mt-3">
-        <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]  bg-white col-span-2">
-          <h1 className="text-xl font-bold">Age Segmentation</h1>
-
-          <ColumnChart data={sampleData} height={350} />
-        </div>
-        <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
-          <h1 className="text-xl font-bold mb-3 pl-2">Recent Client</h1>
-
-          <Table isStriped aria-label="Example static collection table">
-            <TableHeader>
-              <TableColumn className="text-lg text-black py-3 pl-3">
-                No.
-              </TableColumn>
-              <TableColumn className="text-lg text-black py-3 pl-3">
-                Name
-              </TableColumn>
-              <TableColumn className="text-lg text-black py-3 pl-3">
-                Purpose
-              </TableColumn>
-            </TableHeader>
-            <TableBody>
-              {recentClient?.map((user: any, index: number) => (
-                <TableRow key={index}>
-                  <TableCell className="text-base text-black font-bold py-3 pl-3">
-                    {index + 1}.
-                  </TableCell>
-                  <TableCell className="text-base text-black py-3 pl-3">
-                    {user.name}
-                  </TableCell>
-                  <TableCell className="text-base text-black py-3 pl-3">
-                    {user.purpose}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-        <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
-          <h1 className="text-xl font-bold">
-            {" "}
-            <h1 className="text-xl font-bold"> New Registereds</h1>
-          </h1>
-
-          <LineChart data={linegraph1} sizeHeight={350} />
-        </div>
-        <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
-          <h1 className="text-xl font-bold">Updated</h1>
-          <LineChart data={linegraph2} sizeHeight={350} />
-        </div>
-        <div className=" p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7]   bg-white">
-          <h1 className="text-xl font-bold">Percentage of Categories</h1>
-          <TaskPieChart taskData={taskData} />
-        </div>
+      <div className="flex items-center justify-between px-2 mb-5">
+        <h1 className="text-xl font-bold">Dashboard</h1>
+        <Select
+          label="Select Category"
+          className="max-w-xs"
+          onChange={handleSelectChange} // Handle value changes
+          value={value} // Ensure the selected value is displayed
+        >
+          {categoryData.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.category}
+            </SelectItem>
+          ))}
+        </Select>
       </div>
+      {categoryData.find((item) => item.value === value)?.component}
     </div>
   );
 };
 
-export default index;
+export default Index;

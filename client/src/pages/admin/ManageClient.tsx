@@ -11,22 +11,18 @@ import {
   SelectItem,
   Button,
 } from "@nextui-org/react";
-import {
-  CategoryFilter,
-  clientColumn,
-  clientInputFields,
-} from "../../constants";
+import { CategoryFilter, clientColumn } from "../../constants";
 import { clientData } from "../../services/Data";
 import { clientTypes } from "../../types";
 import { IoSearch } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
-import AddClient from "../../components/modals/AddClient";
+import AddClient from "../../components/modals/add/AddClient";
 import { NavLink } from "react-router-dom";
 import { FiEye } from "react-icons/fi";
-import ViewCLientInfo from "../../components/modals/ViewCLientInfo";
-import UpdateClient from "../../components/modals/UpdateClient";
+import ViewCLientInfo from "../../components/modals/view/ViewCLientInfo";
+import UpdateClient from "../../components/modals/update/UpdateClient";
 
 const ManageClient = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,14 +31,7 @@ const ManageClient = () => {
   const [isOpenUpdate, setIsOpenUpdate] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<any>({});
-  const [clientInfo, setClientInfo] = useState<any>({
-    name: "",
-    address: "",
-    phone: "",
-    philhealthId: "",
-    birthday: "",
-    dateRegistered: "",
-  });
+  const [clientInfo, setClientInfo] = useState<any>();
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value.toLowerCase());
@@ -60,7 +49,7 @@ const ManageClient = () => {
   const handleSubmit = (FormData: FormData) => {
     console.log("dd", clientInfo);
   };
-  console.log("dd", clientInfo);
+  console.log("dda", clientInfo);
   return (
     <div className="w-full p-2">
       <div className="flex items-center justify-between w-full mb-7">
@@ -144,14 +133,7 @@ const ManageClient = () => {
       </Table>
 
       {isOpenAdd && (
-        <AddClient
-          isOpen={isOpenAdd}
-          onClose={() => setIsOpenAdd(false)}
-          fields={
-            clientInputFields.find((item) => item.category === "Pregnant")
-              ?.inputFields
-          }
-        />
+        <AddClient isOpen={isOpenAdd} onClose={() => setIsOpenAdd(false)} />
       )}
       {isOpenvVew && (
         <ViewCLientInfo

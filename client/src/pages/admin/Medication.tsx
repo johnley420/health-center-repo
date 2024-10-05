@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { GiMedicines } from "react-icons/gi";
 import { LuPencil } from "react-icons/lu";
-import ViewMedicationForm from "../../components/modals/ViewMedicationForm";
+import ViewMedicationForm from "../../components/modals/view/ViewMedicationForm";
 import { categoryForm } from "../../constants";
 import { categoryFieldTypes } from "../../types";
 import { useCategoryStore } from "../../components/store";
@@ -20,7 +20,6 @@ const Medication = () => {
     const newCategory: categoryFieldTypes = {
       category: category.category,
       data: category.data,
-      fields: category.fields,
     };
 
     setCategoryField(newCategory);

@@ -18,10 +18,10 @@ import { IoSearch } from "react-icons/io5";
 import { LuPencil } from "react-icons/lu";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MdLocationPin } from "react-icons/md";
-import ViewWorkerForm from "../../components/modals/ViewWorkerForm";
+import ViewWorkerForm from "../../components/modals/view/ViewWorkerForm";
 
 const List = () => {
-  const [isOpen,setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <div className="w-full p-2">
       <div className="flex items-center justify-between w-full mb-7">
@@ -96,9 +96,9 @@ const List = () => {
           ))}
         </TableBody>
       </Table>
-      <ViewWorkerForm isOpen={isOpen} onClose={() => setIsOpen(false)}  />
+      <ViewWorkerForm isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   );
-}
+};
 
-export default List
+export default List;
