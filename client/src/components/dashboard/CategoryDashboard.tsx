@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { week } from "../../constants";
 import { lineGraphData } from "../../services/Data";

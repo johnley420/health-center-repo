@@ -45,55 +45,55 @@ export const basicInfoField = [
 ];
 export const categoryForm = [
   {
-    category: "Pregnant",
+    category: "PRENATAL & POSPARTUM CARE",
     data: clientData,
   },
   {
-    category: "Person With Disability",
+    category: "PERSON WITH DISABILITY (PWD)",
     data: clientData,
   },
   {
-    category: "Antidiabetics",
+    category: "WRA (15-49 YEARS OLD) FAMILY PLANNING",
     data: clientData,
   },
   {
-    category: "Analgesics",
+    category: "HYPERTENSIVE AND TYPE 2 DIABETES MELITUS",
     data: clientData,
   },
   {
-    category: "Antipyretics",
+    category: "10-19 YEARS OLD (ADOLESCENTS)",
     data: clientData,
   },
   {
-    category: "Antidepressants",
+    category: "0-59 MONTHS OLD CHILDREN - NUTRITION SERVICES",
     data: clientData,
   },
   {
-    category: "Vaccines",
+    category: "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
     data: clientData,
   },
   {
-    category: "Vitamins",
+    category: "FILARIASIS PROGRAM SERVICES",
     data: clientData,
   },
   {
-    category: "Antivirals",
+    category: "5-9 YEARS OLD CHILDREN (SCHOOL AGED CHILDREN)",
     data: clientData,
   },
   {
-    category: "Antifungals",
+    category: "0-11 MONTHS OLD INFANTS - IMMUNIZATION SERVICES",
     data: clientData,
   },
   {
-    category: "Antihistamines",
+    category: "SCHISTOSOMIASIS PROGRAM SERVICES",
     data: clientData,
   },
   {
-    category: "Corticosteroids",
+    category: "CURRENT SMOKERS",
     data: clientData,
   },
   {
-    category: "Immunosuppressants",
+    category: "0-59 YEARS OLD SCREENED FOR VISUAL ACTIVITY",
     data: clientData,
   },
 ];
