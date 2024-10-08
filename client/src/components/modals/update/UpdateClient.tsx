@@ -53,6 +53,23 @@ const formComponents: { [key: string]: React.ElementType } = {
 const UpdateClient = ({ isOpen, onClose, data }: propsType) => {
   const [tab, setTab] = useState(0);
 
+  const [clientInfos, setClientInfos] = useState({
+    name: data?.name || "", 
+    address: data?.address || "", 
+    birth: data?.birth || "", 
+    philhealthId: data?.philhealthId || "", 
+    dateRegistered: data?.dateRegistered || "", 
+  });
+
+  // Handler to update client info fields
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setClientInfos((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   // Client info fields
   const clientInfo = [
     { label: "Name", value: data?.name, key: "name" },
@@ -79,13 +96,36 @@ const UpdateClient = ({ isOpen, onClose, data }: propsType) => {
                 {/* Initial Tab for Client Information */}
                 <Tab title="Client Information">
                   <div className="grid grid-cols-2 gap-4">
-                    {clientInfo.map((item) => (
-                      <Input
-                        key={item.key}
-                        label={item.label}
-                        value={item.value}
-                      />
-                    ))}
+                    <Input
+                      label="Name"
+                      name="name"
+                      value={clientInfos.name}
+                      onChange={handleInputChange}  
+                    />
+                    <Input
+                      label="Address"
+                      name="address"
+                      value={clientInfos.address}
+                      onChange={handleInputChange} 
+                    />
+                    <Input
+                      label="Birthdate"
+                      name="birth"
+                      value={clientInfos.birth}
+                      onChange={handleInputChange}
+                    />
+                    <Input
+                      label="Philhealth ID"
+                      name="philhealthId"
+                      value={clientInfos.philhealthId}
+                      onChange={handleInputChange} 
+                    />
+                    <Input
+                      label="Date Registered"
+                      name="dateRegistered"
+                      value={clientInfos.dateRegistered}
+                      onChange={handleInputChange} 
+                    />
                   </div>
                 </Tab>
 
