@@ -13,6 +13,7 @@ export default {
         "D:/Freelance/health-center/health-center/client",
         // "C:/Users/acer/Documents/GitHub/freelance/health-center",yy
         "C:/Users/acer/Documents/proj1/client",
+        "C:/Users/acer/Documents/GitHub/health-center/client"
       ],
     },
   },

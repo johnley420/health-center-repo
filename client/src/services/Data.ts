@@ -192,6 +192,7 @@ export const workersData = [
 export const clientData = [
   {
     name: "John Doe",
+    forms:['PRENATAL & POSPARTUM CARE','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
     address: "123 Main St, Cityville",
     phone: "09123456789",
     birth: "1990-01-15",
@@ -217,6 +218,7 @@ export const clientData = [
   },
   {
     name: "Jane Smith",
+    forms:['HYPERTENSIVE AND TYPE 2 DIABETES MELITUS','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
     address: "456 Oak St, Townsville",
     phone: "09234567890",
     birth: "1985-04-22",
@@ -242,6 +244,7 @@ export const clientData = [
   },
   {
     name: "Michael Johnson",
+    forms:['FILARIASIS PROGRAM SERVICES','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
     address: "789 Pine St, Villagetown",
     phone: "09345678901",
     birth: "1995-07-10",
@@ -267,6 +270,7 @@ export const clientData = [
   },
   {
     name: "Emily Davis",
+    forms:['5-9 YEARS OLD CHILDREN (SCHOOL AGED CHILDREN)','-11 MONTHS OLD INFANTS - IMMUNIZATION SERVICES','PERSON WITH DISABILITY (PWD)'],
     address: "101 Maple Ave, Citytown",
     phone: "09456789012",
     birth: "1992-09-05",
@@ -292,6 +296,7 @@ export const clientData = [
   },
   {
     name: "Robert Brown",
+    forms:['CURRENT SMOKERS','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
     address: "202 Birch Blvd, Smallville",
     phone: "09567890123",
     birth: "1988-11-30",
