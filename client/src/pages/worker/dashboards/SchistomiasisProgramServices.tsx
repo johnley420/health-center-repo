@@ -67,16 +67,16 @@ const SchistomiasisProgramServices: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`http://localhost:8081/schistomiasis/count-total-clients`, {
+          axios.get(`health-center-repo-production.up.railway.app/schistomiasis/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`http://localhost:8081/schistomiasis/age-segmentation`, {
+          axios.get(`health-center-repo-production.up.railway.app/schistomiasis/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`http://localhost:8081/schistomiasis/new-registered`, {
+          axios.get(`health-center-repo-production.up.railway.app/schistomiasis/new-registered`, {
             params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`http://localhost:8081/schistomiasis/schistomiasis-data`, {
+          axios.get(`health-center-repo-production.up.railway.app/schistomiasis/schistomiasis-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -135,7 +135,7 @@ const SchistomiasisProgramServices: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('http://localhost:8081/print/schistomiasis', {
+      const response = await axios.get('health-center-repo-production.up.railway.app/print/schistomiasis', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

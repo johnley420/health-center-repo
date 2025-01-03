@@ -65,7 +65,7 @@ const ManageClient = () => {
   const fetchClients = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8081/clients?workerId=${workerId}&status=active`);
+      const response = await axios.get(`health-center-repo-production.up.railway.app/clients?workerId=${workerId}&status=active`);
       setClientData(response.data);
     } catch (error: any) {
       console.error("Error fetching clients:", error.message);
@@ -79,7 +79,7 @@ const ManageClient = () => {
   const fetchPendingClients = async () => {
     setLoadingPending(true);
     try {
-      const response = await axios.get(`http://localhost:8081/pending-clients?workerId=${workerId}`);
+      const response = await axios.get(`health-center-repo-production.up.railway.app/pending-clients?workerId=${workerId}`);
       setPendingClients(response.data);
     } catch (error: any) {
       console.error("Error fetching pending clients:", error.message);
@@ -105,7 +105,7 @@ const ManageClient = () => {
     if (!window.confirm("Are you sure you want to delete this client?")) return;
 
     try {
-      const response = await axios.put(`http://localhost:8081/clients/${clientId}/status`, {
+      const response = await axios.put(`health-center-repo-production.up.railway.app/clients/${clientId}/status`, {
         status: "Inactive",
       });
 
@@ -138,7 +138,7 @@ const ManageClient = () => {
     if (!window.confirm("Are you sure you want to activate this client?")) return;
 
     try {
-      const response = await axios.put(`http://localhost:8081/clients/${clientId}/status`, {
+      const response = await axios.put(`health-center-repo-production.up.railway.app/clients/${clientId}/status`, {
         status: "Active",
       });
 

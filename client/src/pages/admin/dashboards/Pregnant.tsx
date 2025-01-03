@@ -66,16 +66,16 @@ const Pregnant: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`http://localhost:8081/admin/pregnant/count-total-clients`, {
+          axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/count-total-clients`, {
             params: {  category_name: "Pregnant" },
           }),
-          axios.get(`http://localhost:8081/admin/pregnant/age-segmentation`, {
+          axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/age-segmentation`, {
             params: { category_name: "Pregnant" },
           }),
-          axios.get(`http://localhost:8081/admin/pregnant/new-registered`, {
+          axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/new-registered`, {
             params: { worker_id: workerId, category_name: "Pregnant" },
           }),
-          axios.get(`http://localhost:8081/admin/pregnant/pregnant-data`, {
+          axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/pregnant-data`, {
             params: { worker_id: workerId },
           }),
         ]);

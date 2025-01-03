@@ -116,7 +116,7 @@ export const FIVETO9CHILDRENFORM = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `http://localhost:8081/5-9yearsold/${selectedData.id}`,
+          `health-center-repo-production.up.railway.app/5-9yearsold/${selectedData.id}`,
           transformedFormValues
         );
         alert('Data updated successfully!');
@@ -124,7 +124,7 @@ export const FIVETO9CHILDRENFORM = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'http://localhost:8081/5-9yearsold',
+          'health-center-repo-production.up.railway.app/5-9yearsold',
           transformedFormValues
         );
         alert('Data submitted successfully!');

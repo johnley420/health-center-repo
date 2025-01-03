@@ -237,7 +237,7 @@ export const TentoNineteenForm = ({
       if (selectedData && selectedData.id) {
         // We're updating existing data
         const response = await axios.put(
-          `http://localhost:8081/10-19yo/${selectedData.id}`,
+          `health-center-repo-production.up.railway.app/10-19yo/${selectedData.id}`,
           transformedFormValues
         );
         alert('Data updated successfully!');
@@ -245,7 +245,7 @@ export const TentoNineteenForm = ({
       } else {
         // We're creating new data
         const response = await axios.post(
-          'http://localhost:8081/10-19yo',
+          'health-center-repo-production.up.railway.app/10-19yo',
           transformedFormValues
         );
         alert('Data submitted successfully!');

@@ -169,7 +169,7 @@ export const SchistosomiasisForm = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `http://localhost:8081/schistosomiasis/${selectedData.id}`,
+          `health-center-repo-production.up.railway.app/schistosomiasis/${selectedData.id}`,
           transformedFormValues
         );
         successMessage = response.data.message || 'Data updated successfully!';
@@ -177,7 +177,7 @@ export const SchistosomiasisForm = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'http://localhost:8081/schistosomiasis',
+          'health-center-repo-production.up.railway.app/schistosomiasis',
           transformedFormValues
         );
         successMessage = response.data.message || 'Data submitted successfully!';

@@ -54,7 +54,7 @@ const UpdateAccount: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate })
       const sessionRole = sessionStorage.getItem("userRole");
       console.log("Session Role:", sessionRole);
 
-      const response = await axios.post("http://localhost:8081/validate-admin", {
+      const response = await axios.post("health-center-repo-production.up.railway.app/validate-admin", {
         adminPassword,
         sessionRole,
       });
@@ -74,7 +74,7 @@ const UpdateAccount: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate })
       console.log("Username:", username);
       console.log("Password:", password);
 
-      const response = await axios.put(`http://localhost:8081/update-user/${userId}`, {
+      const response = await axios.put(`health-center-repo-production.up.railway.app/update-user/${userId}`, {
         username,
         password,
       });

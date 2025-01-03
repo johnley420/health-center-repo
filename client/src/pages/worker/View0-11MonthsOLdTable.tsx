@@ -50,7 +50,7 @@ const View0to11MonthsOLdTable = () => {
     const fetchClients = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/0-11monthsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `health-center-repo-production.up.railway.app/0-11monthsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "0-11 Months Old Infants"
           )}`
         );
@@ -78,7 +78,7 @@ const View0to11MonthsOLdTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`http://localhost:8081/0-11monthsold-form/${client.id}`);
+      const response = await fetch(`health-center-repo-production.up.railway.app/0-11monthsold-form/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

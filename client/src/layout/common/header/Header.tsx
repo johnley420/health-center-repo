@@ -30,7 +30,7 @@ const Header: FC<HeaderProps> = ({ role }) => {
 
     const fetchUnreadHelpRequests = async () => {
       try {
-        const response = await fetch("http://localhost:8081/getUnreadHelpRequests");
+        const response = await fetch("health-center-repo-production.up.railway.app/getUnreadHelpRequests");
         if (!response.ok) {
           throw new Error("Failed to fetch unread help requests");
         }
@@ -43,7 +43,7 @@ const Header: FC<HeaderProps> = ({ role }) => {
 
     const fetchHelpRequests = async () => {
       try {
-        const response = await fetch("http://localhost:8081/getAllHelpRequests");
+        const response = await fetch("health-center-repo-production.up.railway.app/getAllHelpRequests");
         if (!response.ok) {
           throw new Error("Failed to fetch help requests");
         }
@@ -60,7 +60,7 @@ const Header: FC<HeaderProps> = ({ role }) => {
 
   const handleMarkAsRead = async () => {
     try {
-      const response = await fetch("http://localhost:8081/markHelpRequestsRead", {
+      const response = await fetch("health-center-repo-production.up.railway.app/markHelpRequestsRead", {
         method: "PUT",
       });
       if (!response.ok) {

@@ -54,7 +54,7 @@ const ViewPregnantCategoryTable = () => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8081/pregnant/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `health-center-repo-production.up.railway.app/pregnant/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "Pregnant"
           )}`
         );
@@ -69,7 +69,7 @@ const ViewPregnantCategoryTable = () => {
 
     const fetchNextPrenatalVisitDate = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/pregnant/get-next-visit-date");
+        const response = await axios.get("health-center-repo-production.up.railway.app/pregnant/get-next-visit-date");
         if (response.status === 200 && response.data.nextPrenatalVisitDate) {
           setNextVisitDate(response.data.nextPrenatalVisitDate);
         }
@@ -90,7 +90,7 @@ const ViewPregnantCategoryTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await axios.get(`http://localhost:8081/pregnant-form/${client.id}`);
+      const response = await axios.get(`health-center-repo-production.up.railway.app/pregnant-form/${client.id}`);
       if (response.status === 200) {
         const data = response.data;
         if (data && data.length > 0) {
@@ -133,7 +133,7 @@ const ViewPregnantCategoryTable = () => {
     setIsSettingNextVisit(true);
 
     try {
-      const response = await axios.post("http://localhost:8081/pregnant/check-missed-visits", {
+      const response = await axios.post("health-center-repo-production.up.railway.app/pregnant/check-missed-visits", {
         nextPrenatalVisitDate: nextVisitDate,
       });
       alert(response.data.message || "Next prenatal visit date set successfully.");

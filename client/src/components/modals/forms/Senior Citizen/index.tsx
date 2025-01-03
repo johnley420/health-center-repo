@@ -187,7 +187,7 @@ export const SeniorCitizenForm = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `http://localhost:8081/senior-citizen/${selectedData.id}`,
+          `health-center-repo-production.up.railway.app/senior-citizen/${selectedData.id}`,
           transformedFormValues
         );
         alert('Data updated successfully!');
@@ -195,7 +195,7 @@ export const SeniorCitizenForm = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'http://localhost:8081/senior-citizen',
+          'health-center-repo-production.up.railway.app/senior-citizen',
           transformedFormValues
         );
         alert('Data submitted successfully!');

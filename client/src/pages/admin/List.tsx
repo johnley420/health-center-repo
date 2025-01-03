@@ -45,7 +45,7 @@ const List: React.FC = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("http://localhost:8081/admin/workers");
+        const response = await axios.get("health-center-repo-production.up.railway.app/admin/workers");
         const activeWorkers = response.data.filter(
           (worker: Worker) => worker.status === "Active"
         );
@@ -81,7 +81,7 @@ const List: React.FC = () => {
     if (!confirmDeactivate) return;
 
     try {
-      await axios.put(`http://localhost:8081/admin/workers/${workerId}`, {
+      await axios.put(`health-center-repo-production.up.railway.app/admin/workers/${workerId}`, {
         status: "Inactive",
       });
 
@@ -150,14 +150,14 @@ const List: React.FC = () => {
               <TableCell>{worker.place_assign}</TableCell>
               <TableCell>
                 <img
-                  src={`http://localhost:8081/uploads/images/${worker.id_pic}`}
+                  src={`health-center-repo-production.up.railway.app/uploads/images/${worker.id_pic}`}
                   alt="ID"
                   className="w-16 h-16 object-cover"
                 />
               </TableCell>
               <TableCell>
                 <img
-                  src={`http://localhost:8081/uploads/images/${worker.profile_pic}`}
+                  src={`health-center-repo-production.up.railway.app/uploads/images/${worker.profile_pic}`}
                   alt="Profile"
                   className="w-16 h-16 object-cover"
                 />

@@ -41,7 +41,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8081/add-client', {
+      const response = await axios.post('health-center-repo-production.up.railway.app/add-client', {
         category_name: category,
         fname,
         address,

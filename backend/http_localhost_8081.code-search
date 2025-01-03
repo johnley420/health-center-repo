@@ -1,0 +1,942 @@
+# Query: http://localhost:8081
+# ContextLines: 1
+
+244 results - 76 files
+
+backend\server.js:
+  10489  server.listen(8081, () => {
+  10490:   console.log("Server running on health-center-repo-production.up.railway.app");
+  10491  });
+
+client\src\auth\Login.tsx:
+  25      try {
+  26:       const response = await fetch('health-center-repo-production.up.railway.app/login', {
+  27          method: 'POST',
+
+  66      try {
+  67:       const response = await fetch('health-center-repo-production.up.railway.app/help-request', {
+  68          method: 'POST',
+
+client\src\components\headerContent\Logs.tsx:
+  29      try {
+  30:       const response = await axios.get('health-center-repo-production.up.railway.app/get-attendance-logs', {
+  31          params: { userId }
+
+  50      try {
+  51:       const response = await axios.post('health-center-repo-production.up.railway.app/log-attendance', {
+  52          userId,
+
+client\src\components\headerContent\socket.tsx:
+  5  // Replace with your server's URL
+  6: const SOCKET_URL = 'health-center-repo-production.up.railway.app';
+  7  
+
+client\src\components\headerContent\WorkerNotification.tsx:
+  26          const response = await axios.get(
+  27:           `health-center-repo-production.up.railway.app/notifications?worker_id=${workerId}`
+  28          );
+
+  46      try {
+  47:       await axios.put("health-center-repo-production.up.railway.app/notifications/mark-as-read", {
+  48          worker_id: workerId,
+
+client\src\components\modals\add\AddClient.tsx:
+  43      try {
+  44:       const response = await axios.post('health-center-repo-production.up.railway.app/add-client', {
+  45          category_name: category,
+
+client\src\components\modals\add\AdminOnlineForm.tsx:
+  33        try {
+  34:         const response = await axios.get('health-center-repo-production.up.railway.app/get-active-workers');
+  35          if (response.status === 200) {
+
+  69      try {
+  70:       const response = await axios.post('health-center-repo-production.up.railway.app/online-add-client', {
+  71          category_name: category,
+
+client\src\components\modals\forms\0-11Months\index.tsx:
+  308          const response = await axios.put(
+  309:           `health-center-repo-production.up.railway.app/0-11monthsold/${selectedData.id}`,
+  310            transformedFormValues
+
+  316          const response = await axios.post(
+  317:           'health-center-repo-production.up.railway.app/0-11monthsold',
+  318            transformedFormValues
+
+client\src\components\modals\forms\0-59Children\index.tsx:
+   99      try {
+  100:       const response = await axios.get(`health-center-repo-production.up.railway.app/clients/${clientId}`);
+  101        if (response.status === 200) {
+
+  207          const response = await axios.put(
+  208:           `health-center-repo-production.up.railway.app/zero_to_fiftynine_months_children/${selectedData.id}`,
+  209            transformedFormValues
+
+  215          const response = await axios.post(
+  216:           'health-center-repo-production.up.railway.app/zero_to_fiftynine_months_children',
+  217            transformedFormValues
+
+client\src\components\modals\forms\0-59OLD\index.tsx:
+  171          const response = await axios.put(
+  172:           `health-center-repo-production.up.railway.app/zero_to_fiftynine/${selectedData.id}`,
+  173            transformedFormValues
+
+  179          const response = await axios.post(
+  180:           'health-center-repo-production.up.railway.app/zero_to_fiftynine',
+  181            transformedFormValues
+
+client\src\components\modals\forms\10-19OLD\index.tsx:
+  239          const response = await axios.put(
+  240:           `health-center-repo-production.up.railway.app/10-19yo/${selectedData.id}`,
+  241            transformedFormValues
+
+  247          const response = await axios.post(
+  248:           'health-center-repo-production.up.railway.app/10-19yo',
+  249            transformedFormValues
+
+client\src\components\modals\forms\5-9Children\index.tsx:
+  118          const response = await axios.put(
+  119:           `health-center-repo-production.up.railway.app/5-9yearsold/${selectedData.id}`,
+  120            transformedFormValues
+
+  126          const response = await axios.post(
+  127:           'health-center-repo-production.up.railway.app/5-9yearsold',
+  128            transformedFormValues
+
+client\src\components\modals\forms\CurrentSmokers\index.tsx:
+  118          const response = await axios.put(
+  119:           `health-center-repo-production.up.railway.app/currentsmokers/${selectedData.id}`,
+  120            transformedFormValues
+
+  126          const response = await axios.post(
+  127:           'health-center-repo-production.up.railway.app/currentsmokers',
+  128            transformedFormValues
+
+client\src\components\modals\forms\Filariasis\index.tsx:
+  146          const response = await axios.put(
+  147:           `health-center-repo-production.up.railway.app/filariasis/${selectedData.id}`,
+  148            transformedFormValues
+
+  154          const response = await axios.post(
+  155:           'health-center-repo-production.up.railway.app/filariasis',
+  156            transformedFormValues
+
+client\src\components\modals\forms\Hypertensive\index.tsx:
+   99          const response = await axios.put(
+  100:           `health-center-repo-production.up.railway.app/hypertensive/${selectedData.id}`,
+  101            formValues
+
+  111          const response = await axios.post(
+  112:           'health-center-repo-production.up.railway.app/hypertensive',
+  113            formValues
+
+client\src\components\modals\forms\PersonwithDisability\index.tsx:
+   99          const response = await axios.put(
+  100:           `health-center-repo-production.up.railway.app/person_with_disability/${selectedData.id}`,
+  101            formValues
+
+  111          const response = await axios.post(
+  112:           'health-center-repo-production.up.railway.app/person_with_disability',
+  113            formValues
+
+client\src\components\modals\forms\pregnant\index.tsx:
+  252      try {
+  253:       const response = await axios.get(`health-center-repo-production.up.railway.app/clients/${clientId}`);
+  254        if (response.status === 200) {
+
+  381          const response = await axios.put(
+  382:           `health-center-repo-production.up.railway.app/pregnant/${selectedData.id}`,
+  383            preparedFormValues,
+
+  394          const response = await axios.post(
+  395:           'health-center-repo-production.up.railway.app/pregnant',
+  396            preparedFormValues,
+
+client\src\components\modals\forms\Schistosomiasis\index.tsx:
+  171          const response = await axios.put(
+  172:           `health-center-repo-production.up.railway.app/schistosomiasis/${selectedData.id}`,
+  173            transformedFormValues
+
+  179          const response = await axios.post(
+  180:           'health-center-repo-production.up.railway.app/schistosomiasis',
+  181            transformedFormValues
+
+client\src\components\modals\forms\Senior Citizen\index.tsx:
+  189          const response = await axios.put(
+  190:           `health-center-repo-production.up.railway.app/senior-citizen/${selectedData.id}`,
+  191            transformedFormValues
+
+  197          const response = await axios.post(
+  198:           'health-center-repo-production.up.railway.app/senior-citizen',
+  199            transformedFormValues
+
+client\src\components\modals\forms\WRA15-49\index.tsx:
+   95          const response = await axios.put(
+   96:           `health-center-repo-production.up.railway.app/wra/${selectedData.id}`,
+   97            formValues
+
+  107          const response = await axios.post(
+  108:           'health-center-repo-production.up.railway.app/wra',
+  109            formValues
+
+client\src\components\modals\update\UpdateAccount.tsx:
+  56  
+  57:       const response = await axios.post("health-center-repo-production.up.railway.app/validate-admin", {
+  58          adminPassword,
+
+  76  
+  77:       const response = await axios.put(`health-center-repo-production.up.railway.app/update-user/${userId}`, {
+  78          username,
+
+client\src\components\modals\update\UpdateClient.tsx:
+  92      try {
+  93:       await axios.post(`health-center-repo-production.up.railway.app/update-client`, {
+  94          id: data.id,
+
+client\src\components\modals\update\UpdateWorker.tsx:
+  102        const response = await axios.put(
+  103:         `health-center-repo-production.up.railway.app/update-worker/${data.id}`,
+  104          formData,
+
+client\src\components\modals\view\ViewWorkerForm.tsx:
+  72    try {
+  73:     const response = await fetch("health-center-repo-production.up.railway.app/upload-worker", {
+  74        method: "POST",
+
+client\src\components\ui\Avatar.tsx:
+  17    const profilePic = sessionStorage.getItem("profilePic")
+  18:     ? `health-center-repo-production.up.railway.app/uploads/images/${sessionStorage.getItem("profilePic")}`
+  19      : "/default-profile.png";
+
+  37          // First, update all unread messages to "read"
+  38:         await fetch(`health-center-repo-production.up.railway.app/updateMessagesToRead`, {
+  39            method: "POST",
+
+  44          // Then fetch updated messages
+  45:         const response = await fetch(`health-center-repo-production.up.railway.app/getMessagesworker?receiver_id=${receiverId}`);
+  46          if (!response.ok) {
+
+client\src\layout\common\header\Header.tsx:
+  32        try {
+  33:         const response = await fetch("health-center-repo-production.up.railway.app/getUnreadHelpRequests");
+  34          if (!response.ok) {
+
+  45        try {
+  46:         const response = await fetch("health-center-repo-production.up.railway.app/getAllHelpRequests");
+  47          if (!response.ok) {
+
+  62      try {
+  63:       const response = await fetch("health-center-repo-production.up.railway.app/markHelpRequestsRead", {
+  64          method: "PUT",
+
+client\src\pages\admin\Announcement.tsx:
+   28  
+   29:   const socket: Socket = io("health-center-repo-production.up.railway.app", { autoConnect: false });
+   30  
+
+   35        try {
+   36:         const response = await axios.get("health-center-repo-production.up.railway.app/getWorkers");
+   37          setWorkers(response.data);
+
+   44        try {
+   45:         const response = await axios.get("health-center-repo-production.up.railway.app/getMessages");
+   46          setMessages(response.data);
+
+   68      try {
+   69:       const response = await axios.get("health-center-repo-production.up.railway.app/getSmsMessages");
+   70        setSmsMessages(response.data);
+
+  114        const response = await axios.post(
+  115:         "health-center-repo-production.up.railway.app/sendMessageToWorkers",
+  116          messageData
+
+  172        const response = await axios.post(
+  173:         "health-center-repo-production.up.railway.app/sendSmsAnnouncement",
+  174          smsData
+
+client\src\pages\admin\inventory.tsx:
+   34      try {
+   35:       const response = await axios.get("health-center-repo-production.up.railway.app/medicines");
+   36        // The server might return { expiration_date: "...", ... }
+
+   62  
+   63:     const response = await axios.post("health-center-repo-production.up.railway.app/medicines", formData, {
+   64        headers: {
+
+  114      const response = await axios.put(
+  115:       `health-center-repo-production.up.railway.app/medicines/${updatedMedicine.id}`,
+  116        formData,
+
+  158      try {
+  159:       await axios.delete(`health-center-repo-production.up.railway.app/medicines/${selectedMedicine.id}`);
+  160        // Remove it from local state
+
+  212            <img
+  213:             src={`health-center-repo-production.up.railway.app/uploads/images/${medicine.image}`}
+  214              alt={medicine.name}
+
+client\src\pages\admin\List.tsx:
+   47        try {
+   48:         const response = await axios.get("health-center-repo-production.up.railway.app/admin/workers");
+   49          const activeWorkers = response.data.filter(
+
+   83      try {
+   84:       await axios.put(`health-center-repo-production.up.railway.app/admin/workers/${workerId}`, {
+   85          status: "Inactive",
+
+  152                  <img
+  153:                   src={`health-center-repo-production.up.railway.app/uploads/images/${worker.id_pic}`}
+  154                    alt="ID"
+
+  159                  <img
+  160:                   src={`health-center-repo-production.up.railway.app/uploads/images/${worker.profile_pic}`}
+  161                    alt="Profile"
+
+client\src\pages\admin\mapping.tsx:
+  45      axios
+  46:       .get("health-center-repo-production.up.railway.app/clients")
+  47        .then((response) => {
+
+client\src\pages\admin\ViewMap.tsx:
+   65      // Fetch client data from the backend (only active clients)
+   66:     axios.get("health-center-repo-production.up.railway.app/clients-admin-map")
+   67        .then((response) => {
+
+   75      // Fetch place_assign coordinates
+   76:     axios.get("health-center-repo-production.up.railway.app/place-assign-coordinates")
+   77        .then((response) => {
+
+  149        setLoadingHighRisk(true);
+  150:       axios.get(`health-center-repo-production.up.railway.app/clients-admin-map-high-risk`, {
+  151          params: {
+
+client\src\pages\admin\dashboards\CurrentSmokers.tsx:
+  68          ] = await Promise.all([
+  69:           axios.get(`health-center-repo-production.up.railway.app/admin/currentsmokers/count-total-clients`, {
+  70              params: {  category_name: "Current Smokers" },
+  71            }),
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/currentsmokers/age-segmentation`, {
+  73              params: {  category_name: "Current Smokers" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/currentsmokers/new-registered`, {
+  76              params: { category_name: "Current Smokers" },
+  77            }),
+  78:           axios.get(`health-center-repo-production.up.railway.app/admin/currentsmokers/currentsmokers-data`, {
+  79              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\FamilyPlanning.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/familyplanning/count-total-clients`, {
+  71              params: { category_name: "Family Planning" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/familyplanning/age-segmentation`, {
+  74              params: { category_name: "Family Planning" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/familyplanning/new-registered`, {
+  77              params: {  category_name: "Family Planning" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/familyplanning/familyplanning-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\FilariasisProgramService.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/filariasis/count-total-clients`, {
+  71              params: { category_name: "Filariasis Program Services" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/filariasis/age-segmentation`, {
+  74              params: {  category_name: "Filariasis Program Services" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/filariasis/new-registered`, {
+  77              params: {  category_name: "Filariasis Program Services" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/filariasis/filariasis-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\HypertensiveDiabeties.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/hypertensivediabeties/count-total-clients`, {
+  71              params: { category_name: "Hypertensive And Type 2 Diabetes" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/hypertensivediabeties/age-segmentation`, {
+  74              params: { category_name: "Hypertensive And Type 2 Diabetes" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/hypertensivediabeties/new-registered`, {
+  77              params: { category_name: "Hypertensive And Type 2 Diabetes" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/hypertensivediabeties/hypertensivediabeties-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\index.tsx:
+   98          ] = await Promise.all([
+   99:           axios.get(`health-center-repo-production.up.railway.app/admin/count-total-clients`),
+  100:           axios.get(`health-center-repo-production.up.railway.app/admin/count-worker`),
+  101:           axios.get(`health-center-repo-production.up.railway.app/admin/count-male-clients`),
+  102:           axios.get(`health-center-repo-production.up.railway.app/admin/count-female-clients`),
+  103:           axios.get(`health-center-repo-production.up.railway.app/admin/recent-clients`),
+  104:           axios.get(`health-center-repo-production.up.railway.app/admin/new-registered`),
+  105:           axios.get(`health-center-repo-production.up.railway.app/admin/category-count`),
+  106:           axios.get(`health-center-repo-production.up.railway.app/admin/age-segmentation`),
+  107:           axios.get(`health-center-repo-production.up.railway.app/admin/updates-line-graph`), // Fetch updates data
+  108:           axios.get(`health-center-repo-production.up.railway.app/admin/count-medicines`), // Fetch medicine count
+  109          ]);
+
+client\src\pages\admin\dashboards\MonthsChildren059.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/children059/count-total-clients`, {
+  71              params: { category_name: "0-59 Months Old Children" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/children059/age-segmentation`, {
+  74              params: { category_name: "0-59 Months Old Children" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/children059/new-registered`, {
+  77              params: {  category_name: "0-59 Months Old Children" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/children059/children059-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\MonthsInfant011.tsx:
+  68          ] = await Promise.all([
+  69:           axios.get(`health-center-repo-production.up.railway.app/admin/infants/count-total-clients`, {
+  70              params: {  category_name: "0-11 Months Old Infants" },
+  71            }),
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/infants/age-segmentation`, {
+  73              params: {  category_name: "0-11 Months Old Infants" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/infants/new-registered`, {
+  76              params: {  category_name: "0-11 Months Old Infants" },
+  77            }),
+  78:           axios.get(`health-center-repo-production.up.railway.app/admin/infants/infants-data`, {
+  79              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\PersonWithDisability.tsx:
+  65          ] = await Promise.all([
+  66:           axios.get(`health-center-repo-production.up.railway.app/admin/person-with-disabilities/count-total-clients`, {
+  67              params: { category_name: "Person With Disabilities" },
+  68            }),
+  69:           axios.get(`health-center-repo-production.up.railway.app/admin/person-with-disabilities/age-segmentation`, {
+  70              params: {  category_name: "Person With Disabilities" },
+  71            }),
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/person-with-disabilities/new-registered`, {
+  73              params: {  category_name: "Person With Disabilities" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/person-with-disabilities/person-with-disabilities-data`, {
+  76              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\Pregnant.tsx:
+  68          ] = await Promise.all([
+  69:           axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/count-total-clients`, {
+  70              params: {  category_name: "Pregnant" },
+  71            }),
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/age-segmentation`, {
+  73              params: { category_name: "Pregnant" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/new-registered`, {
+  76              params: { worker_id: workerId, category_name: "Pregnant" },
+  77            }),
+  78:           axios.get(`health-center-repo-production.up.railway.app/admin/pregnant/pregnant-data`, {
+  79              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\SchistomiasisProgramServices.tsx:
+  71          ] = await Promise.all([
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/schistomiasis/count-total-clients`, {
+  73              params: {  category_name: "Schistomiasis Program Services" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/schistomiasis/age-segmentation`, {
+  76              params: {  category_name: "Schistomiasis Program Services" },
+  77            }),
+  78:           axios.get(`health-center-repo-production.up.railway.app/admin/schistomiasis/new-registered`, {
+  79              params: { category_name: "Schistomiasis Program Services" },
+  80            }),
+  81:           axios.get(`health-center-repo-production.up.railway.app/admin/schistomiasis/schistomiasis-data`, {
+  82              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\SeniorCitizen.tsx:
+  68          ] = await Promise.all([
+  69:           axios.get(`health-center-repo-production.up.railway.app/admin/seniorcetizen/count-total-clients`, {
+  70              params: { category_name: "Senior Citizen" },
+  71            }),
+  72:           axios.get(`health-center-repo-production.up.railway.app/admin/seniorcetizen/age-segmentation`, {
+  73              params: {  category_name: "Senior Citizen" },
+  74            }),
+  75:           axios.get(`health-center-repo-production.up.railway.app/admin/seniorcetizen/new-registered`, {
+  76              params: {category_name: "Senior Citizen" },
+  77            }),
+  78:           axios.get(`health-center-repo-production.up.railway.app/admin/seniorcetizen/seniorcetizen-data`, {
+  79              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\YearsChildren59.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/children5to9/count-total-clients`, {
+  71              params: {  category_name: "5-9 Years Old Children (School Aged Children)" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/children5to9/age-segmentation`, {
+  74              params: { category_name: "5-9 Years Old Children (School Aged Children)" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/children5to9/new-registered`, {
+  77              params: {category_name: "5-9 Years Old Children (School Aged Children)" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/children5to9/children5to9-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\YearsOld1019.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/count-total-clients`, {
+  71              params: { category_name: "10-19 Years Old (Adolescents)" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/age-segmentation`, {
+  74              params: {  category_name: "10-19 Years Old (Adolescents)" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/new-registered`, {
+  77              params: { category_name: "10-19 Years Old (Adolescents)" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/children10to19-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\admin\dashboards\YearsScreened059.tsx:
+  69          ] = await Promise.all([
+  70:           axios.get(`health-center-repo-production.up.railway.app/admin/screened059/count-total-clients`, {
+  71              params: { category_name: "0-59 Years Old Screened For Visual Activity" },
+  72            }),
+  73:           axios.get(`health-center-repo-production.up.railway.app/admin/screened059/age-segmentation`, {
+  74              params: { category_name: "0-59 Years Old Screened For Visual Activity" },
+  75            }),
+  76:           axios.get(`health-center-repo-production.up.railway.app/admin/screened059/new-registered`, {
+  77              params: {  category_name: "0-59 Years Old Screened For Visual Activity" },
+  78            }),
+  79:           axios.get(`health-center-repo-production.up.railway.app/admin/screened059/screened059-data`, {
+  80              params: { worker_id: workerId },
+
+client\src\pages\worker\Announcement.tsx:
+   39          const response = await fetch(
+   40:           `health-center-repo-production.up.railway.app/clients?workerId=${workerId}`
+   41          );
+
+   64  
+   65:         const response = await axios.get("health-center-repo-production.up.railway.app/sms-messages", {
+   66            params: { worker_id: workerId },
+
+  146        await axios.post(
+  147:         "health-center-repo-production.up.railway.app/send-sms",
+  148          {
+
+client\src\pages\worker\ManageClient.tsx:
+   67      try {
+   68:       const response = await axios.get(`health-center-repo-production.up.railway.app/clients?workerId=${workerId}&status=active`);
+   69        setClientData(response.data);
+
+   81      try {
+   82:       const response = await axios.get(`health-center-repo-production.up.railway.app/pending-clients?workerId=${workerId}`);
+   83        setPendingClients(response.data);
+
+  107      try {
+  108:       const response = await axios.put(`health-center-repo-production.up.railway.app/clients/${clientId}/status`, {
+  109          status: "Inactive",
+
+  140      try {
+  141:       const response = await axios.put(`health-center-repo-production.up.railway.app/clients/${clientId}/status`, {
+  142          status: "Active",
+
+client\src\pages\worker\Pregnant.tsx:
+  67          ] = await Promise.all([
+  68:           axios.get(`health-center-repo-production.up.railway.app/pregnant/count-total-clients`, {
+  69              params: { worker_id: workerId, category_name: "Pregnant" },
+  70            }),
+  71:           axios.get(`health-center-repo-production.up.railway.app/pregnant/age-segmentation`, {
+  72              params: { worker_id: workerId, category_name: "Pregnant" },
+  73            }),
+  74:           axios.get(`health-center-repo-production.up.railway.app/pregnant/new-registered`, {
+  75              params: { worker_id: workerId, category_name: "Pregnant" },
+  76            }),
+  77:           axios.get(`health-center-repo-production.up.railway.app/pregnant/pregnant-data`, {
+  78              params: { worker_id: workerId },
+
+client\src\pages\worker\View0-11MonthsOLdTable.tsx:
+  52          const response = await fetch(
+  53:           `health-center-repo-production.up.railway.app/0-11monthsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  54              "0-11 Months Old Infants"
+
+  80      try {
+  81:       const response = await fetch(`health-center-repo-production.up.railway.app/0-11monthsold-form/${client.id}`);
+  82        if (response.ok) {
+
+client\src\pages\worker\View0-59MonthOldTable.tsx:
+  54          const response = await axios.get(
+  55:           `health-center-repo-production.up.railway.app/0-59months-old/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  56              "0-59 Months Old Children"
+
+  78      try {
+  79:       const response = await axios.get(`health-center-repo-production.up.railway.app/zero_to_ninechildmonths-form/${client.id}`);
+  80        if (response.status === 200) {
+
+client\src\pages\worker\View0-59YearsOldTable.tsx:
+  53          const response = await axios.get(
+  54:           `health-center-repo-production.up.railway.app/0-59yearsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  55              "0-59 years Old Screened For Visual Activity"
+
+  77      try {
+  78:       const response = await axios.get(`health-center-repo-production.up.railway.app/zero_to_fiftynine-form/${client.id}`);
+  79        if (response.status === 200) {
+
+client\src\pages\worker\View5-9YearsOldTable.tsx:
+  53          const response = await fetch(
+  54:           `health-center-repo-production.up.railway.app/5-9yearsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  55              "5-9 years Old Children (School Aged Children)"
+
+  81      try {
+  82:       const response = await fetch(`health-center-repo-production.up.railway.app/5-9yearsold-form/${client.id}`);
+  83        if (response.ok) {
+
+client\src\pages\worker\View10-19yoTable.tsx:
+  55          const response = await fetch(
+  56:           `health-center-repo-production.up.railway.app/10-19yo/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  57              "10-19 Years Old (Adolescents)"
+
+  83      try {
+  84:       const response = await fetch(`health-center-repo-production.up.railway.app/10-19yo-form/${client.id}`);
+  85        if (response.ok) {
+
+client\src\pages\worker\ViewCurrentSmokerTable.tsx:
+  51          const response = await axios.get(
+  52:           `health-center-repo-production.up.railway.app/currentsmokers/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  53              "Current Smokers"
+
+  75      try {
+  76:       const response = await axios.get(`health-center-repo-production.up.railway.app/currentsmokers-form/${client.id}`);
+  77        if (response.status === 200) {
+
+client\src\pages\worker\ViewFilariasisTable.tsx:
+  53          const response = await fetch(
+  54:           `health-center-repo-production.up.railway.app/filariasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  55              "Filariasis Program Services"
+
+  81      try {
+  82:       const response = await fetch(`health-center-repo-production.up.railway.app/filariasis-form/${client.id}`);
+  83        if (response.ok) {
+
+client\src\pages\worker\ViewHypertensiveTable.tsx:
+  42          const categoryName = "Hypertensive And Type 2 Diabetes";
+  43:         const response = await fetch(`health-center-repo-production.up.railway.app/hypertensive/clients?worker_id=${workerId}&category_name=${encodeURIComponent(categoryName)}`);
+  44          if (!response.ok) {
+
+  67      try {
+  68:       const response = await fetch(`health-center-repo-production.up.railway.app/hypertensive-form/${client.id}`);
+  69        if (response.ok) {
+
+client\src\pages\worker\ViewMap.tsx:
+   45      axios
+   46:       .get(`health-center-repo-production.up.railway.app/clients-map?workerId=${workerId}&id=${clientId}`)
+   47        .then((response) => {
+
+  122      axios
+  123:       .put(`health-center-repo-production.up.railway.app/update-client/${client.id}`, {
+  124          latitude: client.latitude,
+
+client\src\pages\worker\ViewPersonWithDisabilityTable.tsx:
+  41          const response = await fetch(
+  42:           `health-center-repo-production.up.railway.app/person-with-disabilities/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  43              'person with disabilities'
+
+  70        const response = await fetch(
+  71:         `health-center-repo-production.up.railway.app/person_with_disability/${client.id}`
+  72        );
+
+client\src\pages\worker\ViewPregnantTable.tsx:
+   56          const response = await axios.get(
+   57:           `health-center-repo-production.up.railway.app/pregnant/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+   58              "Pregnant"
+
+   71        try {
+   72:         const response = await axios.get("health-center-repo-production.up.railway.app/pregnant/get-next-visit-date");
+   73          if (response.status === 200 && response.data.nextPrenatalVisitDate) {
+
+   92      try {
+   93:       const response = await axios.get(`health-center-repo-production.up.railway.app/pregnant-form/${client.id}`);
+   94        if (response.status === 200) {
+
+  135      try {
+  136:       const response = await axios.post("health-center-repo-production.up.railway.app/pregnant/check-missed-visits", {
+  137          nextPrenatalVisitDate: nextVisitDate,
+
+client\src\pages\worker\ViewSchistomiasisTable.tsx:
+  53          const response = await axios.get(
+  54:           `health-center-repo-production.up.railway.app/schistosomiasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  55              "Schistosomiasis Program Services"
+
+  77      try {
+  78:       const response = await axios.get(`health-center-repo-production.up.railway.app/schistosomiasis-form/${client.id}`);
+  79        if (response.status === 200) {
+
+client\src\pages\worker\ViewSeniorCetizenTable.tsx:
+  53          const response = await fetch(
+  54:           `health-center-repo-production.up.railway.app/senior-citizen/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+  55              "Senior Citizen"
+
+  81      try {
+  82:       const response = await fetch(`health-center-repo-production.up.railway.app/senior-citizen-form/${client.id}`);
+  83        if (response.ok) {
+
+client\src\pages\worker\ViewWRATable.tsx:
+  50        try {
+  51:         const response = await fetch(`health-center-repo-production.up.railway.app/wra-family-planning/clients?worker_id=${workerId}&category_name=${encodeURIComponent("Family Planning")}`);
+  52          if (!response.ok) {
+
+  75      try {
+  76:       const response = await fetch(`health-center-repo-production.up.railway.app/wra/${client.id}`);
+  77        if (response.ok) {
+
+client\src\pages\worker\dashboards\CurrentSmokers.tsx:
+   67          ] = await Promise.all([
+   68:           axios.get(`health-center-repo-production.up.railway.app/currentsmokers/count-total-clients`, {
+   69              params: { worker_id: workerId, category_name: "Current Smokers" },
+   70            }),
+   71:           axios.get(`health-center-repo-production.up.railway.app/currentsmokers/age-segmentation`, {
+   72              params: { worker_id: workerId, category_name: "Current Smokers" },
+   73            }),
+   74:           axios.get(`health-center-repo-production.up.railway.app/currentsmokers/new-registered`, {
+   75              params: { worker_id: workerId, category_name: "Current Smokers" },
+   76            }),
+   77:           axios.get(`health-center-repo-production.up.railway.app/currentsmokers/currentsmokers-data`, {
+   78              params: { worker_id: workerId },
+
+  138  
+  139:       const response = await axios.get('health-center-repo-production.up.railway.app/print/currentsmokers', {
+  140          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\FamilyPlanning.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/familyplanning/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "Family Planning" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/familyplanning/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "Family Planning" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/familyplanning/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "Family Planning" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/familyplanning/familyplanning-data`, {
+   80              params: { worker_id: workerId },
+
+  141  
+  142:       const response = await axios.get('health-center-repo-production.up.railway.app/print/familyplanning', {
+  143          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\FilariasisProgramService.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/filariasis/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "Filariasis Program Services" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/filariasis/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "Filariasis Program Services" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/filariasis/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "Filariasis Program Services" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/filariasis/filariasis-data`, {
+   80              params: { worker_id: workerId },
+
+  140  
+  141:       const response = await axios.get('health-center-repo-production.up.railway.app/print/filariasis', {
+  142          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\HypertensiveDiabeties.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/hypertensivediabeties/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "Hypertensive And Type 2 Diabetes" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/hypertensivediabeties/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "Hypertensive And Type 2 Diabetes" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/hypertensivediabeties/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "Hypertensive And Type 2 Diabetes" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/hypertensivediabeties/hypertensivediabeties-data`, {
+   80              params: { worker_id: workerId },
+
+  140  
+  141:       const response = await axios.get('health-center-repo-production.up.railway.app/print/hypertensivediabeties', {
+  142          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\index.tsx:
+  131          ] = await Promise.all([
+  132:           axios.get(`health-center-repo-production.up.railway.app/count-total-clients`, {
+  133              params: { worker_id: workerId },
+  134            }),
+  135:           axios.get(`health-center-repo-production.up.railway.app/count-male-clients`, {
+  136              params: { worker_id: workerId },
+  137            }),
+  138:           axios.get(`health-center-repo-production.up.railway.app/recent-clients`, {
+  139              params: { worker_id: workerId },
+  140            }),
+  141:           axios.get(`health-center-repo-production.up.railway.app/new-registered`, {
+  142              params: { worker_id: workerId },
+  143            }),
+  144:           axios.get(`health-center-repo-production.up.railway.app/category-count`, {
+  145              params: { worker_id: workerId },
+  146            }),
+  147:           axios.get(`health-center-repo-production.up.railway.app/age-segmentation`, {
+  148              params: { worker_id: workerId },
+  149            }),
+  150:           axios.get(`health-center-repo-production.up.railway.app/updates-line-graph`, { // Fetch updates data
+  151              params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\MonthsChildren059.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/children059/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "0-59 Months Old Children" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/children059/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "0-59 Months Old Children" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/children059/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "0-59 Months Old Children" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/children059/children059-data`, {
+   80              params: { worker_id: workerId },
+
+  140  
+  141:       const response = await axios.get('health-center-repo-production.up.railway.app/print/children059', {
+  142          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\MonthsInfant011.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/infants/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/infants/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/infants/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/infants/infants-data`, {
+   80              params: { worker_id: workerId },
+
+  141  
+  142:       const response = await axios.get('health-center-repo-production.up.railway.app/print/infants', {
+  143          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\PersonWithDisability.tsx:
+   65          ] = await Promise.all([
+   66:           axios.get(`health-center-repo-production.up.railway.app/person-with-disabilities/count-total-clients`, {
+   67              params: { worker_id: workerId, category_name: "Person With Disabilities" },
+   68            }),
+   69:           axios.get(`health-center-repo-production.up.railway.app/person-with-disabilities/age-segmentation`, {
+   70              params: { worker_id: workerId, category_name: "Person With Disabilities" },
+   71            }),
+   72:           axios.get(`health-center-repo-production.up.railway.app/person-with-disabilities/new-registered`, {
+   73              params: { worker_id: workerId, category_name: "Person With Disabilities" },
+   74            }),
+   75:           axios.get(`health-center-repo-production.up.railway.app/person-with-disabilities/person-with-disabilities-data`, {
+   76              params: { worker_id: workerId },
+
+  124        // Make a request to the backend to generate the PDF
+  125:       const response = await axios.get(`health-center-repo-production.up.railway.app/print/personwithdisability`, {
+  126          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\Pregnant.tsx:
+   65          ] = await Promise.all([
+   66:           axios.get(`health-center-repo-production.up.railway.app/pregnant/count-total-clients`, {
+   67              params: { worker_id: workerId, category_name: "Pregnant" },
+   68            }),
+   69:           axios.get(`health-center-repo-production.up.railway.app/pregnant/age-segmentation`, {
+   70              params: { worker_id: workerId, category_name: "Pregnant" },
+   71            }),
+   72:           axios.get(`health-center-repo-production.up.railway.app/pregnant/new-registered`, {
+   73              params: { worker_id: workerId, category_name: "Pregnant" },
+   74            }),
+   75:           axios.get(`health-center-repo-production.up.railway.app/pregnant/pregnant-data`, {
+   76              params: { worker_id: workerId },
+
+  128        // Make a request to the backend to generate the PDF
+  129:       const response = await axios.get(`health-center-repo-production.up.railway.app/print/pregnant`, {
+  130          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\SchistomiasisProgramServices.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/schistomiasis/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/schistomiasis/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/schistomiasis/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "Schistomiasis Program Services" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/schistomiasis/schistomiasis-data`, {
+   80              params: { worker_id: workerId },
+
+  137  
+  138:       const response = await axios.get('health-center-repo-production.up.railway.app/print/schistomiasis', {
+  139          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\SeniorCitizen.tsx:
+   69          ] = await Promise.all([
+   70:           axios.get(`health-center-repo-production.up.railway.app/seniorcetizen/count-total-clients`, {
+   71              params: { worker_id: workerId, category_name: "Senior Citizen" },
+   72            }),
+   73:           axios.get(`health-center-repo-production.up.railway.app/seniorcetizen/age-segmentation`, {
+   74              params: { worker_id: workerId, category_name: "Senior Citizen" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/seniorcetizen/new-registered`, {
+   77              params: { worker_id: workerId, category_name: "Senior Citizen" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/seniorcetizen/seniorcetizen-data`, {
+   80              params: { worker_id: workerId },
+
+  141  
+  142:       const response = await axios.get('health-center-repo-production.up.railway.app/print/seniorcitizen', {
+  143          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\YearsChildren59.tsx:
+   72          ] = await Promise.all([
+   73:           axios.get(`health-center-repo-production.up.railway.app/children5to9/count-total-clients`, {
+   74              params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/children5to9/age-segmentation`, {
+   77              params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/children5to9/new-registered`, {
+   80              params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
+   81            }),
+   82:           axios.get(`health-center-repo-production.up.railway.app/children5to9/children5to9-data`, {
+   83              params: { worker_id: workerId },
+
+  145  
+  146:       const response = await axios.get('health-center-repo-production.up.railway.app/print/children5to9', {
+  147          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\YearsOld1019.tsx:
+   72          ] = await Promise.all([
+   73:           axios.get(`health-center-repo-production.up.railway.app/children10to19/count-total-clients`, {
+   74              params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/children10to19/age-segmentation`, {
+   77              params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/children10to19/new-registered`, {
+   80              params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
+   81            }),
+   82:           axios.get(`health-center-repo-production.up.railway.app/children10to19/children10to19-data`, {
+   83              params: { worker_id: workerId },
+
+  145  
+  146:       const response = await axios.get('health-center-repo-production.up.railway.app/print/children10to19', {
+  147          params: { worker_id: workerId },
+
+client\src\pages\worker\dashboards\YearsScreened059.tsx:
+   72          ] = await Promise.all([
+   73:           axios.get(`health-center-repo-production.up.railway.app/screened059/count-total-clients`, {
+   74              params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
+   75            }),
+   76:           axios.get(`health-center-repo-production.up.railway.app/screened059/age-segmentation`, {
+   77              params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
+   78            }),
+   79:           axios.get(`health-center-repo-production.up.railway.app/screened059/new-registered`, {
+   80              params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
+   81            }),
+   82:           axios.get(`health-center-repo-production.up.railway.app/screened059/screened059-data`, {
+   83              params: { worker_id: workerId },
+
+  145  
+  146:       const response = await axios.get('health-center-repo-production.up.railway.app/print/screened059', {
+  147          params: { worker_id: workerId },

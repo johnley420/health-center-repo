@@ -100,7 +100,7 @@ const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
 
     try {
       const response = await axios.put(
-        `http://localhost:8081/update-worker/${data.id}`,
+        `health-center-repo-production.up.railway.app/update-worker/${data.id}`,
         formData,
         {
           headers: {
