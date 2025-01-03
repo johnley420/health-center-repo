@@ -1,5 +1,4 @@
 import {
-  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -70,7 +69,7 @@ const ViewClientInfo = ({ isOpen, onClose, data }: propsTypes) => {
         onOpenChange={onClose}
       >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
                 View Information
@@ -81,11 +80,11 @@ const ViewClientInfo = ({ isOpen, onClose, data }: propsTypes) => {
                 {/* Tabs for Client Information and Forms */}
                 <Tabs
                   aria-label="Client Forms"
-                  selectedIndex={tab}
-                  onChange={setTab}
+                  selectedKey={String(tab)}
+                  onSelectionChange={(key) => setTab(Number(key))}
                 >
                   {/* Initial tab for Client Information */}
-                  <Tab title="Client Information" className="w-full px-4">
+                  <Tab title="Client Information" className="w-full px-4" key="0">
                     <div className="w-full py-3">
                       <h2 className="text-lg font-semibold">Client's Information</h2>
                       <div className="w-full flex flex-col items-start justify-start">
@@ -104,7 +103,7 @@ const ViewClientInfo = ({ isOpen, onClose, data }: propsTypes) => {
 
                   {/* Dynamically generated tabs for forms */}
                   {data.forms.map((form: string, index: number) => (
-                    <Tab key={index} title={form}>
+                    <Tab key={index + 1} title={form}>
                       <div className="w-full py-3">
                         <h2 className="text-lg font-semibold">{form} Form Details</h2>
                         {/* Check if form exists in the formComponents mapping */}

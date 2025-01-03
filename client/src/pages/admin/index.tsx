@@ -11,12 +11,14 @@ import CurrentSmokers from "./dashboards/CurrentSmokers";
 import MonthsInfant011 from "./dashboards/MonthsInfant011";
 import MonthsChildren059 from "./dashboards/MonthsChildren059";
 import YearsScreened059 from "./dashboards/YearsScreened059";
-import YearsChildren59 from "./dashboards/yearsChildren59";
-import YearsOld1019 from "./dashboards/yearsOld1019";
+import YearsChildren59 from "./dashboards/YearsChildren59";
+import YearsOld1019 from "./dashboards/YearsOld1019";
 import { Select, SelectItem } from "@nextui-org/react";
 
-const Index = () => {
-  const [value, setValue] = useState(1); // Default to Pregnant
+const Index: React.FC = () => {
+  console.log("React version:", React.version); // Explicit usage of React
+
+  const [value, setValue] = useState(0); // Default to 'All'
 
   const categoryData = [
     {

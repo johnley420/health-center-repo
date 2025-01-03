@@ -3,7 +3,7 @@ import { ApexOptions } from "apexcharts";
 import Chart from "react-apexcharts";
 
 interface ColumnChartProps {
-  data: { day: string; male: number; female: number }[];
+  data: { ageGroup: string; male: number; female: number }[];
   height: number;
 }
 
@@ -26,7 +26,7 @@ const ColumnChart: React.FC<ColumnChartProps> = ({ data, height }) => {
       enabled: false,
     },
     xaxis: {
-      categories: data.map((item) => item.day),
+      categories: data.map((item) => item.ageGroup),
     },
     fill: {
       opacity: 1,

@@ -2,14 +2,12 @@ import React from 'react'
 import PrivateRoutes from './auth/PrivateRoutes/'
 import { Route, Routes } from 'react-router-dom'
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <Routes>
        <Route
         path="/*"
-        element={
-            <PrivateRoutes />
-        }
+        element={<PrivateRoutes />}
       />
     </Routes>
   )

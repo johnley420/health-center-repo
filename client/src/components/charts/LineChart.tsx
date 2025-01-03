@@ -1,69 +1,76 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/components/charts/LineChart.tsx
+
+import { ApexOptions } from "apexcharts";
 import React from "react";
+import Chart from "react-apexcharts";
 
-import ReactApexChart from "react-apexcharts";
+/**
+ * Type Definitions
+ */
 
-interface ApexChartProps {
-  data: any[];
+// Interface for line graph data
+interface LineGraphData {
+  name: string;
+  data: { x: string; y: number }[];
+  color: string;
+  fillColor: string;
+}
+
+interface LineChartProps {
+  data: LineGraphData[];
   sizeHeight: number;
 }
 
-const LineChart: React.FC<ApexChartProps> = ({ data, sizeHeight }) => {
-  const options: ApexCharts.ApexOptions = {
+const LineChart: React.FC<LineChartProps> = ({ data, sizeHeight }) => {
+const chartOptions: ApexOptions = {
     chart: {
-      height: 350,
-      type: "area",
+      type: "line" as const, // Explicit type assertion
       toolbar: {
         show: false,
       },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      curve: "smooth",
+      zoom: {
+        enabled: true,
+      },
     },
     xaxis: {
       type: "category",
-      categories: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
+      labels: {
+        rotate: -45,
+      },
     },
     yaxis: {
-      labels: {
-        formatter: function (val) {
-          return Math.round(val).toString();
-        },
+      title: {
+        text: "Count",
       },
-      tickAmount: 5,
-      forceNiceScale: true,
+    },
+    stroke: {
+      curve: "smooth",
+      width: 2,
+    },
+    markers: {
+      size: 4,
     },
     tooltip: {
       x: {
-        format: "dd/MM/yy HH:mm",
-      },
-      y: {
-        formatter: function (val) {
-          return val.toFixed(1);
-        },
+        format: "dd MMM yyyy",
       },
     },
+    colors: data.map((series) => series.color),
   };
 
+  const chartSeries = data.map((series) => ({
+    name: series.name,
+    data: series.data,
+  }));
+
   return (
-    <div id="chart">
-      <ReactApexChart
-        options={options}
-        series={data}
-        type="area"
-        height={sizeHeight}
-      />
-    </div>
+    <Chart
+      options={chartOptions}
+      series={chartSeries}
+      type="line" // Must match the type in chartOptions
+      height={sizeHeight}
+    />
   );
 };
+
 export default LineChart;

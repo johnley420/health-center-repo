@@ -3,6 +3,7 @@ export type roleType = {
   role: "admin" | "worker";
 };
 
+
 export type routesType = {
   path: string;
   element: any;
@@ -28,21 +29,28 @@ export type countTypes = {
   };
 };
 
-export type clientTypes = {
-  name: string;
+// Define the type for client data in types/index.tsx
+export interface ClientType {
+  id: number;
+  worker_id: number;
+  fname: string;
+  category_name: string;
   address: string;
-  phone: string;
-  birth: string;
-  philhealthId: string;
-  dateRegistered: string;
-  medicationForm?: any;
-  categoryType: string;
-};
+  phone_no: string;
+  phil_id: string;
+  latitude: number;
+  longitude: number;
+  date_registered: string;
+  status: string;
+}
+
 
 export type categoryFieldTypes = {
   category: string;
   data: any;
 };
+
+
 export interface workerTypes {
   firstName: string;
   lastName: string;
@@ -62,3 +70,15 @@ export interface Medicine {
   expirationDate: string;
   image: any;
 }
+
+
+export type clientTypes = {
+  name: string;
+  address: string;
+  phone: string;
+  birth: string;
+  philhealthId: string;
+  dateRegistered: string;
+  medicationForm?: any;
+  categoryType: string;
+};

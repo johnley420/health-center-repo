@@ -189,10 +189,97 @@ export const workersData = [
   },
 ];
 
+//client dummy data
+export const clientList = [
+  {
+    name: "John Doe",
+    phoneNumber: "09999999999",
+    profile: "General Client",
+    category: "PRENATAL & POSPARTUM CARE",
+  },
+  {
+    name: "Jane Smith",
+    phoneNumber: "09999999999",
+    profile: "PWD",
+    category: "PERSON WITH DISABILITY (PWD)",
+  },
+  {
+    name: "Alice Johnson",
+    phoneNumber: "09999999999",
+    profile: "Family Planning Advocate",
+    category: "WRA (15-49 YEARS OLD) FAMILY PLANNING",
+  },
+  {
+    name: "Mark Lee",
+    phoneNumber: "09999999999",
+    profile: "Hypertension Patient",
+    category: "HYPERTENSIVE AND TYPE 2 DIABETES MELITUS",
+  },
+  {
+    name: "Emily Davis",
+    phoneNumber: "09999999999",
+    profile: "Adolescent",
+    category: "10-19 YEARS OLD (ADOLESCENTS)",
+  },
+  {
+    name: "Peter Clark",
+    phoneNumber: "09999999999",
+    profile: "Nutrition Specialist",
+    category: "0-59 MONTHS OLD CHILDREN - NUTRITION SERVICES",
+  },
+  {
+    name: "Helen Carter",
+    phoneNumber: "09999999999",
+    profile: "Senior Citizen",
+    category: "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
+  },
+  {
+    name: "Michael Thompson",
+    phoneNumber: "09999999999",
+    profile: "Filariasis Program Member",
+    category: "FILARIASIS PROGRAM SERVICES",
+  },
+  {
+    name: "Sarah Green",
+    phoneNumber: "09999999999",
+    profile: "School-Aged Child",
+    category: "5-9 YEARS OLD CHILDREN (SCHOOL AGED CHILDREN)",
+  },
+  {
+    name: "Kevin White",
+    phoneNumber: "09999999999",
+    profile: "Infant",
+    category: "0-11 MONTHS OLD INFANTS - IMMUNIZATION SERVICES",
+  },
+  {
+    name: "Laura Martinez",
+    phoneNumber: "09999999999",
+    profile: "Schistosomiasis Patient",
+    category: "SCHISTOSOMIASIS PROGRAM SERVICES",
+  },
+  {
+    name: "David Black",
+    phoneNumber: "09999999999",
+    profile: "Current Smoker",
+    category: "CURRENT SMOKERS",
+  },
+  {
+    name: "Olivia Brown",
+    phoneNumber: "09999999999",
+    profile: "Vision Screening Participant",
+    category: "0-59 YEARS OLD SCREENED FOR VISUAL ACTIVITY",
+  },
+];
+
+//unused
 export const clientData = [
   {
     name: "John Doe",
-    forms:['PRENATAL & POSPARTUM CARE','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
+    forms: [
+      "PRENATAL & POSPARTUM CARE",
+      "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
+      "PERSON WITH DISABILITY (PWD)",
+    ],
     address: "123 Main St, Cityville",
     phone: "09123456789",
     birth: "1990-01-15",
@@ -218,7 +305,11 @@ export const clientData = [
   },
   {
     name: "Jane Smith",
-    forms:['HYPERTENSIVE AND TYPE 2 DIABETES MELITUS','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
+    forms: [
+      "HYPERTENSIVE AND TYPE 2 DIABETES MELITUS",
+      "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
+      "PERSON WITH DISABILITY (PWD)",
+    ],
     address: "456 Oak St, Townsville",
     phone: "09234567890",
     birth: "1985-04-22",
@@ -244,7 +335,11 @@ export const clientData = [
   },
   {
     name: "Michael Johnson",
-    forms:['FILARIASIS PROGRAM SERVICES','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
+    forms: [
+      "FILARIASIS PROGRAM SERVICES",
+      "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
+      "PERSON WITH DISABILITY (PWD)",
+    ],
     address: "789 Pine St, Villagetown",
     phone: "09345678901",
     birth: "1995-07-10",
@@ -270,7 +365,11 @@ export const clientData = [
   },
   {
     name: "Emily Davis",
-    forms:['5-9 YEARS OLD CHILDREN (SCHOOL AGED CHILDREN)','-11 MONTHS OLD INFANTS - IMMUNIZATION SERVICES','PERSON WITH DISABILITY (PWD)'],
+    forms: [
+      "5-9 YEARS OLD CHILDREN (SCHOOL AGED CHILDREN)",
+      "-11 MONTHS OLD INFANTS - IMMUNIZATION SERVICES",
+      "PERSON WITH DISABILITY (PWD)",
+    ],
     address: "101 Maple Ave, Citytown",
     phone: "09456789012",
     birth: "1992-09-05",
@@ -296,7 +395,11 @@ export const clientData = [
   },
   {
     name: "Robert Brown",
-    forms:['CURRENT SMOKERS','SENIOR CITIZEN(60 YEARS OLD ABOVE)','PERSON WITH DISABILITY (PWD)'],
+    forms: [
+      "CURRENT SMOKERS",
+      "SENIOR CITIZEN(60 YEARS OLD ABOVE)",
+      "PERSON WITH DISABILITY (PWD)",
+    ],
     address: "202 Birch Blvd, Smallville",
     phone: "09567890123",
     birth: "1988-11-30",

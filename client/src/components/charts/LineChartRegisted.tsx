@@ -1,7 +1,8 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
 
-const RegisteredUserLineGraph:React.FC = () => {
+const RegisteredUserLineGraph: React.FC = () => {
   // Dummy data for new and registered users
   const data = {
     categories: [
@@ -22,10 +23,10 @@ const RegisteredUserLineGraph:React.FC = () => {
     ],
   };
 
-  const options = {
+  const options: ApexOptions = {
     chart: {
       height: 350,
-      type: 'line',
+      type: 'line', // 'line' is now a valid literal type
       zoom: {
         enabled: false,
       },

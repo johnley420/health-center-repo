@@ -3,25 +3,12 @@ import Chart from "react-apexcharts";
 
 interface TaskPieChartProps {
   taskData: number[]; // Array to hold task data for categories
+  taskLabels: string[]; // Array to hold labels for each category
 }
 
-const TaskPieChart: React.FC<TaskPieChartProps> = ({ taskData }) => {
+const TaskPieChart: React.FC<TaskPieChartProps> = ({ taskData, taskLabels }) => {
   const chartOptions = {
-    labels: [
-      "Category 1",
-      "Category 2",
-      "Category 3",
-      "Category 4",
-      "Category 5",
-      "Category 6",
-      "Category 7",
-      "Category 8",
-      "Category 9",
-      "Category 10",
-      "Category 11",
-      "Category 12",
-      "Category 13",
-    ],
+    labels: taskLabels.map(label => label.length > 20 ? label.slice(0, 17) + '...' : label), // Use labels from props for hover display
     colors: [
       "#50ACFE",
       "#8765F6",
@@ -41,12 +28,20 @@ const TaskPieChart: React.FC<TaskPieChartProps> = ({ taskData }) => {
       show: true,
       position: "bottom" as const, // Specify the position as a constant
     },
+    tooltip: {
+      enabled: true,
+      y: {
+        formatter: (val: number, { seriesIndex }: { seriesIndex: number }) => {
+          return `${taskLabels[seriesIndex].length > 20 ? taskLabels[seriesIndex].slice(0, 17) + '...' : taskLabels[seriesIndex]}: ${val}`;
+        },
+      },
+    },
   };
 
-  const chartSeries = taskData; // Data for 13 categories
+  const chartSeries = taskData; // Data for categories
 
   return (
-    <Chart options={chartOptions} series={chartSeries} type="pie" width="450" />
+    <Chart options={chartOptions} series={chartSeries} type="pie" width="420" />
   );
 };
 

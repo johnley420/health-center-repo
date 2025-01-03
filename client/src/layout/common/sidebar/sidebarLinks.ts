@@ -1,36 +1,18 @@
 import { RxDashboard } from "react-icons/rx";
 import { FiUsers } from "react-icons/fi";
 import { AiOutlineMedicineBox } from "react-icons/ai";
-import { HiDocumentReport } from "react-icons/hi";
-import { FaPersonPregnant, FaMapLocationDot } from "react-icons/fa6";
-import { MdFamilyRestroom, MdOutlineInventory2 } from "react-icons/md";
+import { MdOutlineInventory2 } from "react-icons/md";
 import { LuUsers } from "react-icons/lu";
-import { TbReportSearch } from "react-icons/tb";
 import { TfiAnnouncement } from "react-icons/tfi";
+import { FiMap } from "react-icons/fi";
+
 
 export const userLinks = {
-  admin: [
+  worker: [
     {
       path: "/",
       label: "Overview",
       Icon: RxDashboard,
-      children: [
-        {
-          path: "/",
-          label: "Overall",
-          Icon: FiUsers,
-        },
-        {
-          path: "/pregnant",
-          label: "Pregnant",
-          Icon: FaPersonPregnant,
-        },
-        {
-          path: "/family-planning",
-          label: "Family Planning",
-          Icon: MdFamilyRestroom,
-        },
-      ],
     },
 
     {
@@ -48,42 +30,33 @@ export const userLinks = {
       label: "Announcement",
       Icon: TfiAnnouncement,
     },
-    {
-      path: "/reports",
-      label: "Reports",
-      Icon: TbReportSearch,
-    },
   ],
-  worker: [
-    {
-      path: "/",
-      label: "Dashboard",
-      Icon: RxDashboard,
-    },
-    {
-      path: "/list",
-      label: "Manage Workers",
-      Icon: FiUsers,
-    },
-    {
-      path: "/account",
-      label: "Announcement",
-      Icon: TfiAnnouncement,
-    },
-    {
-      path: "/mapping",
-      label: "Mapping",
-      Icon: FaMapLocationDot,
-    },
-    {
-      path: "/inventory",
-      label: "Inventory",
-      Icon: MdOutlineInventory2,
-    },
-    {
-      path: "/report",
-      label: "Report",
-      Icon: HiDocumentReport,
-    },
-  ],
+  admin: [
+  {
+    path: "/",
+    label: "Dashboard",
+    Icon: RxDashboard,
+  },
+  {
+    path: "/list",
+    label: "Manage Workers",
+    Icon: FiUsers,
+  },
+  {
+    path: "/view-map",
+    label: "Map",
+    Icon: /* Add a map icon component here, e.g., */ FiMap,
+  },
+  {
+    path: "/announcement",
+    label: "Announcement",
+    Icon: TfiAnnouncement,
+  },
+  {
+    path: "/inventory",
+    label: "Inventory",
+    Icon: MdOutlineInventory2,
+  },
+],
+
 };

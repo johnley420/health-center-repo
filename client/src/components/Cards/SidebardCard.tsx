@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Card,
   CardHeader,
@@ -10,9 +9,9 @@ import {
   Image,
 } from "@nextui-org/react";
 
-const SidebarCard = () => {
+const SidebarCard: React.FC = () => {
   return (
-    <Card className="max-w-[400px] bg-green-500">
+    <Card className="hidden md:flex max-w-[400px] bg-green-500">
       <CardHeader className="flex gap-3">
         <Image
           alt="nextui logo"

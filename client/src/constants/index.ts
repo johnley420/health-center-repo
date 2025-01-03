@@ -14,7 +14,6 @@ export const clientColumn = [
   "Name",
   "Address",
   "Phone No.",
-  "Birth",
   "Philealth Id",
   "Date Registered",
   "Action",
@@ -31,14 +30,31 @@ export const workerColumn = [
   "Action",
 ];
 
-export const CategoryFilter = ["Pregnant", "Analgesics", "Vaccine"];
+export const CategoryFilter: string[] = [
+  "Pregnant",
+  "Person With Disabilities",
+  "Schistomiasis Program Services",
+  "Senior Citizen",
+  "Family Planning",
+  "Hypertensive And Type 2 Diabetes",
+  "Filariasis Program Services",
+  "Current Smokers",
+  "0-11 Months Old Infants",
+  "0-59 Months Old Children",
+  "0-59 years Old Screened For Visual Activity",
+  "5-9 years Old Children (School Aged Children)",
+  "10-19 Years Old (Adolescents)",
+];
+
+
+
+
 
 export const basicInfoField = [
   "No",
   "Name",
   "Address",
   "Phone No.",
-  "Birth",
   "Philealth Id",
   "Date Registered",
   "Action",
@@ -97,6 +113,7 @@ export const categoryForm = [
     data: clientData,
   },
 ];
+
 
 export const dummyMedicines = [
   {
@@ -195,7 +212,7 @@ export const categories = [
   "Person With Disabilities",
   "Schistomiasis Program Services",
   "Senior Citizen",
-  "Family Planning",
+  "WRA Family Planning",
   "Hypertensive And Type 2 Diabetes",
   "Filariasis Program Services",
   "Current Smokers",

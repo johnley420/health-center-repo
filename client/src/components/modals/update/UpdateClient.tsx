@@ -1,3 +1,4 @@
+import Swal from "sweetalert2"; // Import SweetAlert2
 import {
   Button,
   Input,
@@ -9,9 +10,10 @@ import {
   Tabs,
   Tab,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-import { 
+import {
   ZEROTO59MONTHFORM,
   ZEROTO9CHILDMONTHFORM,
   FIVETO9CHILDRENFORM,
@@ -24,16 +26,16 @@ import {
   CurrentSmokerForm,
   TentoNineteenForm,
   WRAForm,
-  Zeroto11Form
+  Zeroto11Form,
 } from "../forms";
 
 type propsType = {
   isOpen: boolean;
   onClose: () => void;
   data: any;
+  onUpdate: () => void;
 };
 
-// Mapping the medication type to the corresponding form component
 const formComponents: { [key: string]: React.ElementType } = {
   "PRENATAL & POSPARTUM CARE": PrenatalForm,
   "PERSON WITH DISABILITY (PWD)": PersonWithDisabilityForm,
@@ -50,18 +52,34 @@ const formComponents: { [key: string]: React.ElementType } = {
   "0-59 YEARS OLD SCREENED FOR VISUAL ACTIVITY": ZEROTO59MONTHFORM,
 };
 
-const UpdateClient = ({ isOpen, onClose, data }: propsType) => {
-  const [tab, setTab] = useState(0);
-
+const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
+  const [tab, setTab] = useState("0");
   const [clientInfos, setClientInfos] = useState({
-    name: data?.name || "", 
-    address: data?.address || "", 
-    birth: data?.birth || "", 
-    philhealthId: data?.philhealthId || "", 
-    dateRegistered: data?.dateRegistered || "", 
+    fname: "",
+    address: "",
+    phone_no: "",
+    phil_id: "",
+    date_registered: "",
+    category_name: "",
+    gender: "",
+    birthdate: "",
   });
 
-  // Handler to update client info fields
+  useEffect(() => {
+    if (data) {
+      setClientInfos({
+        fname: data.fname || "",
+        address: data.address || "",
+        phone_no: data.phone_no || "",
+        phil_id: data.phil_id || "",
+        date_registered: data.date_registered || "",
+        category_name: data.category_name || "",
+        gender: data.gender || "",
+        birthdate: data.birthdate ? new Date(data.birthdate).toISOString().split('T')[0] : "",
+      });
+    }
+  }, [data]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setClientInfos((prev) => ({
@@ -70,74 +88,99 @@ const UpdateClient = ({ isOpen, onClose, data }: propsType) => {
     }));
   };
 
-  // Client info fields
-  const clientInfo = [
-    { label: "Name", value: data?.name, key: "name" },
-    { label: "Address", value: data?.address, key: "address" },
-    { label: "Birthdate", value: data?.birth, key: "birth" },
-    { label: "Philhealth ID", value: data?.philhealthId, key: "philhealthId" },
-    { label: "Date Registered", value: data?.dateRegistered, key: "dateRegistered" },
-  ];
+  const handleUpdate = async () => {
+    try {
+      await axios.post(`http://localhost:8081/update-client`, {
+        id: data.id,
+        ...clientInfos,
+      });
+      onUpdate();
+      Swal.fire({
+        icon: "success",
+        title: "Updated!",
+        text: "Client information has been successfully updated.",
+        confirmButtonColor: "#3085d6",
+      });
+      onClose();
+    } catch (error) {
+      console.error("Error updating client:", error);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose} size="5xl">
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              Update Client
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Update Client</ModalHeader>
             <ModalBody className="overflow-y-auto" style={{ maxHeight: "70vh" }}>
               <Tabs
                 aria-label="Client Forms"
-                selectedIndex={tab}
-                onChange={setTab}
+                selectedKey={tab}
+                onSelectionChange={(key) => setTab(key.toString())}
               >
-                {/* Initial Tab for Client Information */}
-                <Tab title="Client Information">
+                <Tab key="0" title="Client Information" onClick={() => setTab("0")}>
                   <div className="grid grid-cols-2 gap-4">
                     <Input
-                      label="Name"
-                      name="name"
-                      value={clientInfos.name}
-                      onChange={handleInputChange}  
+                      label="Full Name"
+                      name="fname"
+                      value={clientInfos.fname}
+                      onChange={handleInputChange}
                     />
                     <Input
                       label="Address"
                       name="address"
                       value={clientInfos.address}
-                      onChange={handleInputChange} 
+                      onChange={handleInputChange}
                     />
                     <Input
-                      label="Birthdate"
-                      name="birth"
-                      value={clientInfos.birth}
+                      label="Phone Number"
+                      name="phone_no"
+                      value={clientInfos.phone_no}
                       onChange={handleInputChange}
                     />
                     <Input
                       label="Philhealth ID"
-                      name="philhealthId"
-                      value={clientInfos.philhealthId}
-                      onChange={handleInputChange} 
+                      name="phil_id"
+                      value={clientInfos.phil_id}
+                      onChange={handleInputChange}
                     />
                     <Input
                       label="Date Registered"
-                      name="dateRegistered"
-                      value={clientInfos.dateRegistered}
-                      onChange={handleInputChange} 
+                      name="date_registered"
+                      value={clientInfos.date_registered}
+                      onChange={handleInputChange}
+                    />
+                    <Input
+                      label="Category Name"
+                      name="category_name"
+                      value={clientInfos.category_name}
+                      onChange={handleInputChange}
+                    />
+                    <Input
+                      label="Gender"
+                      name="gender"
+                      value={clientInfos.gender}
+                      onChange={handleInputChange}
+                    />
+                    <Input
+                      type="date"
+                      label="Birthdate"
+                      name="birthdate"
+                      value={clientInfos.birthdate}
+                      onChange={handleInputChange}
+                      required
                     />
                   </div>
                 </Tab>
 
-                {/* Dynamically generated tabs for each form the client has */}
                 {data.forms?.map((form: string, index: number) => (
-                  <Tab key={index} title={form}>
+                  <Tab key={(index + 1).toString()} title={form} onClick={() => setTab((index + 1).toString())}>
                     <div className="py-4">
                       <h2 className="text-lg font-semibold">{form} Form Details</h2>
-                      {/* Dynamically render form component based on form type */}
                       {formComponents[form] ? (
                         React.createElement(formComponents[form], {
-                          formData: data?.medicationForm, // Pass form-specific data here
+                          formData: data?.medicationForm,
                         })
                       ) : (
                         <p>{`No form available for ${form}`}</p>
@@ -151,7 +194,7 @@ const UpdateClient = ({ isOpen, onClose, data }: propsType) => {
               <Button color="danger" variant="light" onPress={onClose}>
                 Close
               </Button>
-              <Button color="primary" onPress={onClose}>
+              <Button color="primary" onPress={handleUpdate}>
                 Update
               </Button>
             </ModalFooter>

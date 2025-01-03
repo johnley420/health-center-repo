@@ -1,4 +1,4 @@
-import { WRAForm } from "./WRA(15-49)";
+import { WRAForm } from "./WRA15-49";
 import { SeniorCitizenForm } from "./Senior Citizen";
 import { SchistosomiasisForm } from "./Schistosomiasis";
 import { PrenatalForm } from "./pregnant";

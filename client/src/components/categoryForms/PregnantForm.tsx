@@ -1,6 +1,6 @@
 import React from "react";
 
-const PregnantForm = () => {
+const PregnantForm: React.FC = () => {
   return <div></div>;
 };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import Chart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
 
-// Define types for the data prop
 interface CategoryData {
   category: string;
   percentage: number;
@@ -15,7 +15,7 @@ const CategoryPieChart: React.FC<PieChartProps> = ({ data }) => {
   const series = data.map(item => item.percentage);
   const labels = data.map(item => item.category);
 
-  const chartOptions = {
+  const chartOptions: ApexOptions = {
     chart: {
       type: "pie",
       toolbar: {
@@ -26,31 +26,33 @@ const CategoryPieChart: React.FC<PieChartProps> = ({ data }) => {
     legend: {
       position: "bottom",
       labels: {
-        colors: ['#333'], // Set the legend label color
+        colors: ["#333"],
       },
     },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200,
-        },
-        legend: {
-          position: 'bottom',
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200,
+          },
+          legend: {
+            position: "bottom",
+          },
         },
       },
-    }],
+    ],
     plotOptions: {
       pie: {
         donut: {
-          size: '40%', // Set size for donut if needed
+          size: "40%",
         },
       },
     },
   };
 
   return (
-    <div className="p-5 rounded-xl  bg-white">
+    <div className="p-5 rounded-xl bg-white">
       <Chart options={chartOptions} series={series} type="pie" height={350} />
     </div>
   );
