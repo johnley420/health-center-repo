@@ -162,7 +162,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
 
           <div className="shadow-md relative">
             <Image
-              src="/public/dashboard.png" // Ensure the path is correct
+              src="/dashboard.png" // Ensure the path is correct
               alt="Logo"
               className="object-fill"
             />
