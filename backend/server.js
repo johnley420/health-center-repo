@@ -7,6 +7,9 @@ const multer = require('multer');
 const { Server } = require("socket.io");
 const cron = require('node-cron');
 const PDFDocument = require('pdfkit');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 
 const app = express();
@@ -43,12 +46,13 @@ const io = new Server(server, {
 
 // MySQL database connection
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "health_db"
+  host: process.env.DB_HOST,       // Database host
+  user: process.env.DB_USER,       // Database user
+  password: process.env.DB_PASSWORD, // Database password
+  database: process.env.DB_NAME    // Database name
 });
 
+// Connect to the MySQL database
 db.connect((err) => {
   if (err) {
     console.error("Database connection failed:", err.message);
