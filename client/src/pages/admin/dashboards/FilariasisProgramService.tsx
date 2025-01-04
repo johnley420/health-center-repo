@@ -67,16 +67,16 @@ const FilariasisProgramService: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/filariasis/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/filariasis/count-total-clients`, {
             params: { category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/filariasis/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/filariasis/age-segmentation`, {
             params: {  category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/filariasis/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/filariasis/new-registered`, {
             params: {  category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/filariasis/filariasis-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/filariasis/filariasis-data`, {
             params: { worker_id: workerId },
           }),
         ]);

@@ -51,7 +51,7 @@ const ViewSchistosomiasisTable = () => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `https://https://health-center-repo-production.up.railway.app/schistosomiasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `https://health-center-repo-production.up.railway.app/schistosomiasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "Schistosomiasis Program Services"
           )}`
         );
@@ -75,7 +75,7 @@ const ViewSchistosomiasisTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await axios.get(`https://https://health-center-repo-production.up.railway.app/schistosomiasis-form/${client.id}`);
+      const response = await axios.get(`https://health-center-repo-production.up.railway.app/schistosomiasis-form/${client.id}`);
       if (response.status === 200) {
         const data = response.data;
         if (data && data.length > 0) {

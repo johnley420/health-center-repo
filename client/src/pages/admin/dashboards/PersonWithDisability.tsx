@@ -63,16 +63,16 @@ const PersonWithDisability: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/count-total-clients`, {
             params: { category_name: "Person With Disabilities" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/age-segmentation`, {
             params: {  category_name: "Person With Disabilities" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/new-registered`, {
             params: {  category_name: "Person With Disabilities" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/person-with-disabilities-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/person-with-disabilities/person-with-disabilities-data`, {
             params: { worker_id: workerId },
           }),
         ]);

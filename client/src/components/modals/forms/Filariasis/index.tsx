@@ -144,7 +144,7 @@ export const FilariasisForm = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `https://https://health-center-repo-production.up.railway.app/filariasis/${selectedData.id}`,
+          `https://health-center-repo-production.up.railway.app/filariasis/${selectedData.id}`,
           transformedFormValues
         );
         alert('Data updated successfully!');
@@ -152,7 +152,7 @@ export const FilariasisForm = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'https://https://health-center-repo-production.up.railway.app/filariasis',
+          'https://health-center-repo-production.up.railway.app/filariasis',
           transformedFormValues
         );
         alert('Data submitted successfully!');

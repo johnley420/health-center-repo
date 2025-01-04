@@ -67,16 +67,16 @@ const MonthsInfant011: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/infants/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/infants/count-total-clients`, {
             params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/infants/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/infants/age-segmentation`, {
             params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/infants/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/infants/new-registered`, {
             params: { worker_id: workerId, category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/infants/infants-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/infants/infants-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -139,7 +139,7 @@ const MonthsInfant011: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('https://https://health-center-repo-production.up.railway.app/print/infants', {
+      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/infants', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

@@ -70,7 +70,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
   if (profilePic) formData.append("profile_pic", profilePic);
 
   try {
-    const response = await fetch("https://https://health-center-repo-production.up.railway.app/upload-worker", {
+    const response = await fetch("https://health-center-repo-production.up.railway.app/upload-worker", {
       method: "POST",
       body: formData,
     });

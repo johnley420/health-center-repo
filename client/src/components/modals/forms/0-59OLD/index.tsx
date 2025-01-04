@@ -169,7 +169,7 @@ export const ZEROTO59MONTHFORM = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `https://https://health-center-repo-production.up.railway.app/zero_to_fiftynine/${selectedData.id}`,
+          `https://health-center-repo-production.up.railway.app/zero_to_fiftynine/${selectedData.id}`,
           transformedFormValues
         );
         successMessage = response.data.message || 'Data updated successfully!';
@@ -177,7 +177,7 @@ export const ZEROTO59MONTHFORM = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'https://https://health-center-repo-production.up.railway.app/zero_to_fiftynine',
+          'https://health-center-repo-production.up.railway.app/zero_to_fiftynine',
           transformedFormValues
         );
         successMessage = response.data.message || 'Data submitted successfully!';

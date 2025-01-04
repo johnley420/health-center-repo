@@ -97,7 +97,7 @@ export const PersonWithDisabilityForm = ({
       if (selectedData && selectedData.id) {
         // We're updating existing data
         const response = await axios.put(
-          `https://https://health-center-repo-production.up.railway.app/person_with_disability/${selectedData.id}`,
+          `https://health-center-repo-production.up.railway.app/person_with_disability/${selectedData.id}`,
           formValues
         );
         Swal.fire({
@@ -109,7 +109,7 @@ export const PersonWithDisabilityForm = ({
       } else {
         // We're creating new data
         const response = await axios.post(
-          'https://https://health-center-repo-production.up.railway.app/person_with_disability',
+          'https://health-center-repo-production.up.railway.app/person_with_disability',
           formValues
         );
         Swal.fire({

@@ -37,7 +37,7 @@ const Announcement = () => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          `https://https://health-center-repo-production.up.railway.app/clients?workerId=${workerId}`
+          `https://health-center-repo-production.up.railway.app/clients?workerId=${workerId}`
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch users: ${response.statusText}`);
@@ -62,7 +62,7 @@ const Announcement = () => {
           return;
         }
 
-        const response = await axios.get("https://https://health-center-repo-production.up.railway.app/sms-messages", {
+        const response = await axios.get("https://health-center-repo-production.up.railway.app/sms-messages", {
           params: { worker_id: workerId },
         });
         setMessages(response.data);
@@ -144,7 +144,7 @@ const Announcement = () => {
       }
 
       await axios.post(
-        "https://https://health-center-repo-production.up.railway.app/send-sms",
+        "https://health-center-repo-production.up.railway.app/send-sms",
         {
           number: selectedPhoneNumbers,
           message: smsMessage,

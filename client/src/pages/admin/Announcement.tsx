@@ -26,14 +26,14 @@ const Announcement: React.FC = () => {
   const [selectedRecipients, setSelectedRecipients] = useState<number[]>([]);
   const [smsNumber, setSmsNumber] = useState("");
 
-  const socket: Socket = io("https://https://health-center-repo-production.up.railway.app", { autoConnect: false });
+  const socket: Socket = io("https://health-center-repo-production.up.railway.app", { autoConnect: false });
 
   useEffect(() => {
     socket.connect();
 
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("https://https://health-center-repo-production.up.railway.app/getWorkers");
+        const response = await axios.get("https://health-center-repo-production.up.railway.app/getWorkers");
         setWorkers(response.data);
       } catch (error) {
         console.error("Error fetching workers:", error);
@@ -42,7 +42,7 @@ const Announcement: React.FC = () => {
 
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("https://https://health-center-repo-production.up.railway.app/getMessages");
+        const response = await axios.get("https://health-center-repo-production.up.railway.app/getMessages");
         setMessages(response.data);
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -66,7 +66,7 @@ const Announcement: React.FC = () => {
 
   const fetchSmsMessages = async () => {
     try {
-      const response = await axios.get("https://https://health-center-repo-production.up.railway.app/getSmsMessages");
+      const response = await axios.get("https://health-center-repo-production.up.railway.app/getSmsMessages");
       setSmsMessages(response.data);
     } catch (error) {
       console.error("Error fetching SMS messages:", error);
@@ -112,7 +112,7 @@ const Announcement: React.FC = () => {
 
       // Post the message to the server
       const response = await axios.post(
-        "https://https://health-center-repo-production.up.railway.app/sendMessageToWorkers",
+        "https://health-center-repo-production.up.railway.app/sendMessageToWorkers",
         messageData
       );
 
@@ -170,7 +170,7 @@ const Announcement: React.FC = () => {
 
     try {
       const response = await axios.post(
-        "https://https://health-center-repo-production.up.railway.app/sendSmsAnnouncement",
+        "https://health-center-repo-production.up.railway.app/sendSmsAnnouncement",
         smsData
       );
       console.log("SMS Announcement response:", response.data);

@@ -129,25 +129,25 @@ const WorkerDashboard: React.FC = () => {
           ageSegmentationResponse,
           updatesResponse, // New data
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/count-total-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/count-male-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/count-male-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/recent-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/recent-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/new-registered`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/category-count`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/category-count`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/age-segmentation`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/updates-line-graph`, { // Fetch updates data
+          axios.get(`https://health-center-repo-production.up.railway.app/updates-line-graph`, { // Fetch updates data
             params: { worker_id: workerId },
           }),
         ]);

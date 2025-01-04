@@ -66,16 +66,16 @@ const SeniorCitizen: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/seniorcetizen/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/seniorcetizen/count-total-clients`, {
             params: { category_name: "Senior Citizen" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/seniorcetizen/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/seniorcetizen/age-segmentation`, {
             params: {  category_name: "Senior Citizen" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/seniorcetizen/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/seniorcetizen/new-registered`, {
             params: {category_name: "Senior Citizen" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/seniorcetizen/seniorcetizen-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/seniorcetizen/seniorcetizen-data`, {
             params: { worker_id: workerId },
           }),
         ]);

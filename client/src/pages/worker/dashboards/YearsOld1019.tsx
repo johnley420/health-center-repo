@@ -70,16 +70,16 @@ const YearsOld1019: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://https://health-center-repo-production.up.railway.app/children10to19/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/children10to19/count-total-clients`, {
             params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/children10to19/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/children10to19/age-segmentation`, {
             params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/children10to19/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/children10to19/new-registered`, {
             params: { worker_id: workerId, category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`https://https://health-center-repo-production.up.railway.app/children10to19/children10to19-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/children10to19/children10to19-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -143,7 +143,7 @@ const YearsOld1019: React.FC = () => {
 
       setDownloading(true); // Start downloading
 
-      const response = await axios.get('https://https://health-center-repo-production.up.railway.app/print/children10to19', {
+      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/children10to19', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

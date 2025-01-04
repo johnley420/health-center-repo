@@ -43,7 +43,7 @@ const Mapping: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("https://https://health-center-repo-production.up.railway.app/clients")
+      .get("https://health-center-repo-production.up.railway.app/clients")
       .then((response) => {
         setClients(response.data);
       })
