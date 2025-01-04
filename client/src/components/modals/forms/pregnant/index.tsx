@@ -250,7 +250,7 @@ export const PrenatalForm: React.FC<PrenatalFormProps> = ({
     console.log('Fetching client details for clientId:', clientId);
 
     try {
-      const response = await axios.get(`health-center-repo-production.up.railway.app/clients/${clientId}`);
+      const response = await axios.get(`https://https://health-center-repo-production.up.railway.app/clients/${clientId}`);
       if (response.status === 200) {
         const clientData = response.data;
         setClientName(clientData.fname);
@@ -379,7 +379,7 @@ export const PrenatalForm: React.FC<PrenatalFormProps> = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `health-center-repo-production.up.railway.app/pregnant/${selectedData.id}`,
+          `https://https://health-center-repo-production.up.railway.app/pregnant/${selectedData.id}`,
           preparedFormValues,
           {
             headers: {
@@ -392,7 +392,7 @@ export const PrenatalForm: React.FC<PrenatalFormProps> = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'health-center-repo-production.up.railway.app/pregnant',
+          'https://https://health-center-repo-production.up.railway.app/pregnant',
           preparedFormValues,
           {
             headers: {

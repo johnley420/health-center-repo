@@ -63,7 +63,7 @@ const ViewMap: React.FC = () => {
 
   useEffect(() => {
     // Fetch client data from the backend (only active clients)
-    axios.get("health-center-repo-production.up.railway.app/clients-admin-map")
+    axios.get("https://https://health-center-repo-production.up.railway.app/clients-admin-map")
       .then((response) => {
         setClients(response.data);
         console.log("Clients Data:", response.data);
@@ -73,7 +73,7 @@ const ViewMap: React.FC = () => {
       });
 
     // Fetch place_assign coordinates
-    axios.get("health-center-repo-production.up.railway.app/place-assign-coordinates")
+    axios.get("https://https://health-center-repo-production.up.railway.app/place-assign-coordinates")
       .then((response) => {
         const coordinates: Record<string, [number, number]> = {};
         response.data.forEach((item: PlaceAssignCoordinate) => {
@@ -147,7 +147,7 @@ const ViewMap: React.FC = () => {
   useEffect(() => {
     if (selectedCategory !== null) {
       setLoadingHighRisk(true);
-      axios.get(`health-center-repo-production.up.railway.app/clients-admin-map-high-risk`, {
+      axios.get(`https://https://health-center-repo-production.up.railway.app/clients-admin-map-high-risk`, {
         params: {
           category_name: selectedCategory,
         },

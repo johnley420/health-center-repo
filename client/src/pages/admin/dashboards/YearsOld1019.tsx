@@ -67,16 +67,16 @@ const YearsOld1019: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/count-total-clients`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/children10to19/count-total-clients`, {
             params: { category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/age-segmentation`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/children10to19/age-segmentation`, {
             params: {  category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/new-registered`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/children10to19/new-registered`, {
             params: { category_name: "10-19 Years Old (Adolescents)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/children10to19/children10to19-data`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/children10to19/children10to19-data`, {
             params: { worker_id: workerId },
           }),
         ]);

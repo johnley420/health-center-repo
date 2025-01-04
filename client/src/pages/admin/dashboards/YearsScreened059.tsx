@@ -67,16 +67,16 @@ const YearsScreened059: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`health-center-repo-production.up.railway.app/admin/screened059/count-total-clients`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/screened059/count-total-clients`, {
             params: { category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/screened059/age-segmentation`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/screened059/age-segmentation`, {
             params: { category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/screened059/new-registered`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/screened059/new-registered`, {
             params: {  category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/admin/screened059/screened059-data`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/admin/screened059/screened059-data`, {
             params: { worker_id: workerId },
           }),
         ]);

@@ -116,7 +116,7 @@ export const CurrentSmokerForm = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `health-center-repo-production.up.railway.app/currentsmokers/${selectedData.id}`,
+          `https://https://health-center-repo-production.up.railway.app/currentsmokers/${selectedData.id}`,
           transformedFormValues
         );
         successMessage = response.data.message || 'Data updated successfully!';
@@ -124,7 +124,7 @@ export const CurrentSmokerForm = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'health-center-repo-production.up.railway.app/currentsmokers',
+          'https://https://health-center-repo-production.up.railway.app/currentsmokers',
           transformedFormValues
         );
         successMessage = response.data.message || 'Data submitted successfully!';

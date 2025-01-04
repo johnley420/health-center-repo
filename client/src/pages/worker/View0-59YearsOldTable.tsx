@@ -51,7 +51,7 @@ const View0to59YearsOldTable = () => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `health-center-repo-production.up.railway.app/0-59yearsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `https://https://health-center-repo-production.up.railway.app/0-59yearsold/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "0-59 years Old Screened For Visual Activity"
           )}`
         );
@@ -75,7 +75,7 @@ const View0to59YearsOldTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await axios.get(`health-center-repo-production.up.railway.app/zero_to_fiftynine-form/${client.id}`);
+      const response = await axios.get(`https://https://health-center-repo-production.up.railway.app/zero_to_fiftynine-form/${client.id}`);
       if (response.status === 200) {
         const data = response.data;
         if (data && data.length > 0) {

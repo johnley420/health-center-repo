@@ -23,7 +23,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
     if (!acceptedTerms) return;
 
     try {
-      const response = await fetch('health-center-repo-production.up.railway.app/login', {
+      const response = await fetch('https://https://health-center-repo-production.up.railway.app/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
 
   const handleSubmitHelpRequest = async () => {
     try {
-      const response = await fetch('health-center-repo-production.up.railway.app/help-request', {
+      const response = await fetch('https://https://health-center-repo-production.up.railway.app/help-request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

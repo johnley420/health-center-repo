@@ -90,7 +90,7 @@ const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
 
   const handleUpdate = async () => {
     try {
-      await axios.post(`health-center-repo-production.up.railway.app/update-client`, {
+      await axios.post(`https://https://health-center-repo-production.up.railway.app/update-client`, {
         id: data.id,
         ...clientInfos,
       });

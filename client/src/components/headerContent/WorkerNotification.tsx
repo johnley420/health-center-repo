@@ -24,7 +24,7 @@ const WorkerNotification: React.FC<WorkerNotificationProps> = ({ workerId }) => 
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          `health-center-repo-production.up.railway.app/notifications?worker_id=${workerId}`
+          `https://https://health-center-repo-production.up.railway.app/notifications?worker_id=${workerId}`
         );
         if (response.status === 200) {
           setNotifications(response.data);
@@ -44,7 +44,7 @@ const WorkerNotification: React.FC<WorkerNotificationProps> = ({ workerId }) => 
 
   const handleMarkAsRead = async () => {
     try {
-      await axios.put("health-center-repo-production.up.railway.app/notifications/mark-as-read", {
+      await axios.put("https://https://health-center-repo-production.up.railway.app/notifications/mark-as-read", {
         worker_id: workerId,
       });
       setUnreadCount(0);

@@ -43,7 +43,7 @@ const ViewMap: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get(`health-center-repo-production.up.railway.app/clients-map?workerId=${workerId}&id=${clientId}`)
+      .get(`https://https://health-center-repo-production.up.railway.app/clients-map?workerId=${workerId}&id=${clientId}`)
       .then((response) => {
         setClient(response.data[0]); // Assuming response.data is an array and you need the first item
       })
@@ -120,7 +120,7 @@ const ViewMap: React.FC = () => {
   const handleSave = () => {
   if (client) {
     axios
-      .put(`health-center-repo-production.up.railway.app/update-client/${client.id}`, {
+      .put(`https://https://health-center-repo-production.up.railway.app/update-client/${client.id}`, {
         latitude: client.latitude,
         longitude: client.longitude,
       })

@@ -48,7 +48,7 @@ const ViewWRATable = () => {
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const response = await fetch(`health-center-repo-production.up.railway.app/wra-family-planning/clients?worker_id=${workerId}&category_name=${encodeURIComponent("Family Planning")}`);
+        const response = await fetch(`https://https://health-center-repo-production.up.railway.app/wra-family-planning/clients?worker_id=${workerId}&category_name=${encodeURIComponent("Family Planning")}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch clients: ${response.statusText}`);
         }
@@ -73,7 +73,7 @@ const ViewWRATable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`health-center-repo-production.up.railway.app/wra/${client.id}`);
+      const response = await fetch(`https://https://health-center-repo-production.up.railway.app/wra/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

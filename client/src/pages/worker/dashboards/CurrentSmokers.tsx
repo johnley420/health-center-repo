@@ -65,16 +65,16 @@ const CurrentSmokers: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`health-center-repo-production.up.railway.app/currentsmokers/count-total-clients`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/currentsmokers/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Current Smokers" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/currentsmokers/age-segmentation`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/currentsmokers/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Current Smokers" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/currentsmokers/new-registered`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/currentsmokers/new-registered`, {
             params: { worker_id: workerId, category_name: "Current Smokers" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/currentsmokers/currentsmokers-data`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/currentsmokers/currentsmokers-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -136,7 +136,7 @@ const CurrentSmokers: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('health-center-repo-production.up.railway.app/print/currentsmokers', {
+      const response = await axios.get('https://https://health-center-repo-production.up.railway.app/print/currentsmokers', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

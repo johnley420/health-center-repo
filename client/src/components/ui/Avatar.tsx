@@ -15,7 +15,7 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
   const firstName = sessionStorage.getItem("firstName") ?? "";
   const lastName = sessionStorage.getItem("lastName") ?? "";
   const profilePic = sessionStorage.getItem("profilePic")
-    ? `health-center-repo-production.up.railway.app/uploads/images/${sessionStorage.getItem("profilePic")}`
+    ? `https://https://health-center-repo-production.up.railway.app/uploads/images/${sessionStorage.getItem("profilePic")}`
     : "/default-profile.png";
   const role = sessionStorage.getItem("userRole") ?? "User";
   const receiverId = sessionStorage.getItem("id"); // Get the receiver ID from session storage
@@ -35,14 +35,14 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
     const fetchMessages = async () => {
       try {
         // First, update all unread messages to "read"
-        await fetch(`health-center-repo-production.up.railway.app/updateMessagesToRead`, {
+        await fetch(`https://https://health-center-repo-production.up.railway.app/updateMessagesToRead`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ receiver_id: receiverId }),
         });
 
         // Then fetch updated messages
-        const response = await fetch(`health-center-repo-production.up.railway.app/getMessagesworker?receiver_id=${receiverId}`);
+        const response = await fetch(`https://https://health-center-repo-production.up.railway.app/getMessagesworker?receiver_id=${receiverId}`);
         if (!response.ok) {
           throw new Error("Failed to fetch messages");
         }

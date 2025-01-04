@@ -53,7 +53,7 @@ const View10to19yotable = () => {
     const fetchClients = async () => {
       try {
         const response = await fetch(
-          `health-center-repo-production.up.railway.app/10-19yo/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `https://https://health-center-repo-production.up.railway.app/10-19yo/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "10-19 Years Old (Adolescents)"
           )}`
         );
@@ -81,7 +81,7 @@ const View10to19yotable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`health-center-repo-production.up.railway.app/10-19yo-form/${client.id}`);
+      const response = await fetch(`https://https://health-center-repo-production.up.railway.app/10-19yo-form/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

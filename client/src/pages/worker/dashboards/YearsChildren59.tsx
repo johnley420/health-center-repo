@@ -70,16 +70,16 @@ const yearsChildren5to9: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`health-center-repo-production.up.railway.app/children5to9/count-total-clients`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/children5to9/count-total-clients`, {
             params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/children5to9/age-segmentation`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/children5to9/age-segmentation`, {
             params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/children5to9/new-registered`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/children5to9/new-registered`, {
             params: { worker_id: workerId, category_name: "5-9 Years Old Children (School Aged Children)" },
           }),
-          axios.get(`health-center-repo-production.up.railway.app/children5to9/children5to9-data`, {
+          axios.get(`https://https://health-center-repo-production.up.railway.app/children5to9/children5to9-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -143,7 +143,7 @@ const yearsChildren5to9: React.FC = () => {
 
       setDownloading(true); // Start downloading
 
-      const response = await axios.get('health-center-repo-production.up.railway.app/print/children5to9', {
+      const response = await axios.get('https://https://health-center-repo-production.up.railway.app/print/children5to9', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });
