@@ -45,7 +45,7 @@ const List: React.FC = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("https://htthealth-center-repo-production.up.railway.app/admin/workers");
+        const response = await axios.get("https://health-center-repo-production.up.railway.app/admin/workers");
         const activeWorkers = response.data.filter(
           (worker: Worker) => worker.status === "Active"
         );
