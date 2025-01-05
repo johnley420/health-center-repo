@@ -22,7 +22,7 @@ interface Worker {
   first_name: string;
   last_name: string;
   username: string;
-  birth_date: string;
+  birth_date: string;  // ISO string (e.g. "2002-12-27T16:00:00.000Z")
   age: number;
   gender: string;
   address: string;
@@ -69,6 +69,18 @@ const List: React.FC = () => {
     setFilteredWorkers(filtered);
   };
 
+  // Helper function to format "yyyy-mm-dd..." to "dd/mm/yyyy"
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    // Using 'en-GB' locale ensures "day/month/year" format
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
   const handleEdit = (worker: Worker) => {
     setSelectedWorker(worker);
     setIsEditOpen(true);
@@ -85,9 +97,7 @@ const List: React.FC = () => {
         status: "Inactive",
       });
 
-      const updatedWorkers = workersData.filter(
-        (worker) => worker.id !== workerId
-      );
+      const updatedWorkers = workersData.filter((w) => w.id !== workerId);
       setWorkersData(updatedWorkers);
       setFilteredWorkers(updatedWorkers);
       alert("Worker account deactivated successfully.");
@@ -142,8 +152,11 @@ const List: React.FC = () => {
           {filteredWorkers.map((worker, index) => (
             <TableRow key={worker.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{`${worker.first_name} ${worker.last_name}`}</TableCell>
-              <TableCell>{worker.birth_date}</TableCell>
+              <TableCell>
+                {`${worker.first_name} ${worker.last_name}`}
+              </TableCell>
+              {/* Format the birth_date */}
+              <TableCell>{formatDate(worker.birth_date)}</TableCell>
               <TableCell>{worker.age}</TableCell>
               <TableCell>{worker.gender}</TableCell>
               <TableCell>{worker.address}</TableCell>
@@ -209,16 +222,16 @@ const List: React.FC = () => {
             lastName: selectedWorker.last_name,
             age: selectedWorker.age,
             address: selectedWorker.address,
-            gender: selectedWorker.gender,    // Use "gender"
+            gender: selectedWorker.gender,
             birthdate: selectedWorker.birth_date,
             placeAssigned: selectedWorker.place_assign,
             idPic: selectedWorker.id_pic,
             profilePic: selectedWorker.profile_pic,
-            username: selectedWorker.username, // Make sure username is included
+            username: selectedWorker.username,
           }}
           onUpdate={() => {
             setIsEditOpen(false);
-            handleSearch(); 
+            handleSearch();
           }}
         />
       )}

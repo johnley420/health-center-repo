@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Input,
@@ -7,10 +8,10 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Swal from "sweetalert2"; // For SweetAlert2
+import Swal from "sweetalert2";
 
+// Type definitions
 type PropsType = {
   isOpen: boolean;
   onClose: () => void;
@@ -20,17 +21,17 @@ type PropsType = {
     lastName: string;
     age: number;
     address: string;
-    gender: string;      // Changed to "gender"
+    gender: string;      // "gender" must match your DB column & server
     birthdate: string;
     placeAssigned: string;
     idPic: string;
     profilePic: string;
-    username: string;    // Ensure we have "username"
+    username: string;
   };
-  onUpdate: () => void; // Refresh list after update
+  onUpdate: () => void;
 };
 
-const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
+const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) => {
   const [workerData, setWorkerData] = useState({
     firstName: "",
     lastName: "",
@@ -53,7 +54,7 @@ const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
         lastName: data.lastName || "",
         age: data.age?.toString() || "",
         address: data.address || "",
-        gender: data.gender || "",
+        gender: data.gender || "",         // must match 'gender'
         birthdate: data.birthdate || "",
         placeAssigned: data.placeAssigned || "",
         username: data.username || "",
@@ -81,24 +82,24 @@ const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
 
   // Handle update submission
   const handleUpdate = async () => {
-    const formData = new FormData();
-
-    // Append string data
-    formData.append("firstName", workerData.firstName);
-    formData.append("lastName", workerData.lastName);
-    formData.append("age", workerData.age);
-    formData.append("address", workerData.address);
-    formData.append("gender", workerData.gender);
-    formData.append("birthdate", workerData.birthdate);
-    formData.append("placeAssigned", workerData.placeAssigned);
-    // If your backend updates the username in the same route, append it:
-    // formData.append("username", workerData.username);
-
-    // Append files if updated
-    if (idPic) formData.append("id_pic", idPic);
-    if (profilePic) formData.append("profile_pic", profilePic);
-
     try {
+      const formData = new FormData();
+
+      // Append text fields
+      formData.append("firstName", workerData.firstName);
+      formData.append("lastName", workerData.lastName);
+      formData.append("age", workerData.age);
+      formData.append("address", workerData.address);
+      formData.append("gender", workerData.gender);       // Must be "gender"
+      formData.append("birthdate", workerData.birthdate);
+      formData.append("placeAssigned", workerData.placeAssigned);
+      formData.append("username", workerData.username);
+
+      // Append files if new ones selected
+      if (idPic) formData.append("id_pic", idPic);
+      if (profilePic) formData.append("profile_pic", profilePic);
+
+      // Send PUT request
       const response = await axios.put(
         `https://health-center-repo-production.up.railway.app/update-worker/${data.id}`,
         formData,
@@ -109,25 +110,24 @@ const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
         }
       );
 
+      // Check response
       if (response.status === 200) {
-        // Show success alert
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Worker updated successfully!",
         });
-        onUpdate();
-        onClose();
+        onUpdate();  // Refresh the list
+        onClose();   // Close modal
       } else {
         Swal.fire({
           icon: "error",
           title: "Update Failed",
-          text: "Failed to update worker!",
+          text: "Failed to update worker.",
         });
       }
     } catch (error: any) {
       console.error("Error:", error.response?.data || error.message);
-
       Swal.fire({
         icon: "error",
         title: "Update Failed",
@@ -189,13 +189,12 @@ const UpdateWorker = ({ isOpen, onClose, data, onUpdate }: PropsType) => {
                 value={workerData.placeAssigned}
                 onChange={handleChange}
               />
-              {/* If you want to allow editing the username here, remove 'disabled' */}
               <Input
                 label="Username"
                 name="username"
                 value={workerData.username}
                 onChange={handleChange}
-                disabled 
+                disabled // remove disabled if you want username to be editable
               />
               <Input
                 type="file"

@@ -28,7 +28,7 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
 
   const handleLogout = () => {
     sessionStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   const handleAnnouncementClick = () => {

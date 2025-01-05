@@ -10151,18 +10151,19 @@ app.put(
     const workerId = req.params.id;
 
     // Extract fields from the request body and files
+    // IMPORTANT: rename 'sex' -> 'gender' to match your frontend
     const {
       firstName,
       lastName,
       age,
       address,
-      sex,
+      gender,          // <--- now using 'gender'
       birthdate,
       placeAssigned,
       username,
     } = req.body;
 
-    // Use existing file names if no new file is uploaded
+    // Use existing filenames if no new file is uploaded
     const idPic = req.files?.id_pic ? req.files.id_pic[0].filename : null;
     const profilePic = req.files?.profile_pic
       ? req.files.profile_pic[0].filename
@@ -10186,7 +10187,7 @@ app.put(
           last_name = ?,
           age = ?,
           address = ?,
-          gender = ?,
+          gender = ?,             -- Matches your 'gender' DB column
           birth_date = ?,
           place_assign = ?,
           username = ?,
@@ -10200,7 +10201,7 @@ app.put(
         lastName,
         age,
         address,
-        sex,
+        gender,                 // <--- pass 'gender' here
         birthdate,
         placeAssigned,
         username,
@@ -10209,7 +10210,7 @@ app.put(
         workerId,
       ];
 
-      db.query(updateQuery, updateValues, (updateErr, updateResult) => {
+      db.query(updateQuery, updateValues, (updateErr) => {
         if (updateErr) {
           console.error("Database error:", updateErr);
           return res.status(500).json({ error: "Database update failed" });
