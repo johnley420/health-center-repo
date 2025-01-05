@@ -10145,33 +10145,32 @@ app.put(
     { name: "profile_pic", maxCount: 1 },
   ]),
   (req, res) => {
-    console.log("Received body:", req.body);
-    console.log("Received files:", req.files);
-
     const workerId = req.params.id;
-
-    // Extract fields from the request body and files
-    // IMPORTANT: rename 'sex' -> 'gender' to match your frontend
-    const {
+    let {
       firstName,
       lastName,
       age,
       address,
-      gender,          // <--- now using 'gender'
+      gender,
       birthdate,
       placeAssigned,
       username,
     } = req.body;
 
-    // Use existing filenames if no new file is uploaded
+    // Convert birthdate to "YYYY-MM-DD"
+    if (birthdate) {
+      const dateObj = new Date(birthdate);
+      birthdate = dateObj.toISOString().split("T")[0];
+    }
+
+    // Now birthdate is e.g. "2003-01-01"
+
     const idPic = req.files?.id_pic ? req.files.id_pic[0].filename : null;
     const profilePic = req.files?.profile_pic
       ? req.files.profile_pic[0].filename
       : null;
 
-    // Fetch existing data for missing fields
-    const selectQuery = `SELECT id_pic, profile_pic FROM user_tbl WHERE id = ?`;
-
+    const selectQuery = "SELECT id_pic, profile_pic FROM user_tbl WHERE id = ?";
     db.query(selectQuery, [workerId], (selectErr, selectResult) => {
       if (selectErr) {
         console.error("Error fetching existing data:", selectErr);
@@ -10180,20 +10179,20 @@ app.put(
 
       const existingData = selectResult[0] || {};
 
-      // Prepare update query
       const updateQuery = `
-        UPDATE user_tbl SET
-          first_name = ?,
-          last_name = ?,
-          age = ?,
-          address = ?,
-          gender = ?,             -- Matches your 'gender' DB column
-          birth_date = ?,
-          place_assign = ?,
-          username = ?,
-          id_pic = ?,
-          profile_pic = ?
-        WHERE id = ?
+        UPDATE user_tbl
+          SET
+            first_name = ?,
+            last_name = ?,
+            age = ?,
+            address = ?,
+            gender = ?,
+            birth_date = ?,
+            place_assign = ?,
+            username = ?,
+            id_pic = ?,
+            profile_pic = ?
+          WHERE id = ?
       `;
 
       const updateValues = [
@@ -10201,7 +10200,7 @@ app.put(
         lastName,
         age,
         address,
-        gender,                 // <--- pass 'gender' here
+        gender,
         birthdate,
         placeAssigned,
         username,
@@ -10215,11 +10214,12 @@ app.put(
           console.error("Database error:", updateErr);
           return res.status(500).json({ error: "Database update failed" });
         }
-        res.status(200).json({ message: "Worker updated successfully" });
+        return res.status(200).json({ message: "Worker updated successfully" });
       });
     });
   }
 );
+
 //==============================DEACTIVATE WORKER===================================//
 
 app.put("/admin/workers/:id", async (req, res) => {
