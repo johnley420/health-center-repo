@@ -7317,15 +7317,21 @@ app.get('/medicines', (req, res) => {
 // Endpoint to update a medicine
 app.put("/medicines/:id", upload.single("image"), (req, res) => {
   const { id } = req.params;
-  // rename if needed
-  const { name, category, quantity, expirationDate } = req.body;
-  const expiration_date = expirationDate;
-  const image = req.file ? req.file.filename : null;
+  let { name, category, quantity, expirationDate } = req.body;
 
-  if (!name || !category || !quantity || !expiration_date) {
+  // Basic validation
+  if (!name || !category || !quantity || !expirationDate) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
+  // Reformat date from ISO to YYYY-MM-DD
+  const dateObj = new Date(expirationDate);
+  const expiration_date = dateObj.toISOString().split("T")[0];
+
+  // Handle uploaded file
+  const image = req.file ? req.file.filename : null;
+
+  // Build the query
   let query = `
     UPDATE medicines
     SET name = ?, category = ?, quantity = ?, expiration_date = ?

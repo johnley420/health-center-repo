@@ -22,6 +22,7 @@ interface EditMedicineModalProps {
 
 // Categories array
 const categories = [
+  "All",
   "Pregnant",
   "Person With Disabilities",
   "Schistomiasis Program Services",
