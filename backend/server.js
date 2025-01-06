@@ -7514,7 +7514,24 @@ app.post('/pregnant', (req, res) => {
 // PUT route to update existing data
 app.put('/pregnant/:id', (req, res) => {
   const { id } = req.params;
-  const formData = req.body;
+  // We clone the incoming data so we can safely modify it
+  const formData = { ...req.body };
+
+  // A helper function to safely convert a string like "2025-02-06T00:00:00.000Z" -> "2025-02-06"
+  function toMySQLDate(value) {
+    if (!value) return null; // or "0000-00-00" if you prefer
+    const dateObj = new Date(value);
+    // If invalid date, return "0000-00-00" or null
+    if (isNaN(dateObj.getTime())) return null;
+    return dateObj.toISOString().split('T')[0];
+  }
+
+  // Convert any date fields that MySQL expects in DATE format:
+  formData.expected_date_of_confinement = toMySQLDate(formData.expected_date_of_confinement);
+  formData.date_of_delivery = toMySQLDate(formData.date_of_delivery);
+  formData.date_breastfeeding_initiated = toMySQLDate(formData.date_breastfeeding_initiated);
+
+  // ... and so on for other DATE columns
 
   const query = `
     UPDATE pregnant_data SET
@@ -7592,26 +7609,29 @@ app.put('/pregnant/:id', (req, res) => {
     id,
   ];
 
-  // Validate the length of the values array
-  const expectedPlaceholders = 34; // Number of placeholders in the UPDATE clause
+  // Double-check number of placeholders
+  const expectedPlaceholders = 34;
   if (values.length !== expectedPlaceholders) {
-    console.error(`Expected ${expectedPlaceholders} values, but got ${values.length}.`);
-    return res.status(500).json({ error: 'Internal server error: Incorrect number of values.' });
+    console.error(
+      `Expected ${expectedPlaceholders} values, but got ${values.length}.`
+    );
+    return res
+      .status(500)
+      .json({ error: 'Internal server error: Incorrect number of values.' });
   }
 
   db.query(query, values, (err, result) => {
     if (err) {
       console.error('Error updating data:', err);
-      res.status(500).json({ error: 'Error updating data' });
-    } else {
-      if (result.affectedRows === 0) {
-        res.status(404).json({ error: 'Record not found' });
-      } else {
-        res.status(200).json({ message: 'Data updated successfully' });
-      }
+      return res.status(500).json({ error: 'Error updating data' });
     }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Record not found' });
+    }
+    return res.status(200).json({ message: 'Data updated successfully' });
   });
 });
+
 
 
 
