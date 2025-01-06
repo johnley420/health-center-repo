@@ -21,7 +21,7 @@ type PropsType = {
     lastName: string;
     age: number;
     address: string;
-    gender: string;      // "gender" must match your DB column & server
+    gender: string; // "gender" must match your DB column & server
     birthdate: string;
     placeAssigned: string;
     idPic: string;
@@ -54,13 +54,42 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
         lastName: data.lastName || "",
         age: data.age?.toString() || "",
         address: data.address || "",
-        gender: data.gender || "",         // must match 'gender'
+        gender: data.gender || "",
         birthdate: data.birthdate || "",
         placeAssigned: data.placeAssigned || "",
         username: data.username || "",
       });
     }
   }, [data]);
+
+  /**
+   * Helper to calculate age given a YYYY-MM-DD birthdate
+   */
+  const calculateAge = (birthdateStr: string): number => {
+    if (!birthdateStr) return 0;
+    const today = new Date();
+    const birthDate = new Date(birthdateStr);
+    let computedAge = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      computedAge--;
+    }
+    return computedAge;
+  };
+
+  /**
+   * Whenever birthdate changes, recalc the age automatically
+   */
+  useEffect(() => {
+    if (workerData.birthdate) {
+      const newAge = calculateAge(workerData.birthdate);
+      setWorkerData((prevData) => ({
+        ...prevData,
+        age: newAge.toString(),
+      }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workerData.birthdate]);
 
   // Handle text input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +119,7 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
       formData.append("lastName", workerData.lastName);
       formData.append("age", workerData.age);
       formData.append("address", workerData.address);
-      formData.append("gender", workerData.gender);       // Must be "gender"
+      formData.append("gender", workerData.gender);
       formData.append("birthdate", workerData.birthdate);
       formData.append("placeAssigned", workerData.placeAssigned);
       formData.append("username", workerData.username);
@@ -117,8 +146,8 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
           title: "Success",
           text: "Worker updated successfully!",
         });
-        onUpdate();  // Refresh the list
-        onClose();   // Close modal
+        onUpdate(); // Refresh the list
+        onClose();  // Close modal
       } else {
         Swal.fire({
           icon: "error",
