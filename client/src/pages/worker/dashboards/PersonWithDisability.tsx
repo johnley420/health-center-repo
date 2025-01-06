@@ -63,16 +63,16 @@ const PersonWithDisability: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`http://localhost:8081/person-with-disabilities/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/person-with-disabilities/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Person With Disabilities" },
           }),
-          axios.get(`http://localhost:8081/person-with-disabilities/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/person-with-disabilities/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Person With Disabilities" },
           }),
-          axios.get(`http://localhost:8081/person-with-disabilities/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/person-with-disabilities/new-registered`, {
             params: { worker_id: workerId, category_name: "Person With Disabilities" },
           }),
-          axios.get(`http://localhost:8081/person-with-disabilities/person-with-disabilities-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/person-with-disabilities/person-with-disabilities-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -122,7 +122,7 @@ const PersonWithDisability: React.FC = () => {
       }
 
       // Make a request to the backend to generate the PDF
-      const response = await axios.get(`http://localhost:8081/print/personwithdisability`, {
+      const response = await axios.get(`https://health-center-repo-production.up.railway.app/print/personwithdisability`, {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

@@ -51,7 +51,7 @@ const ViewSeniorCitizenTable = () => {
     const fetchClients = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/senior-citizen/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `https://health-center-repo-production.up.railway.app/senior-citizen/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "Senior Citizen"
           )}`
         );
@@ -79,7 +79,7 @@ const ViewSeniorCitizenTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`http://localhost:8081/senior-citizen-form/${client.id}`);
+      const response = await fetch(`https://health-center-repo-production.up.railway.app/senior-citizen-form/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

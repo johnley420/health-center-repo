@@ -15,7 +15,7 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
   const firstName = sessionStorage.getItem("firstName") ?? "";
   const lastName = sessionStorage.getItem("lastName") ?? "";
   const profilePic = sessionStorage.getItem("profilePic")
-    ? `http://localhost:8081/uploads/images/${sessionStorage.getItem("profilePic")}`
+    ? `https://health-center-repo-production.up.railway.app/uploads/images/${sessionStorage.getItem("profilePic")}`
     : "/default-profile.png";
 
   // IMPORTANT: get the user role
@@ -32,7 +32,7 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
     const fetchMessages = async () => {
       try {
         // Mark all unread as read
-        await fetch(`http://localhost:8081/updateMessagesToRead`, {
+        await fetch(`https://health-center-repo-production.up.railway.app/updateMessagesToRead`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ receiver_id: receiverId }),
@@ -40,7 +40,7 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
 
         // Fetch updated messages
         const response = await fetch(
-          `http://localhost:8081/getMessagesworker?receiver_id=${receiverId}`
+          `https://health-center-repo-production.up.railway.app/getMessagesworker?receiver_id=${receiverId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch messages");

@@ -66,16 +66,16 @@ const MonthsInfant011: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`http://localhost:8081/admin/infants/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/infants/count-total-clients`, {
             params: {  category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`http://localhost:8081/admin/infants/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/infants/age-segmentation`, {
             params: {  category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`http://localhost:8081/admin/infants/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/infants/new-registered`, {
             params: {  category_name: "0-11 Months Old Infants" },
           }),
-          axios.get(`http://localhost:8081/admin/infants/infants-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/infants/infants-data`, {
             params: { worker_id: workerId },
           }),
         ]);

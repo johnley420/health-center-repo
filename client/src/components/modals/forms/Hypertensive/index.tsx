@@ -97,7 +97,7 @@ export const HypertensiveForm = ({
       if (selectedData && selectedData.id) {
         // We're updating existing data
         const response = await axios.put(
-          `http://localhost:8081/hypertensive/${selectedData.id}`,
+          `https://health-center-repo-production.up.railway.app/hypertensive/${selectedData.id}`,
           formValues
         );
         Swal.fire({
@@ -109,7 +109,7 @@ export const HypertensiveForm = ({
       } else {
         // We're creating new data
         const response = await axios.post(
-          'http://localhost:8081/hypertensive',
+          'https://health-center-repo-production.up.railway.app/hypertensive',
           formValues
         );
         Swal.fire({

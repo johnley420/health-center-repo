@@ -306,7 +306,7 @@ export const Zeroto11Form = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `http://localhost:8081/0-11monthsold/${selectedData.id}`,
+          `https://health-center-repo-production.up.railway.app/0-11monthsold/${selectedData.id}`,
           transformedFormValues
         );
         successMessage = response.data.message || 'Data updated successfully!';
@@ -314,7 +314,7 @@ export const Zeroto11Form = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'http://localhost:8081/0-11monthsold',
+          'https://health-center-repo-production.up.railway.app/0-11monthsold',
           transformedFormValues
         );
         successMessage = response.data.message || 'Data submitted successfully!';

@@ -66,16 +66,16 @@ const CurrentSmokers: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`http://localhost:8081/admin/currentsmokers/count-total-clients`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/currentsmokers/count-total-clients`, {
             params: {  category_name: "Current Smokers" },
           }),
-          axios.get(`http://localhost:8081/admin/currentsmokers/age-segmentation`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/currentsmokers/age-segmentation`, {
             params: {  category_name: "Current Smokers" },
           }),
-          axios.get(`http://localhost:8081/admin/currentsmokers/new-registered`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/currentsmokers/new-registered`, {
             params: { category_name: "Current Smokers" },
           }),
-          axios.get(`http://localhost:8081/admin/currentsmokers/currentsmokers-data`, {
+          axios.get(`https://health-center-repo-production.up.railway.app/admin/currentsmokers/currentsmokers-data`, {
             params: { worker_id: workerId },
           }),
         ]);

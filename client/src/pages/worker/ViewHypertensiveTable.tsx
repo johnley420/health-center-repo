@@ -40,7 +40,7 @@ const ViewHypertensiveTable = () => {
     const fetchClients = async () => {
       try {
         const categoryName = "Hypertensive And Type 2 Diabetes";
-        const response = await fetch(`http://localhost:8081/hypertensive/clients?worker_id=${workerId}&category_name=${encodeURIComponent(categoryName)}`);
+        const response = await fetch(`https://health-center-repo-production.up.railway.app/hypertensive/clients?worker_id=${workerId}&category_name=${encodeURIComponent(categoryName)}`);
         if (!response.ok) {
           throw new Error(`Failed to fetch clients: ${response.statusText}`);
         }
@@ -65,7 +65,7 @@ const ViewHypertensiveTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`http://localhost:8081/hypertensive-form/${client.id}`);
+      const response = await fetch(`https://health-center-repo-production.up.railway.app/hypertensive-form/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

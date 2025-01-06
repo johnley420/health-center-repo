@@ -130,7 +130,7 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
 
       // Send PUT request
       const response = await axios.put(
-        `http://localhost:8081/update-worker/${data.id}`,
+        `https://health-center-repo-production.up.railway.app/update-worker/${data.id}`,
         formData,
         {
           headers: {

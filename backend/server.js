@@ -10491,6 +10491,6 @@ app.post('/login', (req, res) => {
 
 
 server.listen(8081, () => {
-  console.log("Server running on http://localhost:8081");
+  console.log("Server running on https://health-center-repo-production.up.railway.app");
 });
 
