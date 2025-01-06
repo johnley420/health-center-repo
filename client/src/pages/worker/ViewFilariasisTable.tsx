@@ -51,7 +51,7 @@ const ViewFilariasisTable = () => {
     const fetchClients = async () => {
       try {
         const response = await fetch(
-          `https://health-center-repo-production.up.railway.app/filariasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `http://localhost:8081/filariasis/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "Filariasis Program Services"
           )}`
         );
@@ -79,7 +79,7 @@ const ViewFilariasisTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await fetch(`https://health-center-repo-production.up.railway.app/filariasis-form/${client.id}`);
+      const response = await fetch(`http://localhost:8081/filariasis-form/${client.id}`);
       if (response.ok) {
         const data = await response.json();
         if (data && data.length > 0) {

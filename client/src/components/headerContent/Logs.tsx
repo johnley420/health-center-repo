@@ -27,7 +27,7 @@ const Logs: React.FC = () => {
 
   const fetchLogs = async () => {
     try {
-      const response = await axios.get('https://health-center-repo-production.up.railway.app/get-attendance-logs', {
+      const response = await axios.get('http://localhost:8081/get-attendance-logs', {
         params: { userId }
       });
       setLogs(Array.isArray(response.data) ? response.data : []);
@@ -48,7 +48,7 @@ const Logs: React.FC = () => {
     const time = currentDate.toTimeString().split(' ')[0];
 
     try {
-      const response = await axios.post('https://health-center-repo-production.up.railway.app/log-attendance', {
+      const response = await axios.post('http://localhost:8081/log-attendance', {
         userId,
         date,
         [status === "Time In" ? "timeIn" : "timeOut"]: time

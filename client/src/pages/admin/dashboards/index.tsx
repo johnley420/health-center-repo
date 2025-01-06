@@ -96,16 +96,16 @@ const Dashboard: React.FC = () => {
           updatesRes, // New data
           medicineCountRes, // New data
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/count-total-clients`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/count-worker`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/count-male-clients`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/count-female-clients`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/recent-clients`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/new-registered`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/category-count`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/age-segmentation`),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/updates-line-graph`), // Fetch updates data
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/count-medicines`), // Fetch medicine count
+          axios.get(`http://localhost:8081/admin/count-total-clients`),
+          axios.get(`http://localhost:8081/admin/count-worker`),
+          axios.get(`http://localhost:8081/admin/count-male-clients`),
+          axios.get(`http://localhost:8081/admin/count-female-clients`),
+          axios.get(`http://localhost:8081/admin/recent-clients`),
+          axios.get(`http://localhost:8081/admin/new-registered`),
+          axios.get(`http://localhost:8081/admin/category-count`),
+          axios.get(`http://localhost:8081/admin/age-segmentation`),
+          axios.get(`http://localhost:8081/admin/updates-line-graph`), // Fetch updates data
+          axios.get(`http://localhost:8081/admin/count-medicines`), // Fetch medicine count
         ]);
 
         // Log all responses for debugging

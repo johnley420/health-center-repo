@@ -31,7 +31,7 @@ const AdminOnlineForm: React.FC = () => {
     const fetchActiveWorkers = async () => {
       setIsLoadingWorkers(true);
       try {
-        const response = await axios.get('https://health-center-repo-production.up.railway.app/get-active-workers');
+        const response = await axios.get('http://localhost:8081/get-active-workers');
         if (response.status === 200) {
           setWorkers(response.data.workers);
         } else {
@@ -67,7 +67,7 @@ const AdminOnlineForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post('https://health-center-repo-production.up.railway.app/online-add-client', {
+      const response = await axios.post('http://localhost:8081/online-add-client', {
         category_name: category,
         fname,
         address,

@@ -67,16 +67,16 @@ const FilariasisProgramServices: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/filariasis/count-total-clients`, {
+          axios.get(`http://localhost:8081/filariasis/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/filariasis/age-segmentation`, {
+          axios.get(`http://localhost:8081/filariasis/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/filariasis/new-registered`, {
+          axios.get(`http://localhost:8081/filariasis/new-registered`, {
             params: { worker_id: workerId, category_name: "Filariasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/filariasis/filariasis-data`, {
+          axios.get(`http://localhost:8081/filariasis/filariasis-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -138,7 +138,7 @@ const FilariasisProgramServices: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/filariasis', {
+      const response = await axios.get('http://localhost:8081/print/filariasis', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

@@ -93,7 +93,7 @@ export const WRAForm = ({
       if (selectedData && selectedData.id) {
         // We're updating existing data
         const response = await axios.put(
-          `https://health-center-repo-production.up.railway.app/wra/${selectedData.id}`,
+          `http://localhost:8081/wra/${selectedData.id}`,
           formValues
         );
         Swal.fire({
@@ -105,7 +105,7 @@ export const WRAForm = ({
       } else {
         // We're creating new data
         const response = await axios.post(
-          'https://health-center-repo-production.up.railway.app/wra',
+          'http://localhost:8081/wra',
           formValues
         );
         Swal.fire({

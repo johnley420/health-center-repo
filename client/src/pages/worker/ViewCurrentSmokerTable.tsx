@@ -49,7 +49,7 @@ const ViewCurrentSmokerTable = () => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `https://health-center-repo-production.up.railway.app/currentsmokers/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `http://localhost:8081/currentsmokers/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "Current Smokers"
           )}`
         );
@@ -73,7 +73,7 @@ const ViewCurrentSmokerTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await axios.get(`https://health-center-repo-production.up.railway.app/currentsmokers-form/${client.id}`);
+      const response = await axios.get(`http://localhost:8081/currentsmokers-form/${client.id}`);
       if (response.status === 200) {
         const data = response.data;
         if (data && data.length > 0) {

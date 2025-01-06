@@ -104,7 +104,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
 
     try {
       const response = await fetch(
-        "https://health-center-repo-production.up.railway.app/login",
+        "http://localhost:8081/login",
         {
           method: "POST",
           headers: {
@@ -145,7 +145,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
   const handleSubmitHelpRequest = async () => {
     try {
       const response = await fetch(
-        "https://health-center-repo-production.up.railway.app/help-request",
+        "http://localhost:8081/help-request",
         {
           method: "POST",
           headers: {

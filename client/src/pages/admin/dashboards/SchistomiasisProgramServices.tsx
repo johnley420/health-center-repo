@@ -69,16 +69,16 @@ const SchistomiasisProgramServices: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/schistomiasis/count-total-clients`, {
+          axios.get(`http://localhost:8081/admin/schistomiasis/count-total-clients`, {
             params: {  category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/schistomiasis/age-segmentation`, {
+          axios.get(`http://localhost:8081/admin/schistomiasis/age-segmentation`, {
             params: {  category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/schistomiasis/new-registered`, {
+          axios.get(`http://localhost:8081/admin/schistomiasis/new-registered`, {
             params: { category_name: "Schistomiasis Program Services" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/schistomiasis/schistomiasis-data`, {
+          axios.get(`http://localhost:8081/admin/schistomiasis/schistomiasis-data`, {
             params: { worker_id: workerId },
           }),
         ]);

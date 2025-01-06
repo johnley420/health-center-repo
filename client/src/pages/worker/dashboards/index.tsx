@@ -129,25 +129,25 @@ const WorkerDashboard: React.FC = () => {
           ageSegmentationResponse,
           updatesResponse, // New data
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/count-total-clients`, {
+          axios.get(`http://localhost:8081/count-total-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/count-male-clients`, {
+          axios.get(`http://localhost:8081/count-male-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/recent-clients`, {
+          axios.get(`http://localhost:8081/recent-clients`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/new-registered`, {
+          axios.get(`http://localhost:8081/new-registered`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/category-count`, {
+          axios.get(`http://localhost:8081/category-count`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/age-segmentation`, {
+          axios.get(`http://localhost:8081/age-segmentation`, {
             params: { worker_id: workerId },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/updates-line-graph`, { // Fetch updates data
+          axios.get(`http://localhost:8081/updates-line-graph`, { // Fetch updates data
             params: { worker_id: workerId },
           }),
         ]);

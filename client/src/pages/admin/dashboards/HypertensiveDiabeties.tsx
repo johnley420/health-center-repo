@@ -67,16 +67,16 @@ const HypertensiveDiabeties: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/hypertensivediabeties/count-total-clients`, {
+          axios.get(`http://localhost:8081/admin/hypertensivediabeties/count-total-clients`, {
             params: { category_name: "Hypertensive And Type 2 Diabetes" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/hypertensivediabeties/age-segmentation`, {
+          axios.get(`http://localhost:8081/admin/hypertensivediabeties/age-segmentation`, {
             params: { category_name: "Hypertensive And Type 2 Diabetes" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/hypertensivediabeties/new-registered`, {
+          axios.get(`http://localhost:8081/admin/hypertensivediabeties/new-registered`, {
             params: { category_name: "Hypertensive And Type 2 Diabetes" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/admin/hypertensivediabeties/hypertensivediabeties-data`, {
+          axios.get(`http://localhost:8081/admin/hypertensivediabeties/hypertensivediabeties-data`, {
             params: { worker_id: workerId },
           }),
         ]);

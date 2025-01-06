@@ -97,7 +97,7 @@ export const ZEROTO9CHILDMONTHFORM: React.FC<ZEROTO9CHILDMONTHFORMProps> = ({
 
   const fetchClientDetails = async (clientId: number) => {
     try {
-      const response = await axios.get(`https://health-center-repo-production.up.railway.app/clients/${clientId}`);
+      const response = await axios.get(`http://localhost:8081/clients/${clientId}`);
       if (response.status === 200) {
         const clientData = response.data;
         setClientName(clientData.fname);
@@ -205,7 +205,7 @@ export const ZEROTO9CHILDMONTHFORM: React.FC<ZEROTO9CHILDMONTHFORMProps> = ({
       if (selectedData && selectedData.id) {
         // Update existing data
         const response = await axios.put(
-          `https://health-center-repo-production.up.railway.app/zero_to_fiftynine_months_children/${selectedData.id}`,
+          `http://localhost:8081/zero_to_fiftynine_months_children/${selectedData.id}`,
           transformedFormValues
         );
         successMessage = response.data.message || 'Data updated successfully!';
@@ -213,7 +213,7 @@ export const ZEROTO9CHILDMONTHFORM: React.FC<ZEROTO9CHILDMONTHFORMProps> = ({
       } else {
         // Create new data
         const response = await axios.post(
-          'https://health-center-repo-production.up.railway.app/zero_to_fiftynine_months_children',
+          'http://localhost:8081/zero_to_fiftynine_months_children',
           transformedFormValues
         );
         successMessage = response.data.message || 'Data submitted successfully!';

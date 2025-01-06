@@ -32,7 +32,7 @@ const Inventory: React.FC = () => {
 
   const fetchMedicines = async () => {
     try {
-      const response = await axios.get("https://health-center-repo-production.up.railway.app/medicines");
+      const response = await axios.get("http://localhost:8081/medicines");
       // The server might return { expiration_date: "...", ... }
       // Map to 'expirationDate' in our local state:
       const mapped = response.data.map((item: any) => ({
@@ -60,7 +60,7 @@ const Inventory: React.FC = () => {
       formData.append("image", medicine.image);
     }
 
-    const response = await axios.post("https://health-center-repo-production.up.railway.app/medicines", formData, {
+    const response = await axios.post("http://localhost:8081/medicines", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -112,7 +112,7 @@ const Inventory: React.FC = () => {
     }
 
     const response = await axios.put(
-      `https://health-center-repo-production.up.railway.app/medicines/${updatedMedicine.id}`,
+      `http://localhost:8081/medicines/${updatedMedicine.id}`,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } }
     );
@@ -156,7 +156,7 @@ const Inventory: React.FC = () => {
   const handleConfirmDelete = async () => {
     if (!selectedMedicine) return;
     try {
-      await axios.delete(`https://health-center-repo-production.up.railway.app/medicines/${selectedMedicine.id}`);
+      await axios.delete(`http://localhost:8081/medicines/${selectedMedicine.id}`);
       // Remove it from local state
       setMedicines((prev) => prev.filter((med) => med.id !== selectedMedicine.id));
       setIsDeleteModalOpen(false);
@@ -210,7 +210,7 @@ const Inventory: React.FC = () => {
       <TableCell>
         {typeof medicine.image === "string" && (
           <img
-            src={`https://health-center-repo-production.up.railway.app/uploads/images/${medicine.image}`}
+            src={`http://localhost:8081/uploads/images/${medicine.image}`}
             alt={medicine.name}
             className="w-20"
           />

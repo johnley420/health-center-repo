@@ -70,16 +70,16 @@ const YearsScreened059: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/screened059/count-total-clients`, {
+          axios.get(`http://localhost:8081/screened059/count-total-clients`, {
             params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/screened059/age-segmentation`, {
+          axios.get(`http://localhost:8081/screened059/age-segmentation`, {
             params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/screened059/new-registered`, {
+          axios.get(`http://localhost:8081/screened059/new-registered`, {
             params: { worker_id: workerId, category_name: "0-59 Years Old Screened For Visual Activity" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/screened059/screened059-data`, {
+          axios.get(`http://localhost:8081/screened059/screened059-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -143,7 +143,7 @@ const YearsScreened059: React.FC = () => {
 
       setDownloading(true); // Start downloading
 
-      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/screened059', {
+      const response = await axios.get('http://localhost:8081/print/screened059', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

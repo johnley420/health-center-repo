@@ -67,16 +67,16 @@ const FamilyPlanning: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/familyplanning/count-total-clients`, {
+          axios.get(`http://localhost:8081/familyplanning/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Family Planning" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/familyplanning/age-segmentation`, {
+          axios.get(`http://localhost:8081/familyplanning/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Family Planning" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/familyplanning/new-registered`, {
+          axios.get(`http://localhost:8081/familyplanning/new-registered`, {
             params: { worker_id: workerId, category_name: "Family Planning" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/familyplanning/familyplanning-data`, {
+          axios.get(`http://localhost:8081/familyplanning/familyplanning-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -139,7 +139,7 @@ const FamilyPlanning: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/familyplanning', {
+      const response = await axios.get('http://localhost:8081/print/familyplanning', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

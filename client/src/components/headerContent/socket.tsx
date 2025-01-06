@@ -3,7 +3,7 @@
 import { io } from 'socket.io-client';
 
 // Replace with your server's URL
-const SOCKET_URL = 'https://health-center-repo-production.up.railway.app';
+const SOCKET_URL = 'http://localhost:8081';
 
 const socket = io(SOCKET_URL);
 

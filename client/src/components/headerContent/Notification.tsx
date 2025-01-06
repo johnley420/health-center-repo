@@ -35,9 +35,12 @@ const Notification: React.FC<NotificationProps> = ({
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="py-4">
+
+      {/* Set a max-height and scroll on overflow */}
+      <PopoverContent className="py-4 max-h-96 overflow-y-auto">
         <p className="text-lg font-medium mb-5">{title}</p>
         <p className="text-gray-500 mb-4">{description}</p>
+
         <div className="w-full flex flex-col gap-4">
           {helpRequests.length === 0 ? (
             <p className="text-gray-500">No help requests available.</p>

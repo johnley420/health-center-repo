@@ -52,7 +52,7 @@ const View0to9ChildMonthOldTable = () => {
     const fetchClients = async () => {
       try {
         const response = await axios.get(
-          `https://health-center-repo-production.up.railway.app/0-59months-old/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `http://localhost:8081/0-59months-old/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             "0-59 Months Old Children"
           )}`
         );
@@ -76,7 +76,7 @@ const View0to9ChildMonthOldTable = () => {
     setSelectedClient(client);
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
-      const response = await axios.get(`https://health-center-repo-production.up.railway.app/zero_to_ninechildmonths-form/${client.id}`);
+      const response = await axios.get(`http://localhost:8081/zero_to_ninechildmonths-form/${client.id}`);
       if (response.status === 200) {
         const data = response.data;
         if (data && data.length > 0) {

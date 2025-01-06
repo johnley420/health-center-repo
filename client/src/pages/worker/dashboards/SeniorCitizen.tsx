@@ -67,16 +67,16 @@ const SeniorCitizenProgramServices: React.FC = () => {
           newRegisteredResponse,
           updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/seniorcetizen/count-total-clients`, {
+          axios.get(`http://localhost:8081/seniorcetizen/count-total-clients`, {
             params: { worker_id: workerId, category_name: "Senior Citizen" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/seniorcetizen/age-segmentation`, {
+          axios.get(`http://localhost:8081/seniorcetizen/age-segmentation`, {
             params: { worker_id: workerId, category_name: "Senior Citizen" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/seniorcetizen/new-registered`, {
+          axios.get(`http://localhost:8081/seniorcetizen/new-registered`, {
             params: { worker_id: workerId, category_name: "Senior Citizen" },
           }),
-          axios.get(`https://health-center-repo-production.up.railway.app/seniorcetizen/seniorcetizen-data`, {
+          axios.get(`http://localhost:8081/seniorcetizen/seniorcetizen-data`, {
             params: { worker_id: workerId },
           }),
         ]);
@@ -139,7 +139,7 @@ const SeniorCitizenProgramServices: React.FC = () => {
         return;
       }
 
-      const response = await axios.get('https://health-center-repo-production.up.railway.app/print/seniorcitizen', {
+      const response = await axios.get('http://localhost:8081/print/seniorcitizen', {
         params: { worker_id: workerId },
         responseType: 'blob', // Important for handling binary data
       });

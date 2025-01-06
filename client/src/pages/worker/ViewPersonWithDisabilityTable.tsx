@@ -39,7 +39,7 @@ const ViewPersonWithDisabilityTable = () => {
     const fetchClients = async () => {
       try {
         const response = await fetch(
-          `https://health-center-repo-production.up.railway.app/person-with-disabilities/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
+          `http://localhost:8081/person-with-disabilities/clients?worker_id=${workerId}&category_name=${encodeURIComponent(
             'person with disabilities'
           )}`
         );
@@ -68,7 +68,7 @@ const ViewPersonWithDisabilityTable = () => {
     setSelectedData(null); // Reset selectedData when adding a new form
     try {
       const response = await fetch(
-        `https://health-center-repo-production.up.railway.app/person_with_disability/${client.id}`
+        `http://localhost:8081/person_with_disability/${client.id}`
       );
       if (response.ok) {
         const data = await response.json();
