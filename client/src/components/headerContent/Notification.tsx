@@ -24,7 +24,7 @@ const Notification: React.FC<NotificationProps> = ({
   description,
 }) => {
   return (
-    <Popover className="w-[350px]" placement="bottom" showArrow={true}>
+    <Popover className="w-[350px]" placement="bottom" showArrow={true}  offset={20}>
       <PopoverTrigger className="cursor-pointer" onClick={onClick}>
         <button className="outline-none relative">
           <IoNotificationsOutline size={25} className="text-green-500" />
@@ -37,7 +37,7 @@ const Notification: React.FC<NotificationProps> = ({
       </PopoverTrigger>
 
       {/* Set a max-height and scroll on overflow */}
-      <PopoverContent className="py-4 max-h-96 overflow-y-auto">
+      <PopoverContent className="mt-2 py-4 min-h-[300px] max-h-[500px] overflow-y-auto">
         <p className="text-lg font-medium mb-5">{title}</p>
         <p className="text-gray-500 mb-4">{description}</p>
 
