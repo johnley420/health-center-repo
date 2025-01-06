@@ -9561,6 +9561,7 @@ const categoryRoutes = {
   'schistosomiasis': 'Schistomiasis Program Services',
   'currentsmokers': 'Current Smokers',
   '0-59yearsold': '0-59 years Old Screened For Visual Activity',
+  '10-19yo' : '10-19 Years Old (Adolescents)',
 };
 
 // Helper function to validate worker_id (assuming it's numeric)
@@ -9803,31 +9804,7 @@ app.post('/log-attendance', (req, res) => {
 
 //-------------------------10 TO 18 YEARS OLD VIEW TABLE-------------------------//
 
-app.get('/10-19yo/clients', (req, res) => {
-  const { worker_id, category_name } = req.query;
 
-  if (!worker_id || !category_name) {
-    return res.status(400).json({ error: 'worker_id and category_name are required' });
-  }
-
-  // Query to select all columns based on worker_id and category_name
-  const query = `
-    SELECT * 
-    FROM client_tbl 
-    WHERE worker_id = ? AND category_name = '10-19 Years Old (Adolescents)'
-  `;
-
-  // Execute the query
-  db.query(query, [worker_id, category_name], (err, results) => {
-    if (err) {
-      console.error('Error fetching clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch clients' });
-    }
-
-    // Return the results as JSON
-    res.json(results);
-  });
-});
 //============================ONLINE ADD CLIENTS================================//
 
 app.get('/pending-clients', (req, res) => {
