@@ -94,7 +94,6 @@ const WorkerDashboard: React.FC = () => {
       active: false,
     },
   ]);
-
   const [filteredRecentClients, setFilteredRecentClients] = useState<RecentClient[]>([]);
   const [newRegisteredData, setNewRegisteredData] = useState<NewRegisteredEntry[]>([]);
   const [categoryData, setCategoryData] = useState<CategoryCount[]>([]);
@@ -104,8 +103,12 @@ const WorkerDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Filter State Variables
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedYear, setSelectedYear] = useState<string>('');
+
   /**
-   * Fetch Data on Component Mount
+   * Fetch Data on Component Mount and When Filters Change
    */
   useEffect(() => {
     const fetchData = async () => {
@@ -118,49 +121,69 @@ const WorkerDashboard: React.FC = () => {
           return;
         }
 
+        // Build query parameters
+        const params: Record<string, string> = { worker_id: workerId };
+        if (selectedMonth) params.month = selectedMonth;
+        if (selectedYear) params.year = selectedYear;
 
-        // Fetch all necessary data concurrently, including updates data
+        const baseURL = `https://health-center-repo-production.up.railway.app`;
+
+        // Define which endpoints require date filters
+        const endpointsRequiringDateFilters = [
+          'count-total-clients',
+          'count-male-clients',
+          'count-female-clients',
+          'recent-clients',
+          'new-registered',
+          'category-count',
+          'age-segmentation',
+          'updates-line-graph',
+        ];
+
+        // Function to build URLs with query strings only for endpoints that support date filters
+        const buildURL = (endpoint: string) => {
+          if (endpointsRequiringDateFilters.includes(endpoint) && (selectedMonth || selectedYear)) {
+            // Include only the relevant query parameters for date filters
+            const urlParams: Record<string, string> = { worker_id: workerId };
+            if (selectedMonth) urlParams.month = selectedMonth;
+            if (selectedYear) urlParams.year = selectedYear;
+            const urlQuery = new URLSearchParams(urlParams).toString();
+            return `${baseURL}/${endpoint}?${urlQuery}`;
+          }
+          // For endpoints that don't require date filters or no filters selected
+          return `${baseURL}/${endpoint}?worker_id=${workerId}`;
+        };
+
+        // Fetch all necessary data concurrently
         const [
           totalResponse,
           maleResponse,
+          femaleResponse,
           recentClientsResponse,
           newRegisteredResponse,
           categoryResponse,
           ageSegmentationResponse,
-          updatesResponse, // New data
+          updatesResponse,
         ] = await Promise.all([
-          axios.get(`https://health-center-repo-production.up.railway.app/count-total-clients`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/count-male-clients`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/recent-clients`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/new-registered`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/category-count`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/age-segmentation`, {
-            params: { worker_id: workerId },
-          }),
-          axios.get(`https://health-center-repo-production.up.railway.app/updates-line-graph`, { // Fetch updates data
-            params: { worker_id: workerId },
-          }),
+          axios.get(buildURL('count-total-clients')),
+          axios.get(buildURL('count-male-clients')),
+          axios.get(buildURL('count-female-clients')),
+          axios.get(buildURL('recent-clients')),
+          axios.get(buildURL('new-registered')),
+          axios.get(buildURL('category-count')),
+          axios.get(buildURL('age-segmentation')),
+          axios.get(buildURL('updates-line-graph')),
         ]);
 
         /**
          * Set Count Data
          * - Total Clients: Fetched from API
-         * - Male and Female Clients: Calculated from API responses
+         * - Male and Female Clients: Fetched from API
          * - Total Categories: Derived from category count length
          */
         const totalClients = parseInt(totalResponse.data.totalClients, 10);
         const maleClients = parseInt(maleResponse.data.maleClients, 10);
-        const femaleClients = totalClients - maleClients;
+        const femaleClients = parseInt(femaleResponse.data.femaleClients, 10);
 
         setCountData([
           {
@@ -181,26 +204,19 @@ const WorkerDashboard: React.FC = () => {
           },
         ]);
 
-        // Filter recent clients registered from now until last week
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        const recentClients = recentClientsResponse.data.filter((client: RecentClient) => {
-          const dateRegistered = new Date(client.date_registered);
-          return dateRegistered >= oneWeekAgo;
-        });
+        // Set Recent Clients
+        setFilteredRecentClients(recentClientsResponse.data);
 
-        setFilteredRecentClients(recentClients);
-
-        // Set new registered clients over the timeline
+        // Set New Registered Data
         setNewRegisteredData(newRegisteredResponse.data);
 
-        // Set category data
+        // Set Category Data
         setCategoryData(categoryResponse.data);
 
-        // Set age segmentation data
+        // Set Age Segmentation Data
         setAgeSegmentationData(ageSegmentationResponse.data);
 
-        // Set updates data
+        // Set Updates Data
         setUpdatesData(updatesResponse.data);
 
         // Data fetching complete
@@ -213,7 +229,7 @@ const WorkerDashboard: React.FC = () => {
     };
 
     fetchData();
-  }, []);
+  }, [selectedMonth, selectedYear]);
 
   /**
    * Prepare Data for Line Charts
@@ -275,57 +291,141 @@ const WorkerDashboard: React.FC = () => {
    */
   return (
     <div className="p-3">
+      {/* Filter Section */}
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        {/* Month Selector */}
+        <div>
+          <label htmlFor="month" className="block text-sm font-medium text-gray-700">
+            Month
+          </label>
+          <select
+            id="month"
+            name="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          >
+            <option value="">All Months</option>
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {new Date(0, i).toLocaleString('default', { month: 'long' })}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Year Selector */}
+        <div>
+          <label htmlFor="year" className="block text-sm font-medium text-gray-700">
+            Year
+          </label>
+          <select
+            id="year"
+            name="year"
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+          >
+            <option value="">All Years</option>
+            {Array.from({ length: 10 }, (_, i) => {
+              const year = new Date().getFullYear() - i;
+              return (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {/* Reset Button */}
+        <div className="flex items-end">
+          <button
+            onClick={() => {
+              setSelectedMonth('');
+              setSelectedYear('');
+            }}
+            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+          >
+            Reset Filters
+          </button>
+        </div>
+      </div>
+
+      {/* Dashboard Counts */}
       <DashboardCountContainer data={countData} />
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+
+      {/* Dashboard Charts and Tables */}
+      <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
         {/* Age Segmentation */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white md:col-span-2">
           <h1 className="text-xl font-bold">Age Segmentation</h1>
-          <ColumnChart data={ageSegmentationData} height={350} />
+          {ageSegmentationData.length > 0 ? (
+            <ColumnChart data={ageSegmentationData} height={350} />
+          ) : (
+            <div className="text-center text-gray-500">No age segmentation data available for the selected period.</div>
+          )}
         </div>
 
         {/* Recent Clients */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white w-full h-96 overflow-y-auto">
           <h1 className="text-xl font-bold mb-3 pl-2">Recent Clients</h1>
-          <Table isStriped aria-label="Recent Clients Table">
-            <TableHeader>
-              <TableColumn className="text-lg text-black py-3 pl-3">No.</TableColumn>
-              <TableColumn className="text-lg text-black py-3 pl-3">Name</TableColumn>
-              <TableColumn className="text-lg text-black py-3 pl-3">Category</TableColumn>
-            </TableHeader>
-            <TableBody>
-              {filteredRecentClients.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell className="text-base text-black font-bold py-3 pl-3">
-                    {index + 1}.
-                  </TableCell>
-                  <TableCell className="text-base text-black py-3 pl-3">
-                    {user.fname}
-                  </TableCell>
-                  <TableCell className="text-base text-black py-3 pl-3">
-                    {user.category_name}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          {filteredRecentClients.length > 0 ? (
+            <Table isStriped aria-label="Recent Clients Table">
+              <TableHeader>
+                <TableColumn className="text-lg text-black py-3 pl-3">No.</TableColumn>
+                <TableColumn className="text-lg text-black py-3 pl-3">Name</TableColumn>
+                <TableColumn className="text-lg text-black py-3 pl-3">Category</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {filteredRecentClients.map((client, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="text-base text-black font-bold py-3 pl-3">
+                      {index + 1}.
+                    </TableCell>
+                    <TableCell className="text-base text-black py-3 pl-3">
+                      {client.fname}
+                    </TableCell>
+                    <TableCell className="text-base text-black py-3 pl-3">
+                      {client.category_name}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center text-gray-500">No recent clients found for the selected period.</div>
+          )}
         </div>
 
         {/* New Registrations */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
           <h1 className="text-xl font-bold">New Registrations</h1>
-          <LineChart data={linegraph1} sizeHeight={350} />
+          {newRegisteredData.length > 0 ? (
+            <LineChart data={linegraph1} sizeHeight={350} />
+          ) : (
+            <div className="text-center text-gray-500">No new registrations for the selected period.</div>
+          )}
         </div>
 
         {/* Updates */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
           <h1 className="text-xl font-bold">Updates</h1>
-          <LineChart data={linegraph2} sizeHeight={350} />
+          {updatesData.length > 0 ? (
+            <LineChart data={linegraph2} sizeHeight={350} />
+          ) : (
+            <div className="text-center text-gray-500">No updates for the selected period.</div>
+          )}
         </div>
 
         {/* Percentage of Categories */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white overflow-hidden">
           <h1 className="text-xl font-bold">Percentage of Categories</h1>
-          <TaskPieChart taskData={taskData} taskLabels={taskLabels} />
+          {categoryData.length > 0 ? (
+            <TaskPieChart taskData={taskData} taskLabels={taskLabels} />
+          ) : (
+            <div className="text-center text-gray-500">No category data available.</div>
+          )}
         </div>
       </div>
     </div>

@@ -12,14 +12,16 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [messages, setMessages] = useState<any[]>([]);
 
+  // Retrieve user details from sessionStorage
   const firstName = sessionStorage.getItem("firstName") ?? "";
   const lastName = sessionStorage.getItem("lastName") ?? "";
   const profilePic = sessionStorage.getItem("profilePic")
     ? `https://health-center-repo-production.up.railway.app/uploads/images/${sessionStorage.getItem("profilePic")}`
     : "/default-profile.png";
 
-  // IMPORTANT: get the user role
+  // Retrieve user role and place_assign
   const role = sessionStorage.getItem("userRole") ?? "User";
+  const placeAssign = sessionStorage.getItem("place_assign") ?? "Not Assigned";
 
   const receiverId = sessionStorage.getItem("id");
 
@@ -80,20 +82,26 @@ const Avatar: React.FC<AvatarProps> = ({ unreadMessages, setUnreadMessages }) =>
 
         <PopoverContent>
           <div className="px-3 py-4 flex flex-col items-start gap-5">
-            {/* Show Announcement ONLY if role == "worker" */}
+            {/* Display Place Assign only if role is "worker" */}
             {role === "worker" && (
-              <div
-                className="text-lg tracking-wider flex items-center justify-center gap-3 cursor-pointer"
-                onClick={handleAnnouncementClick}
-              >
-                <TfiAnnouncement />
-                Announcement
-                {unreadMessages > 0 && (
-                  <span className="bg-red-500 text-white rounded-full w-4 h-4 text-center text-xs ml-1">
-                    {unreadMessages}
-                  </span>
-                )}
-              </div>
+              <>
+                <div className="text-sm text-gray-700">
+                  <strong>Place Assign:</strong> {placeAssign}
+                </div>
+                
+                <div
+                  className="text-lg tracking-wider flex items-center justify-center gap-3 cursor-pointer"
+                  onClick={handleAnnouncementClick}
+                >
+                  <TfiAnnouncement />
+                  Announcement
+                  {unreadMessages > 0 && (
+                    <span className="bg-red-500 text-white rounded-full w-4 h-4 text-center text-xs ml-1">
+                      {unreadMessages}
+                    </span>
+                  )}
+                </div>
+              </>
             )}
 
             <div

@@ -10,7 +10,7 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import axios from 'axios';  // Import axios for API calls
+import axios from 'axios';  // Import AxiosError
 import Swal from 'sweetalert2';  // Import SweetAlert2
 import { categories } from "../../../constants";
 
@@ -30,7 +30,50 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
   const [gender, setGender] = useState('');
   const [birthdate, setBirthdate] = useState('');
 
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const [duplicateError, setDuplicateError] = useState('');
+
+  // Function to check for duplicates
+  const checkDuplicate = async () => {
+    if (!fname || !philId) {
+      setIsDuplicate(false);
+      setDuplicateError('');
+      return;
+    }
+
+    try {
+      const response = await axios.post('https://health-center-repo-production.up.railway.app/check-duplicate', {
+        fname,
+        phil_id: philId
+      });
+
+      if (response.data.exists) {
+        setIsDuplicate(true);
+        setDuplicateError('A client with the same name and PhilHealth ID already exists.');
+      } else {
+        setIsDuplicate(false);
+        setDuplicateError('');
+      }
+    } catch (error: unknown) {  // Handle the duplicate check error
+      console.error('Error checking duplicate:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to check for duplicate clients.',
+      });
+    }
+  };
+
   const handleAddClient = async () => {
+    if (isDuplicate) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Duplicate Client',
+        text: duplicateError,
+      });
+      return;
+    }
+
     if (!category || !fname || !address || !workerId || !gender || !birthdate) {
       Swal.fire({
         icon: 'warning',
@@ -66,13 +109,46 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
           text: 'Failed to add client',
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {  // Explicitly type error as unknown
       console.error('Error adding client:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Error occurred while adding client',
-      });
+
+      if (axios.isAxiosError(error)) {
+        // Access Axios-specific properties safely
+        if (error.response && error.response.data && error.response.data.error) {
+          const errorMessage = error.response.data.error;
+
+          // Handle duplicate error specifically
+          if (errorMessage.includes("already exists")) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Duplicate Client',
+              text: errorMessage,
+            });
+            return;
+          }
+
+          // Handle other specific errors if needed
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errorMessage,
+          });
+        } else {
+          // If there's no response or error message from server
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An unexpected error occurred while adding the client',
+          });
+        }
+      } else {
+        // Handle non-Axios errors
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An unexpected error occurred while adding the client',
+        });
+      }
     }
   };
 
@@ -109,14 +185,16 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
                 >
                   <SelectItem key="male" value="Male">Male</SelectItem>
                   <SelectItem key="female" value="Female">Female</SelectItem>
+                  <SelectItem key="other" value="Other">Other</SelectItem> 
                 </Select>
               </div>
 
               <Input
                 type="text"
-                label={<span className="capitalize">First Name</span>}
+                label={<span className="capitalize">Full Name</span>}
                 value={fname}
                 onChange={(e) => setFname(e.target.value)}
+                required
               />
 
               <Input
@@ -124,6 +202,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
                 label={<span className="capitalize">Address</span>}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
+                required
               />
 
               <Input
@@ -135,10 +214,14 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
 
               <Input
                 type="text"
-                label={<span className="capitalize">Philhealth ID (optional)</span>}
+                label={<span className="capitalize">PhilHealth ID (optional)</span>}
                 value={philId}
                 onChange={(e) => setPhilId(e.target.value)}
+                onBlur={checkDuplicate} // Trigger duplicate check on blur
               />
+              {isDuplicate && (
+                <p className="text-red-500 text-sm col-span-2">{duplicateError}</p>
+              )}
 
               <Input
                 type="date"

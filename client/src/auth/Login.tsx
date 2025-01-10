@@ -100,43 +100,42 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
   };
 
   const handleLogin = async () => {
-    if (!acceptedTerms) return;
+  if (!acceptedTerms) return;
 
-    try {
-      const response = await fetch(
-        "https://health-center-repo-production.up.railway.app/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
+  try {
+    const response = await fetch("https://health-center-repo-production.up.railway.app/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-      const data = await response.json();
-      console.log("API Response:", data);
+    const data = await response.json();
+    console.log("API Response:", data);
 
-      if (response.ok) {
-        // Save user details
-        sessionStorage.setItem("id", data.id);
-        sessionStorage.setItem("worker_id", data.worker_id);
-        sessionStorage.setItem("userRole", data.role);
-        sessionStorage.setItem("firstName", data.first_name);
-        sessionStorage.setItem("lastName", data.last_name);
-        sessionStorage.setItem("profilePic", data.profile_pic);
+    if (response.ok) {  
+      // Save user details with transformed field names if necessary
+      sessionStorage.setItem("id", data.id);
+      sessionStorage.setItem("worker_id", data.worker_id || ""); // Check if worker_id exists
+      sessionStorage.setItem("userRole", data.role);
+      sessionStorage.setItem("firstName", data.first_name);
+      sessionStorage.setItem("lastName", data.last_name);
+      sessionStorage.setItem("profilePic", data.profile_pic);
+      sessionStorage.setItem("place_assign", data.place_assign || ""); // Add this line
 
-        // Set role and navigate
-        setRole(data.role);
-        navigate("/");
-      } else {
-        setErrorMessage(data.message);
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      setErrorMessage("An error occurred during login.");
+      // Set role and navigate
+      setRole(data.role);
+      navigate("/");
+    } else {
+      setErrorMessage(data.message);
     }
-  };
+  } catch (error) {
+    console.error("Login failed:", error);
+    setErrorMessage("An error occurred during login.");
+  }
+};
+
 
   const handleHelpRequest = () => {
     setIsModalOpen(true);
