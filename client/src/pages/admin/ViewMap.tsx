@@ -35,11 +35,6 @@ interface PurokCount {
   client_count: number;
 }
 
-interface PlaceAssignCoordinate {
-  place_assign: string;
-  longitude: number;
-  latitude: number;
-}
 
 /* ------------------------ Constants ------------------------- */
 const TOTAL_POPULATION = 7621;
@@ -81,9 +76,6 @@ const ViewMap: React.FC = () => {
   const [loadingPurokCounts, setLoadingPurokCounts] = useState<boolean>(false);
 
   // If you still need placeAssignCoordinates (optional):
-  const [placeAssignCoordinates, setPlaceAssignCoordinates] = useState<
-    Record<string, [number, number]>
-  >({});
 
   /* ------------------- 1) Fetch Data on Mount ------------------- */
   useEffect(() => {
