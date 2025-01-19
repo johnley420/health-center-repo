@@ -1,3 +1,5 @@
+// src/auth/Login.tsx
+
 import React from "react";
 import {
   Button,
@@ -10,8 +12,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // ---- Icons (from NextUI docs) ----
 export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -26,26 +31,8 @@ export const EyeSlashFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
       width="1em"
       {...props}
     >
-      <path
-        d="M21.2714 9.17834C20.9814 8.71834 20.6714 8.28834 20.3514 7.88834C19.9814 7.41834 19.2814 7.37834 18.8614 7.79834L15.8614 10.7983C16.0814 11.4583 16.1214 12.2183 15.9214 13.0083C15.5714 14.4183 14.4314 15.5583 13.0214 15.9083C12.2314 16.1083 11.4714 16.0683 10.8114 15.8483C10.8114 15.8483 9.38141 17.2783 8.35141 18.3083C7.85141 18.8083 8.01141 19.6883 8.68141 19.9483C9.75141 20.3583 10.8614 20.5683 12.0014 20.5683C13.7814 20.5683 15.5114 20.0483 17.0914 19.0783C18.7014 18.0783 20.1514 16.6083 21.3214 14.7383C22.2714 13.2283 22.2214 10.6883 21.2714 9.17834Z"
-        fill="currentColor"
-      />
-      <path
-        d="M14.0206 9.98062L9.98062 14.0206C9.47062 13.5006 9.14062 12.7806 9.14062 12.0006C9.14062 10.4306 10.4206 9.14062 12.0006 9.14062C12.7806 9.14062 13.5006 9.47062 14.0206 9.98062Z"
-        fill="currentColor"
-      />
-      <path
-        d="M18.25 5.74969L14.86 9.13969C14.13 8.39969 13.12 7.95969 12 7.95969C9.76 7.95969 7.96 9.76969 7.96 11.9997C7.96 13.1197 8.41 14.1297 9.14 14.8597L5.76 18.2497H5.75C4.64 17.3497 3.62 16.1997 2.75 14.8397C1.75 13.2697 1.75 10.7197 2.75 9.14969C3.91 7.32969 5.33 5.89969 6.91 4.91969C8.49 3.95969 10.22 3.42969 12 3.42969C14.23 3.42969 16.39 4.24969 18.25 5.74969Z"
-        fill="currentColor"
-      />
-      <path
-        d="M14.8581 11.9981C14.8581 13.5681 13.5781 14.8581 11.9981 14.8581C11.9381 14.8581 11.8881 14.8581 11.8281 14.8381L14.8381 11.8281C14.8581 11.8881 14.8581 11.9381 14.8581 11.9981Z"
-        fill="currentColor"
-      />
-      <path
-        d="M21.7689 2.22891C21.4689 1.92891 20.9789 1.92891 20.6789 2.22891L2.22891 20.6889C1.92891 20.9889 1.92891 21.4789 2.22891 21.7789C2.37891 21.9189 2.56891 21.9989 2.76891 21.9989C2.96891 21.9989 3.15891 21.9189 3.30891 21.7689L21.7689 3.30891C22.0789 3.00891 22.0789 2.52891 21.7689 2.22891Z"
-        fill="currentColor"
-      />
+      {/* SVG paths */}
+      {/* ... (keep existing SVG paths) */}
     </svg>
   );
 };
@@ -62,14 +49,8 @@ export const EyeFilledIcon = (props: React.SVGProps<SVGSVGElement>) => {
       width="1em"
       {...props}
     >
-      <path
-        d="M21.25 9.14969C18.94 5.51969 15.56 3.42969 12 3.42969C10.22 3.42969 8.49 3.94969 6.91 4.91969C5.33 5.89969 3.91 7.32969 2.75 9.14969C1.75 10.7197 1.75 13.2697 2.75 14.8397C5.06 18.4797 8.44 20.5597 12 20.5597C13.78 20.5597 15.51 20.0397 17.09 19.0697C18.67 18.0897 20.09 16.6597 21.25 14.8397C22.25 13.2797 22.25 10.7197 21.25 9.14969ZM12 16.0397C9.76 16.0397 7.96 14.2297 7.96 11.9997C7.96 9.76969 9.76 7.95969 12 7.95969C14.24 7.95969 16.04 9.76969 16.04 11.9997C16.04 14.2297 14.24 16.0397 12 16.0397Z"
-        fill="currentColor"
-      />
-      <path
-        d="M11.9984 9.14062C10.4284 9.14062 9.14844 10.4206 9.14844 12.0006C9.14844 13.5706 10.4284 14.8506 11.9984 14.8506C13.5684 14.8506 14.8584 13.5706 14.8584 12.0006C14.8584 10.4306 13.5684 9.14062 11.9984 9.14062Z"
-        fill="currentColor"
-      />
+      {/* SVG paths */}
+      {/* ... (keep existing SVG paths) */}
     </svg>
   );
 };
@@ -81,6 +62,7 @@ interface LoginProps {
 
 // ---- Main component ----
 const Login: React.FC<LoginProps> = ({ setRole }) => {
+  // Existing state variables
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [acceptedTerms, setAcceptedTerms] = React.useState(false);
@@ -94,82 +76,129 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
   const [isVisible, setIsVisible] = React.useState(false); // <-- for show/hide password
   const navigate = useNavigate();
 
+  // New state variables for password reset
+  const [resetFullName, setResetFullName] = React.useState("");
+  const [resetEmail, setResetEmail] = React.useState("");
+
   // Toggle the password visibility
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
 
   const handleLogin = async () => {
-  if (!acceptedTerms) return;
+    if (!acceptedTerms) return;
 
-  try {
-    const response = await fetch("https://health-center-repo-production.up.railway.app/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      const response = await fetch("https://health-center-repo-production.up.railway.app/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await response.json();
-    console.log("API Response:", data);
+      const data = await response.json();
+      console.log("API Response:", data);
 
-    if (response.ok) {  
-      // Save user details with transformed field names if necessary
-      sessionStorage.setItem("id", data.id);
-      sessionStorage.setItem("worker_id", data.worker_id || ""); // Check if worker_id exists
-      sessionStorage.setItem("userRole", data.role);
-      sessionStorage.setItem("firstName", data.first_name);
-      sessionStorage.setItem("lastName", data.last_name);
-      sessionStorage.setItem("profilePic", data.profile_pic);
-      sessionStorage.setItem("place_assign", data.place_assign || ""); // Add this line
+      if (response.ok) {
+        // Save user details
+        sessionStorage.setItem("id", data.id);
+        sessionStorage.setItem("worker_id", data.worker_id || "");
+        sessionStorage.setItem("userRole", data.role);
+        sessionStorage.setItem("firstName", data.first_name);
+        sessionStorage.setItem("lastName", data.last_name);
+        sessionStorage.setItem("profilePic", data.profile_pic);
+        sessionStorage.setItem("place_assign", data.place_assign || "");
 
-      // Set role and navigate
-      setRole(data.role);
-      navigate("/");
-    } else {
-      setErrorMessage(data.message);
+        // Set role and navigate
+        setRole(data.role);
+        navigate("/");
+      } else {
+        setErrorMessage(data.message);
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErrorMessage("An error occurred during login.");
     }
-  } catch (error) {
-    console.error("Login failed:", error);
-    setErrorMessage("An error occurred during login.");
-  }
-};
-
+  };
 
   const handleHelpRequest = () => {
     setIsModalOpen(true);
+    setSelectedTab("help");
   };
+
+  // Removed handleForgotAdminPassword as it's no longer needed
 
   const handleSubmitHelpRequest = async () => {
     try {
-      const response = await fetch(
-        "https://health-center-repo-production.up.railway.app/help-request",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fullName,
-            address,
-            placeAssign,
-            phoneNumber,
-            loginIssue,
-          }),
-        }
-      );
+      const response = await fetch("https://health-center-repo-production.up.railway.app/help-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName,
+          address,
+          placeAssign,
+          phoneNumber,
+          loginIssue,
+        }),
+      });
 
       if (response.ok) {
         console.log("Help request submitted successfully");
         setIsModalOpen(false);
       } else {
         console.error("Failed to submit help request");
+        setErrorMessage("Failed to submit help request.");
       }
     } catch (error) {
       console.error("Error submitting help request:", error);
+      setErrorMessage("An error occurred while submitting the help request.");
     }
   };
+
+  const handleSubmitForgotAdmin = async () => {
+    // Optional: Basic client-side validation
+    if (!resetFullName.trim() || !resetEmail.trim()) {
+      alert("Please provide both Full Name and Email.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(resetEmail)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    try {
+      // Send user-provided Full Name and Email
+      const response = await axios.post("https://health-center-repo-production.up.railway.app/forgot-admin-password", {
+        fullName: resetFullName,
+        email: resetEmail,
+      });
+
+      if (response.status === 200) {
+        alert("Password reset link has been sent to your email.");
+        setIsModalOpen(false);
+        // Clear the input fields after successful submission
+        setResetFullName("");
+        setResetEmail("");
+      } else {
+        alert("Failed to send password reset link.");
+      }
+    } catch (error: any) {
+      console.error("Error sending password reset link:", error);
+      if (error.response && error.response.data && error.response.data.message) {
+        alert(`Error: ${error.response.data.message}`);
+      } else {
+        alert("An error occurred while sending the password reset link.");
+      }
+    }
+  };
+
+  // New state for selected tab with explicit type
+  const [selectedTab, setSelectedTab] = React.useState<"help" | "forgotAdmin">("help");
 
   return (
     <div className="flex flex-col md:flex-row flex-wrap h-screen">
@@ -188,7 +217,7 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
             <div className="flex justify-between items-center mb-4 mt-2">
               <label className="text-sm font-medium">Password</label>
               <Link color="primary" onClick={handleHelpRequest} className="text-sm">
-                Can&apos;t login?
+                Can't login?
               </Link>
             </div>
 
@@ -200,7 +229,6 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
               type={isVisible ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              // Use `endContent` for NextUI v2
               endContent={
                 <button
                   type="button"
@@ -275,49 +303,112 @@ const Login: React.FC<LoginProps> = ({ setRole }) => {
         </div>
       </div>
 
-      {/* Help Request Modal */}
+      {/* Help & Forgot Admin Password Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} size="lg">
         <ModalContent>
-          <ModalHeader>Request Help from Admin</ModalHeader>
+          <ModalHeader>
+            {selectedTab === "help" ? "Request Help from Admin" : "Forgot Admin Password"}
+          </ModalHeader>
           <ModalBody>
-            <Input
-              label="Full Name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Enter your full name"
-            />
-            <Input
-              label="Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder="Enter your address"
-            />
-            <Input
-              label="Place Assigned"
-              value={placeAssign}
-              onChange={(e) => setPlaceAssign(e.target.value)}
-              placeholder="Enter your place of assignment"
-            />
-            <Input
-              label="Phone Number"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              placeholder="Enter your phone number"
-            />
-            <Input
-              label="Why can't you login?"
-              value={loginIssue}
-              onChange={(e) => setLoginIssue(e.target.value)}
-              placeholder="Describe your issue"
-            />
+            <Tabs
+              selectedKey={selectedTab}
+              onSelectionChange={(key: React.Key) =>
+                setSelectedTab(key as "help" | "forgotAdmin")
+              }
+              className="mb-4"
+            >
+              <Tab key="help" title="Request Help" />
+              <Tab key="forgotAdmin" title="Forgot Admin Password" />
+            </Tabs>
+            {selectedTab === "help" ? (
+              <>
+                <Input
+                  label="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Enter your full name"
+                />
+                <Input
+                  label="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="Enter your address"
+                />
+                <Input
+                  label="Place Assigned"
+                  value={placeAssign}
+                  onChange={(e) => setPlaceAssign(e.target.value)}
+                  placeholder="Enter your place of assignment"
+                />
+                <Input
+                  label="Phone Number"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter your phone number"
+                />
+                <Input
+                  label="Why can't you login?"
+                  value={loginIssue}
+                  onChange={(e) => setLoginIssue(e.target.value)}
+                  placeholder="Describe your issue"
+                />
+              </>
+            ) : (
+              <>
+                {/* Input fields for Full Name and Email */}
+                <p className="text-sm text-gray-700 mb-2">
+                  Enter the admin's full name and email to receive a password reset link.
+                </p>
+                <Input
+                  label="Full Name"
+                  value={resetFullName}
+                  onChange={(e) => setResetFullName(e.target.value)}
+                  placeholder="Enter admin's full name"
+                  className="mb-4"
+                />
+                <Input
+                  label="Email"
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  placeholder="Enter admin's email"
+                  className="mb-4"
+                />
+              </>
+            )}
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onPress={() => setIsModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button color="primary" onPress={handleSubmitHelpRequest}>
-              Submit
-            </Button>
+            {selectedTab === "help" ? (
+              <>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button color="primary" onPress={handleSubmitHelpRequest}>
+                  Submit
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={handleSubmitForgotAdmin}
+                  disabled={!resetFullName || !resetEmail} // Disable if fields are empty
+                >
+                  Send Reset Link
+                </Button>
+              </>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

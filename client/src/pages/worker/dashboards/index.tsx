@@ -63,6 +63,12 @@ interface UpdatesData {
   count: number;
 }
 
+// NEW: Interface for the condition data from /condition-count
+interface ConditionCount {
+  client_condition: string; // 'permanent residence' | 'temporary' | 'deceased'
+  count: number;
+}
+
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
@@ -98,7 +104,10 @@ const WorkerDashboard: React.FC = () => {
   const [newRegisteredData, setNewRegisteredData] = useState<NewRegisteredEntry[]>([]);
   const [categoryData, setCategoryData] = useState<CategoryCount[]>([]);
   const [ageSegmentationData, setAgeSegmentationData] = useState<AgeSegmentation[]>([]);
-  const [updatesData, setUpdatesData] = useState<UpdatesData[]>([]); // New state for updates
+  const [updatesData, setUpdatesData] = useState<UpdatesData[]>([]);
+
+  // NEW: condition data (for bar graph of permanent residence, temporary, deceased)
+  const [conditionData, setConditionData] = useState<ConditionCount[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -138,11 +147,15 @@ const WorkerDashboard: React.FC = () => {
           'category-count',
           'age-segmentation',
           'updates-line-graph',
+          'condition-count', // <== Add here
         ];
 
         // Function to build URLs with query strings only for endpoints that support date filters
         const buildURL = (endpoint: string) => {
-          if (endpointsRequiringDateFilters.includes(endpoint) && (selectedMonth || selectedYear)) {
+          if (
+            endpointsRequiringDateFilters.includes(endpoint) &&
+            (selectedMonth || selectedYear)
+          ) {
             // Include only the relevant query parameters for date filters
             const urlParams: Record<string, string> = { worker_id: workerId };
             if (selectedMonth) urlParams.month = selectedMonth;
@@ -164,6 +177,7 @@ const WorkerDashboard: React.FC = () => {
           categoryResponse,
           ageSegmentationResponse,
           updatesResponse,
+          conditionResponse, // NEW
         ] = await Promise.all([
           axios.get(buildURL('count-total-clients')),
           axios.get(buildURL('count-male-clients')),
@@ -173,6 +187,7 @@ const WorkerDashboard: React.FC = () => {
           axios.get(buildURL('category-count')),
           axios.get(buildURL('age-segmentation')),
           axios.get(buildURL('updates-line-graph')),
+          axios.get(buildURL('condition-count')), // NEW
         ]);
 
         /**
@@ -219,6 +234,9 @@ const WorkerDashboard: React.FC = () => {
         // Set Updates Data
         setUpdatesData(updatesResponse.data);
 
+        // NEW: Condition data
+        setConditionData(conditionResponse.data);
+
         // Data fetching complete
         setLoading(false);
       } catch (error: any) {
@@ -262,10 +280,49 @@ const WorkerDashboard: React.FC = () => {
   ], [updatesData]);
 
   /**
-   * Prepare Data for Pie Chart
+   * Prepare Data for Pie Chart (Categories)
    */
   const taskData = categoryData.map((category) => category.count);
   const taskLabels = categoryData.map((category) => category.category_name);
+
+  /**
+   * Merge Condition Data With Fixed Categories
+   *   - We want 'permanent residence', 'temporary', 'deceased'
+   *     always shown, even if count=0
+   */
+  const conditionChartData = useMemo(() => {
+    if (!conditionData) return [];
+
+    // 1) Define the fixed categories
+    const fixedCategories = ["permanent residence", "temporary", "deceased"];
+
+    // 2) Build a dictionary, defaulting to 0
+    const categoryDict: Record<string, number> = {
+      "permanent residence": 0,
+      temporary: 0,
+      deceased: 0,
+    };
+
+    // 3) Fill actual data from server
+    conditionData.forEach((item) => {
+      categoryDict[item.client_condition] = item.count;
+    });
+
+    // 4) Convert dict => array
+    const mergedArray = fixedCategories.map((cat) => ({
+      x: cat,
+      y: categoryDict[cat] || 0,
+    }));
+
+    // 5) Single-series for the chart
+    return [
+      {
+        name: "Clients by Condition",
+        color: "#3B82F6",
+        data: mergedArray,
+      },
+    ];
+  }, [conditionData]);
 
   /**
    * Render Loading or Error States
@@ -357,18 +414,32 @@ const WorkerDashboard: React.FC = () => {
 
       {/* Dashboard Charts and Tables */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-        {/* Age Segmentation */}
-        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white md:col-span-2">
+        {/* Age Segmentation (Left Column) */}
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white md:col-span-1">
           <h1 className="text-xl font-bold">Age Segmentation</h1>
           {ageSegmentationData.length > 0 ? (
             <ColumnChart data={ageSegmentationData} height={350} />
           ) : (
-            <div className="text-center text-gray-500">No age segmentation data available for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No age segmentation data available for the selected period.
+            </div>
           )}
         </div>
 
-        {/* Recent Clients */}
-        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white w-full h-96 overflow-y-auto">
+        {/* NEW: Clients by Condition (Middle Column) */}
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white md:col-span-1">
+          <h1 className="text-xl font-bold">Clients by Condition</h1>
+          {conditionChartData.length > 0 ? (
+            <ColumnChart data={conditionChartData} height={350} />
+          ) : (
+            <div className="text-center text-gray-500">
+              No condition data available for the selected period.
+            </div>
+          )}
+        </div>
+
+        {/* Recent Clients (Right Column) */}
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white w-full h-96 overflow-y-auto md:col-span-1">
           <h1 className="text-xl font-bold mb-3 pl-2">Recent Clients</h1>
           {filteredRecentClients.length > 0 ? (
             <Table isStriped aria-label="Recent Clients Table">
@@ -394,7 +465,9 @@ const WorkerDashboard: React.FC = () => {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center text-gray-500">No recent clients found for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No recent clients found for the selected period.
+            </div>
           )}
         </div>
 

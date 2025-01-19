@@ -63,6 +63,7 @@ const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
     category_name: "",
     gender: "",
     birthdate: "",
+    condition: "", // <-- Add condition state
   });
 
   useEffect(() => {
@@ -75,12 +76,17 @@ const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
         date_registered: data.date_registered || "",
         category_name: data.category_name || "",
         gender: data.gender || "",
-        birthdate: data.birthdate ? new Date(data.birthdate).toISOString().split('T')[0] : "",
+        birthdate: data.birthdate
+          ? new Date(data.birthdate).toISOString().split("T")[0]
+          : "",
+        condition: data.condition || "permanent residence", // Set default or from DB
       });
     }
   }, [data]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setClientInfos((prev) => ({
       ...prev,
@@ -112,14 +118,24 @@ const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">Update Client</ModalHeader>
-            <ModalBody className="overflow-y-auto" style={{ maxHeight: "70vh" }}>
+            <ModalHeader className="flex flex-col gap-1">
+              Update Client
+            </ModalHeader>
+            <ModalBody
+              className="overflow-y-auto"
+              style={{ maxHeight: "70vh" }}
+            >
               <Tabs
                 aria-label="Client Forms"
                 selectedKey={tab}
                 onSelectionChange={(key) => setTab(key.toString())}
               >
-                <Tab key="0" title="Client Information" onClick={() => setTab("0")}>
+                {/* Client Information Tab */}
+                <Tab
+                  key="0"
+                  title="Client Information"
+                  onClick={() => setTab("0")}
+                >
                   <div className="grid grid-cols-2 gap-4">
                     <Input
                       label="Full Name"
@@ -171,11 +187,36 @@ const UpdateClient = ({ isOpen, onClose, data, onUpdate }: propsType) => {
                       onChange={handleInputChange}
                       required
                     />
+
+                    {/* New Condition Input - using a select for demonstration */}
+                    <div className="flex flex-col">
+                      <label className="text-sm font-medium" htmlFor="condition">
+                        Condition
+                      </label>
+                      <select
+                        id="condition"
+                        name="condition"
+                        value={clientInfos.condition}
+                        onChange={handleInputChange}
+                        className="border px-2 py-1 rounded"
+                      >
+                        <option value="permanent residence">
+                          Permanent Residence
+                        </option>
+                        <option value="temporary">Temporary</option>
+                        <option value="deceased">Deceased</option>
+                      </select>
+                    </div>
                   </div>
                 </Tab>
 
+                {/* Dynamically Render Additional Forms */}
                 {data.forms?.map((form: string, index: number) => (
-                  <Tab key={(index + 1).toString()} title={form} onClick={() => setTab((index + 1).toString())}>
+                  <Tab
+                    key={(index + 1).toString()}
+                    title={form}
+                    onClick={() => setTab((index + 1).toString())}
+                  >
                     <div className="py-4">
                       <h2 className="text-lg font-semibold">{form} Form Details</h2>
                       {formComponents[form] ? (

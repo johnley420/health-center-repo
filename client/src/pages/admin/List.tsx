@@ -20,6 +20,7 @@ import ViewWorkerForm from "../../components/modals/view/ViewWorkerForm";
 interface Worker {
   id: number;
   first_name: string;
+  middle_name: string;
   last_name: string;
   username: string;
   birth_date: string;  // ISO string (e.g. "2002-12-27T16:00:00.000Z")
@@ -63,6 +64,7 @@ const List: React.FC = () => {
     const filtered = workersData.filter(
       (worker) =>
         worker.first_name.toLowerCase().includes(lowercasedTerm) ||
+        worker.middle_name.toLowerCase().includes(lowercasedTerm) || // Include Middle Name in search
         worker.last_name.toLowerCase().includes(lowercasedTerm) ||
         worker.address.toLowerCase().includes(lowercasedTerm)
     );
@@ -138,7 +140,9 @@ const List: React.FC = () => {
       <Table isStriped aria-label="Worker table">
         <TableHeader>
           <TableColumn>No</TableColumn>
-          <TableColumn>Full Name</TableColumn>
+          <TableColumn>First Name</TableColumn>
+          <TableColumn>Middle Name</TableColumn> 
+          <TableColumn>Last Name</TableColumn> 
           <TableColumn>Birthdate</TableColumn>
           <TableColumn>Age</TableColumn>
           <TableColumn>Gender</TableColumn>
@@ -152,9 +156,9 @@ const List: React.FC = () => {
           {filteredWorkers.map((worker, index) => (
             <TableRow key={worker.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>
-                {`${worker.first_name} ${worker.last_name}`}
-              </TableCell>
+              <TableCell>{worker.first_name}</TableCell> 
+              <TableCell>{worker.middle_name}</TableCell> 
+              <TableCell>{worker.last_name}</TableCell>
               {/* Format the birth_date */}
               <TableCell>{formatDate(worker.birth_date)}</TableCell>
               <TableCell>{worker.age}</TableCell>
@@ -218,15 +222,16 @@ const List: React.FC = () => {
           onClose={() => setIsEditOpen(false)}
           data={{
             id: selectedWorker.id,
-            firstName: selectedWorker.first_name,
-            lastName: selectedWorker.last_name,
+            first_name: selectedWorker.first_name,   // Changed from firstName
+            middle_name: selectedWorker.middle_name, // Changed from middleName
+            last_name: selectedWorker.last_name,     // Changed from lastName
             age: selectedWorker.age,
             address: selectedWorker.address,
             gender: selectedWorker.gender,
             birthdate: selectedWorker.birth_date,
-            placeAssigned: selectedWorker.place_assign,
-            idPic: selectedWorker.id_pic,
-            profilePic: selectedWorker.profile_pic,
+            place_assign: selectedWorker.place_assign, // Changed from placeAssigned
+            id_pic: selectedWorker.id_pic,             // Changed from idPic
+            profile_pic: selectedWorker.profile_pic,   // Changed from profilePic
             username: selectedWorker.username,
           }}
           onUpdate={() => {

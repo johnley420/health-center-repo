@@ -10,17 +10,19 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import React, { useState } from "react";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 type PropsTypes = {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: () => void; // Added onAdd prop to notify parent on successful addition
+  onAdd: () => void; // Notify parent on successful addition
 };
 
 const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
   const [birthDate, setBirthDate] = useState("");
   const [age, setAge] = useState<number | string>("");
   const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState(""); // New state for Middle Name
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [address, setAddress] = useState("");
@@ -33,21 +35,27 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
   const handleBirthDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = e.target.value;
     setBirthDate(selectedDate);
-    const age = calculateAge(new Date(selectedDate));
-    setAge(age);
+    const calculatedAge = calculateAge(new Date(selectedDate));
+    setAge(calculatedAge);
   };
 
   const calculateAge = (birthDate: Date) => {
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return age;
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: string
+  ) => {
     if (type === "id_pic") {
       setIdPic(e.target.files?.[0] || null);
     } else if (type === "profile_pic") {
@@ -55,46 +63,86 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
     }
   };
 
- const handleSubmit = async () => {
-  const formData = new FormData();
-  formData.append("first_name", firstName);
-  formData.append("last_name", lastName);
-  formData.append("birth_date", birthDate);
-  formData.append("age", age.toString());
-  formData.append("gender", gender);
-  formData.append("address", address);
-  formData.append("place_assign", placeAssign);
-  formData.append("username", username);
-  formData.append("password", password);
-  if (idPic) formData.append("id_pic", idPic);
-  if (profilePic) formData.append("profile_pic", profilePic);
+  // Optional: Client-side duplicate check
+  const checkDuplicate = async () => {
+    try {
+      const response = await fetch("https://health-center-repo-production.up.railway.app/check-duplicate-worker", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ first_name: firstName, middle_name: middleName, last_name: lastName }),
+      });
 
-  try {
-    const response = await fetch("https://health-center-repo-production.up.railway.app/upload-worker", {
-      method: "POST",
-      body: formData,
-    });
+      const data = await response.json();
+      return data.isDuplicate;
+    } catch (error) {
+      console.error("Error checking duplicate:", error);
+      return false; // Assume no duplicate if an error occurs
+    }
+  };
 
-    // Check if the response was successful
-    if (!response.ok) {
-      console.error(`Error: ${response.statusText}`);
-      alert("Failed to add worker.");
+  const handleSubmit = async () => {
+    // Optional: Check for duplicate before submitting
+    const isDuplicate = await checkDuplicate();
+    if (isDuplicate) {
+      Swal.fire({
+        icon: "warning",
+        title: "Duplicate Worker",
+        text: "A worker with the same name already exists.",
+      });
       return;
     }
 
-    const result = await response.json();
-    console.log("Server response:", result); // Now 'result' is actually used.
+    const formData = new FormData();
+    formData.append("first_name", firstName);
+    formData.append("middle_name", middleName); // Add middle name
+    formData.append("last_name", lastName);
+    formData.append("birth_date", birthDate);
+    formData.append("age", age.toString());
+    formData.append("gender", gender);
+    formData.append("address", address);
+    formData.append("place_assign", placeAssign);
+    formData.append("username", username);
+    formData.append("password", password);
+    if (idPic) formData.append("id_pic", idPic);
+    if (profilePic) formData.append("profile_pic", profilePic);
 
-    alert("Worker added successfully!");
-    onAdd(); // Notify parent component to refresh data
-  } catch (error) {
-    console.error("Error:", error);
-    alert("Failed to add worker.");
-  }
+    try {
+      const response = await fetch("https://health-center-repo-production.up.railway.app/upload-worker", {
+        method: "POST",
+        body: formData,
+      });
 
-  onClose();
-};
+      if (!response.ok) {
+        const errorData = await response.json();
+        Swal.fire({
+          icon: "error",
+          title: "Failed to Add Worker",
+          text: errorData.message || "An error occurred while adding the worker.",
+        });
+        return;
+      }
 
+      const result = await response.json();
+      console.log("Server response:", result);
+      Swal.fire({
+        icon: "success",
+        title: "Worker Added",
+        text: "The worker has been added successfully!",
+      });
+      onAdd(); // Notify parent component to refresh data
+    } catch (error) {
+      console.error("Error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to add worker. Please try again later.",
+      });
+    }
+
+    onClose();
+  };
 
   return (
     <Modal scrollBehavior="outside" size="5xl" isOpen={isOpen} onClose={onClose}>
@@ -111,6 +159,16 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
+                
+                {/* Middle Name Input */}
+                <Input
+                  label="Middle Name"
+                  placeholder="Enter middle name"
+                  required
+                  value={middleName}
+                  onChange={(e) => setMiddleName(e.target.value)}
+                />
+
                 <Input
                   label="Last Name"
                   placeholder="Enter last name"
@@ -118,6 +176,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
+                
                 <Input
                   label="Birth Date"
                   type="date"
@@ -125,7 +184,9 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={birthDate}
                   onChange={handleBirthDateChange}
                 />
+                
                 <Input label="Age" type="number" value={age.toString()} readOnly required />
+                
                 <Select
                   label="Sex"
                   placeholder="Select a gender"
@@ -143,6 +204,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                     Others
                   </SelectItem>
                 </Select>
+                
                 <Input
                   label="Address"
                   placeholder="Enter address"
@@ -150,6 +212,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
+                
                 <Select
                   label="Place Assign"
                   placeholder="Select a place"
@@ -188,6 +251,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                     Purok 6
                   </SelectItem>
                 </Select>
+                
                 <Input
                   label="Username"
                   placeholder="Enter username"
@@ -195,6 +259,7 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
+                
                 <Input
                   label="Password"
                   type="password"
@@ -203,12 +268,14 @@ const ViewWorkerForm = ({ isOpen, onClose, onAdd }: PropsTypes) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                
                 <Input
                   label="ID Picture"
                   type="file"
                   onChange={(e) => handleFileChange(e, "id_pic")}
                   required
                 />
+                
                 <Input
                   label="Profile Picture"
                   type="file"

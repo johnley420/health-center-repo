@@ -38,6 +38,7 @@ import { Route, Routes, Navigate } from "react-router-dom";
 import Rootlayout from "../../layout/Rootlayout";
 import { routesType } from "../../types";
 import AdminOnlineForm from "../../components/modals/add/AdminOnlineForm";
+import ForgotAdminPassword from "../ForgotAdminPassword";
 
 // Import your publicly accessible component (AdminOnlineForm) 
 // Ensure you've created this component and placed it in the correct directory
@@ -103,6 +104,7 @@ const PrivateRoutes = () => {
     <Routes>
       {/* Public route accessible without login */}
       <Route path="/admin-online-form" element={<AdminOnlineForm />} />
+       <Route path="/admin/forgot/accounts" element={<ForgotAdminPassword />} />
 
       {/* Login Route */}
       <Route path="/login" element={<Login setRole={setRole} />} />

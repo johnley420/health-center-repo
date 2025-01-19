@@ -1,6 +1,6 @@
 // src/pages/admin/dashboards/index.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import {
   Table,
@@ -9,7 +9,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from "@nextui-org/react"; // Retained for table components
+} from "@nextui-org/react"; // For table components
 import DashboardCountContainer from "../../../components/dashboardCountContainer";
 import ColumnChart from "../../../components/charts/ColumnChart";
 import LineChart from "../../../components/charts/LineChart";
@@ -63,6 +63,12 @@ interface UpdatesData {
   count: number;
 }
 
+// NEW: interface for condition data
+interface ConditionCount {
+  client_condition: string; // 'permanent residence' | 'temporary' | 'deceased'
+  count: number;
+}
+
 const Dashboard: React.FC = () => {
   /**
    * State Variables with Proper Typing
@@ -73,7 +79,11 @@ const Dashboard: React.FC = () => {
   const [categoryData, setCategoryData] = useState<CategoryCount[]>([]);
   const [ageSegmentationData, setAgeSegmentationData] = useState<AgeSegmentation[]>([]);
   const [updatesData, setUpdatesData] = useState<UpdatesData[]>([]);
-  const [, setMedicineCount] = useState<number>(0); // Medicine count if needed elsewhere
+  
+  // NEW: condition data for showing permanent/temporary/deceased
+  const [conditionData, setConditionData] = useState<ConditionCount[]>([]);
+
+  const [, setMedicineCount] = useState<number>(0); // if needed
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,6 +115,7 @@ const Dashboard: React.FC = () => {
           'new-registered',
           'age-segmentation',
           'updates-line-graph',
+          'condition-count', // NEW: if you create /admin/condition-count
         ];
 
         // Function to build URLs with query strings only for endpoints that support date filters
@@ -127,30 +138,33 @@ const Dashboard: React.FC = () => {
           ageSegmentationRes,
           updatesRes,
           medicineCountRes,
+          conditionRes, // NEW
         ] = await Promise.all([
           axios.get(buildURL('count-total-clients')),
-          axios.get(buildURL('count-worker')), // No date filters
-          axios.get(buildURL('count-male-clients')), // No date filters
-          axios.get(buildURL('count-female-clients')), // No date filters
+          axios.get(buildURL('count-worker')),          // no date filters
+          axios.get(buildURL('count-male-clients')),    // no date filters
+          axios.get(buildURL('count-female-clients')),  // no date filters
           axios.get(buildURL('recent-clients')),
           axios.get(buildURL('new-registered')),
-          axios.get(buildURL('category-count')), // No date filters
-          axios.get(buildURL('age-segmentation')), // Now correctly filters
+          axios.get(buildURL('category-count')),        // no date filters
+          axios.get(buildURL('age-segmentation')),      // filters
           axios.get(buildURL('updates-line-graph')),
-          axios.get(buildURL('count-medicines')), // No date filters
+          axios.get(buildURL('count-medicines')),       // no date filters
+          axios.get(buildURL('condition-count')),       // NEW (must exist on server)
         ]);
 
-        // Log all responses for debugging
-        console.log("Total Clients Response:", totalClientsRes.data);
-        console.log("Total Workers Response:", totalWorkerRes.data);
-        console.log("Male Clients Response:", maleClientsRes.data);
-        console.log("Female Clients Response:", femaleClientsRes.data);
-        console.log("Recent Clients Response:", recentClientsRes.data);
-        console.log("New Registered Response:", newRegisteredRes.data);
-        console.log("Category Count Response:", categoryCountRes.data);
-        console.log("Age Segmentation Response:", ageSegmentationRes.data);
-        console.log("Updates Response:", updatesRes.data);
-        console.log("Medicine Count Response:", medicineCountRes.data);
+        // Log responses if needed
+        console.log("Total Clients:", totalClientsRes.data);
+        console.log("Total Workers:", totalWorkerRes.data);
+        console.log("Male Clients:", maleClientsRes.data);
+        console.log("Female Clients:", femaleClientsRes.data);
+        console.log("Recent Clients:", recentClientsRes.data);
+        console.log("New Registered:", newRegisteredRes.data);
+        console.log("Category Count:", categoryCountRes.data);
+        console.log("Age Segmentation:", ageSegmentationRes.data);
+        console.log("Updates:", updatesRes.data);
+        console.log("Medicine Count:", medicineCountRes.data);
+        console.log("Condition Count:", conditionRes.data);
 
         /**
          * Set Count Data
@@ -180,7 +194,6 @@ const Dashboard: React.FC = () => {
           },
         ]);
 
-        // Set Medicine Count separately if needed elsewhere
         setMedicineCount(medicineCountRes.data.count);
 
         // Set Recent Clients
@@ -198,7 +211,9 @@ const Dashboard: React.FC = () => {
         // Set Updates Data
         setUpdatesData(updatesRes.data);
 
-        // Data fetching complete
+        // NEW: Condition Data
+        setConditionData(conditionRes.data);
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching admin data:", err);
@@ -213,38 +228,77 @@ const Dashboard: React.FC = () => {
   /**
    * Prepare Data for Line Charts
    */
+  const linegraph1 = useMemo(() => {
+    return [
+      {
+        name: "New Registrations",
+        data: newRegisteredData.map((entry) => ({
+          x: new Date(entry.day).toLocaleDateString(),
+          y: entry.count,
+        })),
+        color: "#7638FD",
+        fillColor: "rgba(118, 56, 253, 0.3)",
+      },
+    ];
+  }, [newRegisteredData]);
 
-  // Line Graph 1: New Registrations Over Time
-  const linegraph1 = [
-    {
-      name: "New Registrations",
-      data: newRegisteredData.map((entry) => ({
-        x: new Date(entry.day).toLocaleDateString(),
-        y: entry.count,
-      })),
-      color: "#7638FD",
-      fillColor: "rgba(118, 56, 253, 0.3)",
-    },
-  ];
-
-  // Line Graph 2: Updates Over Time
-  const linegraph2 = [
-    {
-      name: "Updates",
-      data: updatesData.map((entry) => ({
-        x: new Date(entry.date).toLocaleDateString(),
-        y: entry.count,
-      })),
-      color: "#22c55e",
-      fillColor: "rgba(34, 197, 94, 0.3)",
-    },
-  ];
+  const linegraph2 = useMemo(() => {
+    return [
+      {
+        name: "Updates",
+        data: updatesData.map((entry) => ({
+          x: new Date(entry.date).toLocaleDateString(),
+          y: entry.count,
+        })),
+        color: "#22c55e",
+        fillColor: "rgba(34, 197, 94, 0.3)",
+      },
+    ];
+  }, [updatesData]);
 
   /**
    * Prepare Data for Pie Chart
    */
   const taskData = categoryData.map((category) => category.count);
   const taskLabels = categoryData.map((category) => category.category_name);
+
+  /**
+   *  NEW: Condition Chart Data
+   *  Always show permanent residence, temporary, deceased
+   */
+  const conditionChartData = useMemo(() => {
+    if (!conditionData) return [];
+
+    // 1) Define fixed categories
+    const fixedCategories = ["permanent residence", "temporary", "deceased"];
+
+    // 2) Dictionary for default zero
+    const categoryDict: Record<string, number> = {
+      "permanent residence": 0,
+      "temporary": 0,
+      "deceased": 0,
+    };
+
+    // 3) Fill in actual data from server
+    conditionData.forEach((item) => {
+      categoryDict[item.client_condition] = item.count;
+    });
+
+    // 4) Convert to single-series array
+    const mergedArray = fixedCategories.map((cat) => ({
+      x: cat,
+      y: categoryDict[cat] || 0,
+    }));
+
+    // 5) Return final single-series
+    return [
+      {
+        name: "Clients by Condition",
+        color: "#3B82F6",
+        data: mergedArray,
+      },
+    ];
+  }, [conditionData]);
 
   /**
    * Render Loading or Error States
@@ -336,17 +390,31 @@ const Dashboard: React.FC = () => {
 
       {/* Dashboard Charts and Tables */}
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-        {/* Age Segmentation */}
-        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white md:col-span-2">
+        {/* 1) Age Segmentation (Left Column) */}
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
           <h1 className="text-xl font-bold">Age Segmentation</h1>
           {ageSegmentationData.length > 0 ? (
             <ColumnChart data={ageSegmentationData} height={350} />
           ) : (
-            <div className="text-center text-gray-500">No age segmentation data available for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No age segmentation data available for the selected period.
+            </div>
           )}
         </div>
 
-        {/* Recent Clients */}
+        {/* 2) Clients by Condition (Middle Column) */}
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
+          <h1 className="text-xl font-bold">Clients by Condition</h1>
+          {conditionChartData.length > 0 ? (
+            <ColumnChart data={conditionChartData} height={350} />
+          ) : (
+            <div className="text-center text-gray-500">
+              No condition data available for the selected period.
+            </div>
+          )}
+        </div>
+
+        {/* 3) Recent Clients (Right Column) */}
         <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
           <h1 className="text-xl font-bold mb-3 pl-2">Recent Clients</h1>
           {recentClients.length > 0 ? (
@@ -373,7 +441,9 @@ const Dashboard: React.FC = () => {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center text-gray-500">No recent clients found for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No recent clients found for the selected period.
+            </div>
           )}
         </div>
 
@@ -383,7 +453,9 @@ const Dashboard: React.FC = () => {
           {newRegisteredData.length > 0 ? (
             <LineChart data={linegraph1} sizeHeight={350} />
           ) : (
-            <div className="text-center text-gray-500">No new registrations for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No new registrations for the selected period.
+            </div>
           )}
         </div>
 
@@ -393,7 +465,9 @@ const Dashboard: React.FC = () => {
           {updatesData.length > 0 ? (
             <LineChart data={linegraph2} sizeHeight={350} />
           ) : (
-            <div className="text-center text-gray-500">No updates for the selected period.</div>
+            <div className="text-center text-gray-500">
+              No updates for the selected period.
+            </div>
           )}
         </div>
 

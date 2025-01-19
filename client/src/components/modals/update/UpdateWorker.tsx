@@ -17,15 +17,16 @@ type PropsType = {
   onClose: () => void;
   data: {
     id: number;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    middle_name: string;
+    last_name: string;
     age: number;
     address: string;
-    gender: string; // "gender" must match your DB column & server
+    gender: string;
     birthdate: string;
-    placeAssigned: string;
-    idPic: string;
-    profilePic: string;
+    place_assign: string;
+    id_pic: string;
+    profile_pic: string;
     username: string;
   };
   onUpdate: () => void;
@@ -33,30 +34,32 @@ type PropsType = {
 
 const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) => {
   const [workerData, setWorkerData] = useState({
-    firstName: "",
-    lastName: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
     age: "",
     address: "",
     gender: "",
     birthdate: "",
-    placeAssigned: "",
+    place_assign: "",
     username: "",
   });
 
-  const [idPic, setIdPic] = useState<File | null>(null);
-  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const [id_pic, setIdPic] = useState<File | null>(null);
+  const [profile_pic, setProfilePic] = useState<File | null>(null);
 
   // Initialize worker data when modal opens
   useEffect(() => {
     if (data) {
       setWorkerData({
-        firstName: data.firstName || "",
-        lastName: data.lastName || "",
+        first_name: data.first_name || "",
+        middle_name: data.middle_name || "",
+        last_name: data.last_name || "",
         age: data.age?.toString() || "",
         address: data.address || "",
         gender: data.gender || "",
         birthdate: data.birthdate || "",
-        placeAssigned: data.placeAssigned || "",
+        place_assign: data.place_assign || "",
         username: data.username || "",
       });
     }
@@ -104,8 +107,8 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
     if (files && files[0]) {
-      if (name === "idPic") setIdPic(files[0]);
-      if (name === "profilePic") setProfilePic(files[0]);
+      if (name === "id_pic") setIdPic(files[0]);
+      if (name === "profile_pic") setProfilePic(files[0]);
     }
   };
 
@@ -115,18 +118,19 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
       const formData = new FormData();
 
       // Append text fields
-      formData.append("firstName", workerData.firstName);
-      formData.append("lastName", workerData.lastName);
+      formData.append("first_name", workerData.first_name);
+      formData.append("middle_name", workerData.middle_name);
+      formData.append("last_name", workerData.last_name);
       formData.append("age", workerData.age);
       formData.append("address", workerData.address);
       formData.append("gender", workerData.gender);
       formData.append("birthdate", workerData.birthdate);
-      formData.append("placeAssigned", workerData.placeAssigned);
+      formData.append("place_assign", workerData.place_assign);
       formData.append("username", workerData.username);
 
       // Append files if new ones selected
-      if (idPic) formData.append("id_pic", idPic);
-      if (profilePic) formData.append("profile_pic", profilePic);
+      if (id_pic) formData.append("id_pic", id_pic);
+      if (profile_pic) formData.append("profile_pic", profile_pic);
 
       // Send PUT request
       const response = await axios.put(
@@ -176,15 +180,24 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
             <ModalBody className="grid grid-cols-2 gap-4">
               <Input
                 label="First Name"
-                name="firstName"
-                value={workerData.firstName}
+                name="first_name" // snake_case
+                value={workerData.first_name}
                 onChange={handleChange}
+                required
+              />
+              <Input
+                label="Middle Name" // New Middle Name Input
+                name="middle_name" // snake_case
+                value={workerData.middle_name}
+                onChange={handleChange}
+                required
               />
               <Input
                 label="Last Name"
-                name="lastName"
-                value={workerData.lastName}
+                name="last_name" // snake_case
+                value={workerData.last_name}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Age"
@@ -192,18 +205,21 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
                 name="age"
                 value={workerData.age}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Address"
                 name="address"
                 value={workerData.address}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Gender"
                 name="gender"
                 value={workerData.gender}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Birthdate"
@@ -211,30 +227,33 @@ const UpdateWorker: React.FC<PropsType> = ({ isOpen, onClose, data, onUpdate }) 
                 name="birthdate"
                 value={workerData.birthdate}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Place Assigned"
-                name="placeAssigned"
-                value={workerData.placeAssigned}
+                name="place_assign" // snake_case
+                value={workerData.place_assign}
                 onChange={handleChange}
+                required
               />
               <Input
                 label="Username"
                 name="username"
                 value={workerData.username}
                 onChange={handleChange}
-                disabled // remove disabled if you want username to be editable
+                disabled // Remove disabled if you want username to be editable
+                required
               />
               <Input
                 type="file"
                 label="ID Picture"
-                name="idPic"
+                name="id_pic" // snake_case
                 onChange={handleFileChange}
               />
               <Input
                 type="file"
                 label="Profile Picture"
-                name="profilePic"
+                name="profile_pic" // snake_case
                 onChange={handleFileChange}
               />
             </ModalBody>

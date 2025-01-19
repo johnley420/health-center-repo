@@ -8,7 +8,10 @@ const { Server } = require("socket.io");
 const cron = require('node-cron');
 const PDFDocument = require('pdfkit');
 const dotenv = require('dotenv');
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const { body, validationResult } = require('express-validator'); // For input validation
+const rateLimit = require('express-rate-limit'); // For rate limiting // Import the crypto module
 dotenv.config();
 
 
@@ -43,6 +46,14 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes.',
+});
+app.use(limiter);
+
 
 // MySQL database connection
 const db = mysql.createConnection({
@@ -4323,6 +4334,45 @@ app.get('/updates-line-graph', (req, res) => {
   });
 });
 
+// server.js or routes.js
+app.get('/condition-count', (req, res) => {
+  const workerId = req.query.worker_id;
+  const { month, year } = req.query;
+
+  if (!workerId) {
+    return res.status(400).json({ error: 'worker_id is required' });
+  }
+
+  // Base query
+  let query = `
+    SELECT \`condition_status\` AS client_condition, COUNT(*) AS count
+    FROM client_tbl
+    WHERE worker_id = ?
+  `;
+  const params = [workerId];
+
+  // If you have a date filter utility:
+  // query = appendDateFilter(query, month, year, params, 'date_registered');
+
+  query += `
+    GROUP BY \`condition_status\`
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased')
+  `;
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Error fetching condition count:', err);
+      return res.status(500).json({ error: 'Failed to fetch condition count' });
+    }
+    // Example response if some statuses are missing:
+    // [
+    //   { client_condition: 'permanent residence', count: 10 },
+    //   { client_condition: 'deceased', count: 2 }
+    // ]
+    res.json(results);
+  });
+});
+
 
 //============================WORKER PREGNANT DASHBOARD=========================//
 
@@ -6099,6 +6149,49 @@ app.get('/admin/count-worker', (req, res) => {
     }
     console.log('Total Workers:', results[0].totalWorkers); // Log the count
     res.json(results[0]);
+  });
+});
+
+// server.js or admin-routes.js
+
+app.get('/admin/condition-count', (req, res) => {
+  const { month, year } = req.query;
+
+  let query = `
+    SELECT \`condition_status\` AS client_condition,
+           COUNT(*) AS count
+    FROM client_tbl
+    WHERE 1=1
+  `;
+  const params = [];
+
+  // If you want date filtering on date_registered
+  if (month && year) {
+    query += ` AND MONTH(date_registered) = ? AND YEAR(date_registered) = ?`;
+    params.push(parseInt(month, 10), parseInt(year, 10));
+  } else if (year) {
+    query += ` AND YEAR(date_registered) = ?`;
+    params.push(parseInt(year, 10));
+  } else if (month) {
+    query += ` AND MONTH(date_registered) = ?`;
+    params.push(parseInt(month, 10));
+  }
+
+  query += `
+    GROUP BY \`condition_status\`
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased')
+  `;
+
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Error fetching condition count:", err);
+      return res.status(500).json({ error: "Failed to fetch condition count" });
+    }
+    // Example: 
+    // [ { client_condition: 'permanent residence', count: 10 },
+    //   { client_condition: 'deceased', count: 2 } ]
+    // 'temporary' might be missing if 0
+    res.json(results);
   });
 });
 
@@ -9679,6 +9772,79 @@ app.get('/clients-admin-map-high-risk', (req, res) => {
     }
   });
 });
+
+app.get("/clients-admin-map-purok-counts", (req, res) => {
+  const { category_name } = req.query;
+
+  // List of all puroks
+  const puroks = [
+    "purok1",
+    "purok2a",
+    "purok2b",
+    "purok3a1",
+    "purok3a2",
+    "purok3b",
+    "purok4a",
+    "purok4b",
+    "purok5",
+    "purok6",
+  ];
+
+  // Start building the SQL query
+  let query = `
+    SELECT
+      p.purok,
+      COUNT(c.id) AS client_count
+    FROM
+      (
+        SELECT ? AS purok
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+        UNION ALL
+        SELECT ?
+      ) p
+      LEFT JOIN user_tbl u ON u.place_assign = p.purok AND u.role = 'worker'
+      LEFT JOIN client_tbl c ON c.worker_id = u.id AND c.status = 'Active'
+  `;
+
+  const queryParams = [...puroks];
+
+  // If a category is specified, add it to the WHERE clause
+  if (category_name) {
+    query += ` AND c.category_name = ?`;
+    queryParams.push(category_name);
+  }
+
+  query += `
+    GROUP BY
+      p.purok
+    ORDER BY
+      p.purok ASC;
+  `;
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error("Error fetching purok counts:", err);
+      res.status(500).send("Error fetching purok counts");
+    } else {
+      res.json(results);
+    }
+  });
+});
 //================================UPDATE STATUS===================================//
 
 // Fetch clients
@@ -9698,31 +9864,73 @@ app.put('/clients/:id/status', async (req, res) => {
 
 // Server code to update client information
 app.post('/update-client', async (req, res) => {
-  const { id, fname, category_name, address, phone_no, phil_id, gender, birthdate } = req.body;
+  const {
+    id,
+    fname,
+    category_name,
+    address,
+    phone_no,
+    phil_id,
+    gender,
+    birthdate,
+    condition  // <-- New condition field
+  } = req.body;
 
   // Calculate age from birthdate
   const birthDateObj = new Date(birthdate);
   let age = new Date().getFullYear() - birthDateObj.getFullYear();
   const monthDifference = new Date().getMonth() - birthDateObj.getMonth();
-  if (monthDifference < 0 || (monthDifference === 0 && new Date().getDate() < birthDateObj.getDate())) {
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && new Date().getDate() < birthDateObj.getDate())
+  ) {
     age--;
   }
 
   try {
-    await db.query(
-      `UPDATE client_tbl SET fname = ?, category_name = ?, address = ?, phone_no = ?, phil_id = ?, gender = ?, birthdate = ?, age = ? WHERE id = ?`,
-      [fname, category_name, address, phone_no, phil_id, gender, birthdate, age, id],
+    // Include condition in the UPDATE statement
+    const updateSql = `
+      UPDATE client_tbl
+SET fname = ?,
+    category_name = ?,
+    address = ?,
+    phone_no = ?,
+    phil_id = ?,
+    gender = ?,
+    birthdate = ?,
+    age = ?,
+    condition_status = ?
+WHERE id = ?
+
+    `;
+
+    db.query(
+      updateSql,
+      [
+        fname,
+        category_name,
+        address,
+        phone_no,
+        phil_id,
+        gender,
+        birthdate,
+        age,
+        condition,
+        id
+      ],
       (error, result) => {
         if (error) {
           console.error("Error updating client:", error);
-          return res.status(500).send({ error: 'Failed to update client information' });
+          return res
+            .status(500)
+            .send({ error: "Failed to update client information" });
         }
-        res.send({ message: 'Client updated successfully' });
+        res.send({ message: "Client updated successfully" });
       }
     );
   } catch (error) {
     console.error("Error updating client:", error);
-    res.status(500).send({ error: 'Failed to update client information' });
+    res.status(500).send({ error: "Failed to update client information" });
   }
 });
 
@@ -10446,13 +10654,14 @@ app.put(
   (req, res) => {
     const workerId = req.params.id;
     let {
-      firstName,
-      lastName,
+      first_name,
+      middle_name,
+      last_name,
       age,
       address,
       gender,
       birthdate,
-      placeAssigned,
+      place_assign,
       username,
     } = req.body;
 
@@ -10462,10 +10671,8 @@ app.put(
       birthdate = dateObj.toISOString().split("T")[0];
     }
 
-    // Now birthdate is e.g. "2003-01-01"
-
-    const idPic = req.files?.id_pic ? req.files.id_pic[0].filename : null;
-    const profilePic = req.files?.profile_pic
+    const id_pic = req.files?.id_pic ? req.files.id_pic[0].filename : null;
+    const profile_pic = req.files?.profile_pic
       ? req.files.profile_pic[0].filename
       : null;
 
@@ -10482,6 +10689,7 @@ app.put(
         UPDATE user_tbl
           SET
             first_name = ?,
+            middle_name = ?,
             last_name = ?,
             age = ?,
             address = ?,
@@ -10495,16 +10703,17 @@ app.put(
       `;
 
       const updateValues = [
-        firstName,
-        lastName,
+        first_name,
+        middle_name,
+        last_name,
         age,
         address,
         gender,
         birthdate,
-        placeAssigned,
+        place_assign,
         username,
-        idPic || existingData.id_pic,
-        profilePic || existingData.profile_pic,
+        id_pic || existingData.id_pic,
+        profile_pic || existingData.profile_pic,
         workerId,
       ];
 
@@ -10618,20 +10827,76 @@ app.put('/update-user/:id', async (req, res) => {
 
 // Set up file storage for images using multer
 
-// Worker upload route
 app.post('/upload-worker', upload.fields([{ name: 'id_pic' }, { name: 'profile_pic' }]), (req, res) => {
-  const { first_name, last_name, birth_date, age, gender, address, place_assign, username, password } = req.body;
+  const { first_name, middle_name, last_name, birth_date, age, gender, address, place_assign, username, password } = req.body;
   const idPicPath = req.files['id_pic'] ? req.files['id_pic'][0].filename : '';
   const profilePicPath = req.files['profile_pic'] ? req.files['profile_pic'][0].filename : '';
 
-  const query = "INSERT INTO user_tbl (first_name, last_name, birth_date, age, gender, address, place_assign, username, password, id_pic, profile_pic, date_of_reg, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Active', 'worker')";
-  db.query(query, [first_name, last_name, birth_date, age, gender, address, place_assign, username, password, idPicPath, profilePicPath], (err, results) => {
+  // Duplicate Check Query
+  const duplicateCheckQuery = "SELECT * FROM user_tbl WHERE first_name = ? AND middle_name = ? AND last_name = ?";
+  
+  db.query(duplicateCheckQuery, [first_name, middle_name, last_name], (err, results) => {
     if (err) {
-      return res.status(500).json({ message: "Error inserting data", error: err });
+      console.error("Error checking duplicates:", err);
+      return res.status(500).json({ message: "Error checking duplicates", error: err });
     }
-    return res.status(201).json({ message: "Worker registered successfully", data: results });
+
+    if (results.length > 0) {
+      return res.status(400).json({ message: "Duplicate worker detected. A worker with the same name already exists." });
+    }
+
+    // Insert Query
+    const insertQuery = `
+      INSERT INTO user_tbl 
+      (first_name, middle_name, last_name, birth_date, age, gender, address, place_assign, username, password, id_pic, profile_pic, date_of_reg, status, role) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Active', 'worker')
+    `;
+
+    db.query(insertQuery, [
+      first_name,
+      middle_name,
+      last_name,
+      birth_date,
+      age,
+      gender,
+      address,
+      place_assign,
+      username,
+      password,
+      idPicPath,
+      profilePicPath
+    ], (insertErr, insertResults) => {
+      if (insertErr) {
+        console.error("Error inserting data:", insertErr);
+        return res.status(500).json({ message: "Error inserting data", error: insertErr });
+      }
+      return res.status(201).json({ message: "Worker registered successfully", data: insertResults });
+    });
   });
 });
+
+
+//=============check duplicate workers===================//
+
+app.post('/check-duplicate-worker', express.json(), (req, res) => {
+  const { first_name, middle_name, last_name } = req.body;
+
+  const duplicateCheckQuery = "SELECT * FROM user_tbl WHERE first_name = ? AND middle_name = ? AND last_name = ?";
+  
+  db.query(duplicateCheckQuery, [first_name, middle_name, last_name], (err, results) => {
+    if (err) {
+      console.error("Error checking duplicates:", err);
+      return res.status(500).json({ message: "Error checking duplicates", error: err });
+    }
+
+    if (results.length > 0) {
+      return res.status(200).json({ isDuplicate: true });
+    } else {
+      return res.status(200).json({ isDuplicate: false });
+    }
+  });
+});
+
 
 //=======================SMS HANDLE ACOUNT===============================//
 
@@ -10750,6 +11015,72 @@ app.put('/markHelpRequestsRead', (req, res) => {
 
 
 //================================LOGIN===================================//
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'johnleyengyo88@gmail.com', // Your Gmail address
+    pass: 'rlee umjo wqnr liqg', // Your App Password
+  },
+});
+
+// Predefined Admin Details
+const ADMIN_FIRST_NAME = 'Johnley';
+const ADMIN_MIDDLE_NAME = 'G.'; // If no middle name, set as ''
+const ADMIN_LAST_NAME = 'Engyo';
+const ADMIN_EMAIL = 'johnleyengyo26@gmail.com'; // Predefined admin email
+
+// Reset Password URL (Frontend Route)
+const RESET_PASSWORD_URL = 'https://malagos-health-center.netlify.app/admin/forgot/accounts';
+
+// In-Memory Store for Reset Tokens
+// Note: For production, use a persistent store like Redis or a database table.
+const resetTokens = {};
+
+/**
+ * Function to send password reset email
+ * @param {string} to - Recipient's email address
+ * @param {string} token - Password reset token
+ */
+async function sendPasswordResetEmail(to, token) {
+  // Create reset link
+  const resetLink = `${RESET_PASSWORD_URL}?token=${token}`;
+
+  // Email options
+  const mailOptions = {
+    from: '"Admin Support" <yourgmail@gmail.com>', // Sender address
+    to: to,                                        // Receiver's email
+    subject: 'Admin Password Reset',
+    text: `Hello ${ADMIN_FIRST_NAME} ${ADMIN_MIDDLE_NAME} ${ADMIN_LAST_NAME},
+
+Please click the following link to reset your password:
+
+${resetLink}
+
+This link will expire in 1 hour.
+
+If you did not request a password reset, please ignore this email.
+
+Best regards,
+Your Company`,
+    html: `<p>Hello ${ADMIN_FIRST_NAME} ${ADMIN_MIDDLE_NAME} ${ADMIN_LAST_NAME},</p>
+           <p>Please click the following link to reset your password:</p>
+           <a href="${resetLink}">Reset Password</a>
+           <p>This link will expire in 1 hour.</p>
+           <p>If you did not request a password reset, please ignore this email.</p>
+           <p>Best regards,<br>Your Company</p>`,
+  };
+
+  // Send email
+  const info = await transporter.sendMail(mailOptions);
+
+  // Log the response
+  console.log('Password reset email sent:', info.response);
+}
+
+/**
+ * Route: POST /login
+ * Description: Authenticate user and provide session details.
+ */
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
 
@@ -10786,6 +11117,160 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+/**
+ * Route: POST /help-request
+ * Description: Handle help requests from users.
+ */
+app.post('/help-request', [
+  body('fullName').isString().trim().notEmpty(),
+  body('address').isString().trim().notEmpty(),
+  body('placeAssign').isString().trim().notEmpty(),
+  body('phoneNumber').isString().trim().notEmpty(),
+  body('loginIssue').isString().trim().notEmpty(),
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { fullName, address, placeAssign, phoneNumber, loginIssue } = req.body;
+
+  // Here, you can store the help request in the database or notify admins via email/SMS.
+  // For demonstration, we'll just log it.
+  console.log("Help Request Received:", {
+    fullName,
+    address,
+    placeAssign,
+    phoneNumber,
+    loginIssue,
+  });
+
+  return res.status(200).json({ message: "Help request submitted successfully." });
+});
+
+/**
+ * Route: POST /forgot-admin-password
+ * Description: Initiate password reset process for admin.
+ */
+app.post('/forgot-admin-password', [
+  body('fullName').isString().trim().notEmpty(),
+  body('email').isEmail().normalizeEmail(),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { fullName, email } = req.body;
+
+  // Construct the full name from separate name components
+  const constructedFullName = `${ADMIN_FIRST_NAME} ${ADMIN_MIDDLE_NAME} ${ADMIN_LAST_NAME}`.replace(/\s+/g, ' ').trim();
+
+  // Check if the provided Full Name and Email match the predefined admin details
+  if (fullName !== constructedFullName) {
+    return res.status(404).json({ message: 'Full Name does not match any admin user.' });
+  }
+
+  if (email !== ADMIN_EMAIL) {
+    return res.status(404).json({ message: 'Email does not match the provided Full Name.' });
+  }
+
+  // Generate a reset token
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = Date.now() + 3600000; // Token valid for 1 hour
+
+  // Store the token with expiration
+  resetTokens[token] = { userId: null, expires }; // userId is null since email is not in DB
+
+  try {
+    // Send password reset email
+    await sendPasswordResetEmail(email, token);
+    return res.status(200).json({ message: 'Password reset link sent to your email.' });
+  } catch (error) {
+    console.error('Error sending password reset email:', error);
+    return res.status(500).json({ message: 'Error sending password reset email.' });
+  }
+});
+
+/**
+ * Route: POST /reset-admin-password
+ * Description: Reset admin's username and password using the token.
+ */
+app.post('/reset-admin-password', [
+  body('token').isString().trim().notEmpty(),
+  body('newUsername').isString().trim().notEmpty(),
+  body('newPassword').isString().trim().notEmpty(),
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { token, newUsername, newPassword } = req.body;
+
+  const tokenData = resetTokens[token];
+
+  if (!tokenData) {
+    return res.status(400).json({ message: 'Invalid or expired token.' });
+  }
+
+  if (Date.now() > tokenData.expires) {
+    delete resetTokens[token];
+    return res.status(400).json({ message: 'Token has expired.' });
+  }
+
+  // SQL Query to identify the admin using separate name fields
+  const query = `
+    SELECT id 
+    FROM user_tbl 
+    WHERE first_name = ? 
+      AND middle_name = ? 
+      AND last_name = ? 
+      AND role = 'admin'
+  `;
+
+  db.query(query, [ADMIN_FIRST_NAME, ADMIN_MIDDLE_NAME, ADMIN_LAST_NAME], (err, results) => {
+    if (err) {
+      console.error('Database error during admin lookup:', err);
+      return res.status(500).json({ message: 'Database error.' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Admin user not found.' });
+    }
+
+    const admin = results[0];
+    const adminId = admin.id;
+
+    // Check if the new username is already taken
+    const checkUsernameQuery = 'SELECT id FROM user_tbl WHERE username = ?';
+    db.query(checkUsernameQuery, [newUsername], (err, userResults) => {
+      if (err) {
+        console.error('Database error during username check:', err);
+        return res.status(500).json({ message: 'Database error.' });
+      }
+
+      if (userResults.length > 0) {
+        return res.status(400).json({ message: 'Username is already taken. Please choose another one.' });
+      } else {
+        // Update the admin's username and password in the database
+        const updateQuery = 'UPDATE user_tbl SET username = ?, password = ? WHERE id = ?';
+        db.query(updateQuery, [newUsername, newPassword, adminId], (err, updateResults) => {
+          if (err) {
+            console.error('Database error during password reset:', err);
+            return res.status(500).json({ message: 'Database error.' });
+          }
+
+          // Delete the token after successful reset
+          delete resetTokens[token];
+
+          return res.status(200).json({ message: 'Password has been reset successfully.' });
+        });
+      }
+    });
+  });
+});
 
 server.listen(8081, () => {
   console.log("Server running on https://health-center-repo-production.up.railway.app");
