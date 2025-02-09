@@ -294,7 +294,7 @@ const WorkerDashboard: React.FC = () => {
     if (!conditionData) return [];
 
     // 1) Define the fixed categories
-    const fixedCategories = ["permanent residence", "temporary", "deceased"];
+    const fixedCategories = ["permanent residence", "temporary", "deceased","transfer"];
 
     // 2) Build a dictionary, defaulting to 0
     const categoryDict: Record<string, number> = {

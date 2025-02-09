@@ -10,8 +10,8 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import axios from 'axios';  // Import AxiosError
-import Swal from 'sweetalert2';  // Import SweetAlert2
+import axios from "axios"; // Import AxiosError
+import Swal from "sweetalert2"; // Import SweetAlert2
 import { categories } from "../../../constants";
 
 type propsType = {
@@ -22,44 +22,46 @@ type propsType = {
 const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
   const workerId = sessionStorage.getItem("id");
 
-  const [category, setCategory] = useState('');
-  const [fname, setFname] = useState('');
-  const [address, setAddress] = useState('');
-  const [phoneNo, setPhoneNo] = useState('');
-  const [philId, setPhilId] = useState('');
-  const [gender, setGender] = useState('');
-  const [birthdate, setBirthdate] = useState('');
+  const [category, setCategory] = useState("");
+  const [fname, setFname] = useState("");
+  // The address field is now read-only and automatically set from sessionStorage
+  const purok = sessionStorage.getItem("place_assign") || "";
+  const address = `${purok} Malagos, Baguio District, Davao City`;
+  const [phoneNo, setPhoneNo] = useState("");
+  const [philId, setPhilId] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthdate, setBirthdate] = useState("");
 
   const [isDuplicate, setIsDuplicate] = useState(false);
-  const [duplicateError, setDuplicateError] = useState('');
+  const [duplicateError, setDuplicateError] = useState("");
 
   // Function to check for duplicates
   const checkDuplicate = async () => {
     if (!fname || !philId) {
       setIsDuplicate(false);
-      setDuplicateError('');
+      setDuplicateError("");
       return;
     }
 
     try {
-      const response = await axios.post('https://health-center-repo-production.up.railway.app/check-duplicate', {
+      const response = await axios.post("https://health-center-repo-production.up.railway.app/check-duplicate", {
         fname,
-        phil_id: philId
+        phil_id: philId,
       });
 
       if (response.data.exists) {
         setIsDuplicate(true);
-        setDuplicateError('A client with the same name and PhilHealth ID already exists.');
+        setDuplicateError("A client with the same name and PhilHealth ID already exists.");
       } else {
         setIsDuplicate(false);
-        setDuplicateError('');
+        setDuplicateError("");
       }
-    } catch (error: unknown) {  // Handle the duplicate check error
-      console.error('Error checking duplicate:', error);
+    } catch (error: unknown) {
+      console.error("Error checking duplicate:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to check for duplicate clients.',
+        icon: "error",
+        title: "Error",
+        text: "Failed to check for duplicate clients.",
       });
     }
   };
@@ -67,8 +69,8 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
   const handleAddClient = async () => {
     if (isDuplicate) {
       Swal.fire({
-        icon: 'error',
-        title: 'Duplicate Client',
+        icon: "error",
+        title: "Duplicate Client",
         text: duplicateError,
       });
       return;
@@ -76,15 +78,15 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
 
     if (!category || !fname || !address || !workerId || !gender || !birthdate) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Missing Information',
-        text: 'Please fill out the required fields',
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please fill out the required fields",
       });
       return;
     }
 
     try {
-      const response = await axios.post('https://health-center-repo-production.up.railway.app/add-client', {
+      const response = await axios.post("https://health-center-repo-production.up.railway.app/add-client", {
         category_name: category,
         fname,
         address,
@@ -92,61 +94,54 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
         phil_id: philId,
         gender,
         worker_id: workerId,
-        birthdate
+        birthdate,
       });
 
       if (response.status === 200) {
         Swal.fire({
-          icon: 'success',
-          title: 'Success',
-          text: 'Client added successfully',
+          icon: "success",
+          title: "Success",
+          text: "Client added successfully",
         });
         onClose(); // Close the modal after successful submission
       } else {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Failed to add client',
+          icon: "error",
+          title: "Error",
+          text: "Failed to add client",
         });
       }
-    } catch (error: unknown) {  // Explicitly type error as unknown
-      console.error('Error adding client:', error);
+    } catch (error: unknown) {
+      console.error("Error adding client:", error);
 
       if (axios.isAxiosError(error)) {
-        // Access Axios-specific properties safely
         if (error.response && error.response.data && error.response.data.error) {
           const errorMessage = error.response.data.error;
-
-          // Handle duplicate error specifically
           if (errorMessage.includes("already exists")) {
             Swal.fire({
-              icon: 'error',
-              title: 'Duplicate Client',
+              icon: "error",
+              title: "Duplicate Client",
               text: errorMessage,
             });
             return;
           }
-
-          // Handle other specific errors if needed
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
+            icon: "error",
+            title: "Error",
             text: errorMessage,
           });
         } else {
-          // If there's no response or error message from server
           Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An unexpected error occurred while adding the client',
+            icon: "error",
+            title: "Error",
+            text: "An unexpected error occurred while adding the client",
           });
         }
       } else {
-        // Handle non-Axios errors
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'An unexpected error occurred while adding the client',
+          icon: "error",
+          title: "Error",
+          text: "An unexpected error occurred while adding the client",
         });
       }
     }
@@ -157,9 +152,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1">
-              Add Client
-            </ModalHeader>
+            <ModalHeader className="flex flex-col gap-1">Add Client</ModalHeader>
             <ModalBody className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <Select
@@ -175,7 +168,6 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
                   ))}
                 </Select>
               </div>
-
               <div className="col-span-1">
                 <Select
                   label="Select Gender"
@@ -183,12 +175,17 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
                 >
-                  <SelectItem key="male" value="Male">Male</SelectItem>
-                  <SelectItem key="female" value="Female">Female</SelectItem>
-                  <SelectItem key="other" value="Other">Other</SelectItem> 
+                  <SelectItem key="male" value="Male">
+                    Male
+                  </SelectItem>
+                  <SelectItem key="female" value="Female">
+                    Female
+                  </SelectItem>
+                  <SelectItem key="other" value="Other">
+                    Other
+                  </SelectItem>
                 </Select>
               </div>
-
               <Input
                 type="text"
                 label={<span className="capitalize">Full Name</span>}
@@ -196,33 +193,29 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
                 onChange={(e) => setFname(e.target.value)}
                 required
               />
-
+              {/* Address Field: automatically populated and readOnly */}
               <Input
                 type="text"
                 label={<span className="capitalize">Address</span>}
                 value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
+                readOnly
               />
-
               <Input
                 type="text"
                 label={<span className="capitalize">Phone No.</span>}
                 value={phoneNo}
                 onChange={(e) => setPhoneNo(e.target.value)}
               />
-
               <Input
                 type="text"
                 label={<span className="capitalize">PhilHealth ID (optional)</span>}
                 value={philId}
                 onChange={(e) => setPhilId(e.target.value)}
-                onBlur={checkDuplicate} // Trigger duplicate check on blur
+                onBlur={checkDuplicate}
               />
               {isDuplicate && (
                 <p className="text-red-500 text-sm col-span-2">{duplicateError}</p>
               )}
-
               <Input
                 type="date"
                 label={<span className="capitalize">Birthdate</span>}

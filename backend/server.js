@@ -4356,7 +4356,7 @@ app.get('/condition-count', (req, res) => {
 
   query += `
     GROUP BY \`condition_status\`
-    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased')
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased','transfer')
   `;
 
   db.query(query, params, (err, results) => {
@@ -6179,7 +6179,7 @@ app.get('/admin/condition-count', (req, res) => {
 
   query += `
     GROUP BY \`condition_status\`
-    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased')
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased', 'temporary')
   `;
 
   db.query(query, params, (err, results) => {
@@ -9862,7 +9862,6 @@ app.put('/clients/:id/status', async (req, res) => {
 
 //===============================UPDATE CLIENTS===================================//
 
-// Server code to update client information
 app.post('/update-client', async (req, res) => {
   const {
     id,
@@ -9876,32 +9875,35 @@ app.post('/update-client', async (req, res) => {
     condition  // <-- New condition field
   } = req.body;
 
-  // Calculate age from birthdate
-  const birthDateObj = new Date(birthdate);
-  let age = new Date().getFullYear() - birthDateObj.getFullYear();
-  const monthDifference = new Date().getMonth() - birthDateObj.getMonth();
-  if (
-    monthDifference < 0 ||
-    (monthDifference === 0 && new Date().getDate() < birthDateObj.getDate())
-  ) {
-    age--;
+  // Validate birthdate and calculate age
+  let age = 0; // Default age value
+  if (birthdate && !isNaN(new Date(birthdate).getTime())) {
+    const birthDateObj = new Date(birthdate);
+    age = new Date().getFullYear() - birthDateObj.getFullYear();
+    const monthDifference = new Date().getMonth() - birthDateObj.getMonth();
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && new Date().getDate() < birthDateObj.getDate())
+    ) {
+      age--;
+    }
   }
+  // Otherwise, age remains as 0 (or you can choose to set it to null)
 
   try {
     // Include condition in the UPDATE statement
     const updateSql = `
       UPDATE client_tbl
-SET fname = ?,
-    category_name = ?,
-    address = ?,
-    phone_no = ?,
-    phil_id = ?,
-    gender = ?,
-    birthdate = ?,
-    age = ?,
-    condition_status = ?
-WHERE id = ?
-
+      SET fname = ?,
+          category_name = ?,
+          address = ?,
+          phone_no = ?,
+          phil_id = ?,
+          gender = ?,
+          birthdate = ?,
+          age = ?,
+          condition_status = ?
+      WHERE id = ?
     `;
 
     db.query(
@@ -9933,8 +9935,6 @@ WHERE id = ?
     res.status(500).send({ error: "Failed to update client information" });
   }
 });
-
-
 //================================VIEW CLIENTS===================================//
 app.get('/clients', (req, res) => {
   const workerId = req.query.workerId; // Get workerId from the query
@@ -9976,7 +9976,162 @@ app.put('/clients/:id/status', (req, res) => {
   });
 });
 
+//==========================NOT UPDATED CLIENTS===============================///
 
+app.get("/clients/not-updated", (req, res) => {
+  const worker_id = req.query.worker_id; // Use the parameter name "worker_id"
+  if (!worker_id) {
+    return res.status(400).json({ error: "worker_id parameter is required" });
+  }
+
+  const query = `
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'current_smokers' AS source_table
+      FROM current_smokers t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'filariasis' AS source_table
+      FROM filariasis t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'five_nine_children' AS source_table
+      FROM five_nine_children t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'hypertensive' AS source_table
+      FROM hypertensive t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'person_with_disability' AS source_table
+      FROM person_with_disability t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'pregnant_data' AS source_table
+      FROM pregnant_data t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'schistosomiasis' AS source_table
+      FROM schistosomiasis t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'senior_citizen' AS source_table
+      FROM senior_citizen t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'ten_to_nineteen' AS source_table
+      FROM ten_to_nineteen t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'wra' AS source_table
+      FROM wra t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'zero_eleven_months' AS source_table
+      FROM zero_eleven_months t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'zero_to_fiftynine' AS source_table
+      FROM zero_to_fiftynine t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+      
+      UNION ALL
+      
+      SELECT t.client_id AS id, c.fname, c.address, c.phone_no, c.phil_id, c.date_registered,
+             c.category_name, c.latitude, c.longitude, c.status, t.updated_at, 'zero_to_fiftynine_months_children' AS source_table
+      FROM zero_to_fiftynine_months_children t
+      JOIN client_tbl c ON t.client_id = c.id
+      WHERE t.worker_id = ? AND t.updated_at < DATE_SUB(NOW(), INTERVAL 3 MONTH)
+  `;
+
+  // There are 13 UNION parts, so we supply 13 instances of worker_id.
+  const queryParams = Array(13).fill(worker_id);
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error("Error fetching not updated clients:", err);
+      return res.status(500).json({ message: "Database error", error: err });
+    }
+    return res.status(200).json(results);
+  });
+});
+
+//===============UPDATE CONDITION==========================//
+
+app.post("/update-client-condition", (req, res) => {
+  const { id, condition } = req.body;
+
+  console.log("Received update request for client id:", id, "with condition:", condition);
+
+  // Validate inputs
+  if (!id || condition === undefined) {
+    return res.status(400).json({ error: "Missing client id or condition" });
+  }
+
+  const updateSql = `
+    UPDATE client_tbl
+    SET condition_status = ?
+    WHERE id = ?
+  `;
+
+  db.query(updateSql, [condition, id], (err, result) => {
+    if (err) {
+      console.error("Error updating client condition:", err);
+      return res.status(500).json({ error: "Failed to update client condition" });
+    }
+
+    console.log("Update result:", result);
+    // Check if any row was actually updated
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "No client found with the given id or condition is already set" });
+    }
+    return res.status(200).json({ message: "Client condition updated successfully" });
+  });
+});
 
 //================================VIEW CLIENTS MAP ===================================//
 app.get('/clients-map', (req, res) => {
@@ -10502,22 +10657,30 @@ app.post('/check-duplicate', (req, res) => {
     return res.status(400).json({ error: "First name and PhilHealth ID are required for duplicate check." });
   }
 
-  const sql = `
-    SELECT 1 FROM client_tbl 
-    WHERE fname = ? AND phil_id = ?
-    LIMIT 1
-  `;
-
-  db.query(sql, [fname, phil_id], (err, results) => {
+  // First, check if there is any record with the same phil_id
+  const sqlPhil = `SELECT 1 FROM client_tbl WHERE phil_id = ? LIMIT 1`;
+  db.query(sqlPhil, [phil_id], (err, resultsPhil) => {
     if (err) {
-      console.error('Database error during duplicate check:', err);
+      console.error('Database error during duplicate check (phil_id):', err);
       return res.status(500).json({ error: "Database error during duplicate check" });
     }
-
-    if (results.length > 0) {
-      return res.json({ exists: true });
+    if (resultsPhil.length > 0) {
+      // Duplicate philhealth id exists.
+      return res.json({ exists: true, message: "A client with the same PhilHealth ID already exists." });
     } else {
-      return res.json({ exists: false });
+      // Next, check if there is any record with both same fname and phil_id.
+      const sqlNamePhil = `SELECT 1 FROM client_tbl WHERE fname = ? AND phil_id = ? LIMIT 1`;
+      db.query(sqlNamePhil, [fname, phil_id], (err, resultsNamePhil) => {
+        if (err) {
+          console.error('Database error during duplicate check (name and phil_id):', err);
+          return res.status(500).json({ error: "Database error during duplicate check" });
+        }
+        if (resultsNamePhil.length > 0) {
+          return res.json({ exists: true, message: "A client with the same name and PhilHealth ID already exists." });
+        } else {
+          return res.json({ exists: false });
+        }
+      });
     }
   });
 });

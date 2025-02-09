@@ -270,7 +270,7 @@ const Dashboard: React.FC = () => {
     if (!conditionData) return [];
 
     // 1) Define fixed categories
-    const fixedCategories = ["permanent residence", "temporary", "deceased"];
+    const fixedCategories = ["permanent residence", "temporary", "deceased", "transfer" ];
 
     // 2) Dictionary for default zero
     const categoryDict: Record<string, number> = {
