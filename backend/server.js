@@ -10682,7 +10682,7 @@ app.post('/add-client', async (req, res) => {
         return res.status(400).json({ error: "A client with the same name and PhilHealth ID already exists." });
       }
 
-      // Mapping of place_assign values (lowercase) to center coordinates.
+      // Mapping of place_assign values (in lowercase) to center coordinates
       const purokCenters = {
         "purok1": { lat: 7.184687, lon: 125.421865 },
         "purok2a": { lat: 7.189484, lon: 125.429046 },
@@ -10703,8 +10703,7 @@ app.post('/add-client', async (req, res) => {
         return res.status(400).json({ error: "Invalid place_assign value" });
       }
 
-      // Generate random coordinate within a fixed radius.
-      // Increased radius from 0.001 to 0.005 degrees (~555 meters) for a more spread-out cluster.
+      // Generate random coordinate within a fixed radius of 0.003 degrees (~333m)
       const getRandomCoordinate = (center, radius) => {
         const u = Math.random();
         const v = Math.random();
@@ -10715,7 +10714,7 @@ app.post('/add-client', async (req, res) => {
         return { latitude: center.lat + offsetLat, longitude: center.lon + offsetLon };
       };
 
-      const randomCoord = getRandomCoordinate(center, 0.005);
+      const randomCoord = getRandomCoordinate(center, 0.003);
 
       const insertSql = `
         INSERT INTO client_tbl 
@@ -10748,6 +10747,7 @@ app.post('/add-client', async (req, res) => {
     return res.status(500).json({ error: "Failed to add client" });
   }
 });
+
 
 
 ///================================UPDATE WORKER===================================//
