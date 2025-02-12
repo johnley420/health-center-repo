@@ -4006,129 +4006,126 @@ app.put('/notifications/mark-as-read', (req, res) => {
 //=============================== OVER VIEW DASHBOARD WORKER SIDE==================//
 
 
+function appendDateFilter(query, from, to, params, dateField) {
+  if (from) {
+    query += ` AND ${dateField} >= ?`;
+    params.push(from);
+  }
+  if (to) {
+    query += ` AND ${dateField} <= ?`;
+    params.push(to);
+  }
+  return query;
+}
+
+// 1. Get Count of Total Clients
 app.get('/count-total-clients', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT COUNT(*) AS totalClients
     FROM client_tbl
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching total clients:', err);
       return res.status(500).json({ error: 'Failed to fetch total clients' });
     }
-    console.log('Total Clients Query Result:', results[0]);
     res.json(results[0]);
   });
 });
 
-/**
- * 2. Get Count of Male Clients
- * Supports optional month and year filters
- */
+// 2. Get Count of Male Clients
 app.get('/count-male-clients', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT COUNT(*) AS maleClients
     FROM client_tbl
     WHERE worker_id = ? AND LOWER(gender) = 'male'
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching male clients:', err);
       return res.status(500).json({ error: 'Failed to fetch male clients' });
     }
-    console.log('Male Clients Query Result:', results[0]);
     res.json(results[0]);
   });
 });
 
-/**
- * 3. Get Count of Female Clients
- * Supports optional month and year filters
- */
+// 3. Get Count of Female Clients
 app.get('/count-female-clients', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT COUNT(*) AS femaleClients
     FROM client_tbl
     WHERE worker_id = ? AND LOWER(gender) = 'female'
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching female clients:', err);
       return res.status(500).json({ error: 'Failed to fetch female clients' });
     }
-    console.log('Female Clients Query Result:', results[0]);
     res.json(results[0]);
   });
 });
 
-/**
- * 4. Get Recent Clients (Registered within the last week)
- * Supports optional month and year filters. If filters are provided, the one-week filter is ignored.
- */
+// 4. Get Recent Clients (Registered within the last week or by date range)
 app.get('/recent-clients', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT fname, category_name, date_registered
     FROM client_tbl
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  if (month || year) {
-    // Apply month and/or year filters if provided
-    query = appendDateFilter(query, month, year, params, 'date_registered');
+  
+  if (from || to) {
+    query = appendDateFilter(query, from, to, params, 'date_registered');
   } else {
-    // Otherwise, apply the one-week filter
+    // If no date range provided, default to clients registered within the last week
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     const formattedDate = oneWeekAgo.toISOString().split('T')[0];
     query += ` AND date_registered >= ?`;
     params.push(formattedDate);
   }
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching recent clients:', err);
@@ -4138,68 +4135,60 @@ app.get('/recent-clients', (req, res) => {
   });
 });
 
-/**
- * 5. Get New Registered Clients Over Time
- * Supports optional month and year filters
- */
+// 5. Get New Registered Clients Over Time
 app.get('/new-registered', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT DATE_FORMAT(date_registered, '%Y-%m-%d') AS day, COUNT(*) AS count
     FROM client_tbl
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   query += `
     GROUP BY day
     ORDER BY day
   `;
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching client data:', err);
+      console.error('Error fetching new registered clients:', err);
       return res.status(500).json({ error: 'Failed to fetch client data' });
     }
     res.json(results);
   });
 });
 
-/**
- * 6. Get Category Count
- * Supports optional month and year filters
- */
+// 6. Get Category Count
 app.get('/category-count', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT category_name, COUNT(*) AS count
     FROM client_tbl
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   query += `
     GROUP BY category_name
   `;
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching category data:', err);
@@ -4209,18 +4198,15 @@ app.get('/category-count', (req, res) => {
   });
 });
 
-/**
- * 7. Get Age Segmentation Data
- * Supports optional month and year filters
- */
+// 7. Get Age Segmentation Data
 app.get('/age-segmentation', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT
       CASE
@@ -4237,10 +4223,9 @@ app.get('/age-segmentation', (req, res) => {
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  // Apply month and year filters if provided
-  query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   query += `
     GROUP BY ageGroup
     ORDER BY 
@@ -4253,7 +4238,7 @@ app.get('/age-segmentation', (req, res) => {
         ELSE 6
       END
   `;
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching age segmentation data:', err);
@@ -4263,18 +4248,15 @@ app.get('/age-segmentation', (req, res) => {
   });
 });
 
-/**
- * 8. Get Updates Line Graph Data
- * Supports optional month and year filters
- */
+// 8. Get Updates Line Graph Data
 app.get('/updates-line-graph', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
+  
   let query = `
     SELECT DATE(updated_at) AS date, COUNT(*) AS count
     FROM (
@@ -4306,25 +4288,24 @@ app.get('/updates-line-graph', (req, res) => {
     ) AS combined_updates
     WHERE 1=1
   `;
-  const params = Array(13).fill(workerId); // Assuming 13 tables
-
-  // Apply month and year filters if provided
-  if (month && year) {
-    query += ` AND MONTH(updated_at) = ? AND YEAR(updated_at) = ?`;
-    params.push(parseInt(month, 10), parseInt(year, 10));
-  } else if (year) {
-    query += ` AND YEAR(updated_at) = ?`;
-    params.push(parseInt(year, 10));
-  } else if (month) {
-    query += ` AND MONTH(updated_at) = ?`;
-    params.push(parseInt(month, 10));
+  // There are 13 tables, so provide the workerId 13 times
+  const params = Array(13).fill(workerId);
+  
+  // Apply date filter conditions for updated_at if provided
+  if (from) {
+    query += ` AND updated_at >= ?`;
+    params.push(from);
   }
-
+  if (to) {
+    query += ` AND updated_at <= ?`;
+    params.push(to);
+  }
+  
   query += `
     GROUP BY DATE(updated_at)
     ORDER BY DATE(updated_at) ASC
   `;
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching updates data:', err);
@@ -4334,45 +4315,38 @@ app.get('/updates-line-graph', (req, res) => {
   });
 });
 
-// server.js or routes.js
+// 9. Get Condition Count
 app.get('/condition-count', (req, res) => {
   const workerId = req.query.worker_id;
-  const { month, year } = req.query;
-
+  const { from, to } = req.query;
+  
   if (!workerId) {
     return res.status(400).json({ error: 'worker_id is required' });
   }
-
-  // Base query
+  
   let query = `
     SELECT \`condition_status\` AS client_condition, COUNT(*) AS count
     FROM client_tbl
     WHERE worker_id = ?
   `;
   const params = [workerId];
-
-  // If you have a date filter utility:
-  // query = appendDateFilter(query, month, year, params, 'date_registered');
-
+  
+  // Apply date filtering if provided
+  query = appendDateFilter(query, from, to, params, 'date_registered');
+  
   query += `
     GROUP BY \`condition_status\`
-    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased','transfer')
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased', 'transfer')
   `;
-
+  
   db.query(query, params, (err, results) => {
     if (err) {
       console.error('Error fetching condition count:', err);
       return res.status(500).json({ error: 'Failed to fetch condition count' });
     }
-    // Example response if some statuses are missing:
-    // [
-    //   { client_condition: 'permanent residence', count: 10 },
-    //   { client_condition: 'deceased', count: 2 }
-    // ]
     res.json(results);
   });
 });
-
 
 //============================WORKER PREGNANT DASHBOARD=========================//
 
@@ -5844,35 +5818,22 @@ app.get("/children10to19/children10to19-data", (req, res) => {
  * @param {Array} params - The array to push query parameters into.
  * @returns {string} - The modified SQL query with date filters.
  */
-const appendDateFilter = (baseQuery, month, year, params) => {
-  if (month && year) {
-    baseQuery += ` AND MONTH(date_registered) = ? AND YEAR(date_registered) = ?`;
-    params.push(parseInt(month, 10), parseInt(year, 10));
-  } else if (year) {
-    baseQuery += ` AND YEAR(date_registered) = ?`;
-    params.push(parseInt(year, 10));
-  } else if (month) {
-    // If only month is provided, filter by month across all years
-    baseQuery += ` AND MONTH(date_registered) = ?`;
-    params.push(parseInt(month, 10));
-  }
-  return baseQuery;
-};
+
 
 /**
  * 1. Get Count of Total Clients
  */
-app.get('/admin/count-total-clients', (req, res) => {
-  const { month, year } = req.query;
+app.get("/admin/count-total-clients", (req, res) => {
+  const { from, to } = req.query;
   let query = `SELECT COUNT(*) AS totalClients FROM client_tbl WHERE 1=1`;
   const params = [];
 
-  query = appendDateFilter(query, month, year, params);
+  query = appendDateFilter(query, from, to, params, "date_registered");
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching total clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch total clients' });
+      console.error("Error fetching total clients:", err);
+      return res.status(500).json({ error: "Failed to fetch total clients" });
     }
     res.json(results[0]);
   });
@@ -5880,10 +5841,9 @@ app.get('/admin/count-total-clients', (req, res) => {
 
 /**
  * 2. Get Count of Male Clients
- * 
- * Note: Removed date filters since 'user_tbl' does not have 'date_registered'.
+ * Note: Date filters are not applied as 'user_tbl' does not have 'date_registered'
  */
-app.get('/admin/count-male-clients', (req, res) => {
+app.get("/admin/count-male-clients", (req, res) => {
   const query = `
     SELECT COUNT(*) AS maleClients
     FROM user_tbl
@@ -5892,8 +5852,8 @@ app.get('/admin/count-male-clients', (req, res) => {
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching male clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch male clients' });
+      console.error("Error fetching male clients:", err);
+      return res.status(500).json({ error: "Failed to fetch male clients" });
     }
     res.json(results[0]);
   });
@@ -5901,10 +5861,9 @@ app.get('/admin/count-male-clients', (req, res) => {
 
 /**
  * 3. Get Count of Female Clients
- * 
- * Note: Removed date filters since 'user_tbl' does not have 'date_registered'.
+ * Note: Date filters are not applied as 'user_tbl' does not have 'date_registered'
  */
-app.get('/admin/count-female-clients', (req, res) => {
+app.get("/admin/count-female-clients", (req, res) => {
   const query = `
     SELECT COUNT(*) AS femaleClients
     FROM user_tbl
@@ -5913,35 +5872,42 @@ app.get('/admin/count-female-clients', (req, res) => {
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching female clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch female clients' });
+      console.error("Error fetching female clients:", err);
+      return res.status(500).json({ error: "Failed to fetch female clients" });
     }
     res.json(results[0]);
   });
 });
 
 /**
- * 4. Get Recent Clients (Registered within the last week)
+ * 4. Get Recent Clients (Registered within the last week or by date range)
  */
-app.get('/admin/recent-clients', (req, res) => {
-  const { month, year } = req.query;
+app.get("/admin/recent-clients", (req, res) => {
+  const { from, to } = req.query;
+  // Default to one week ago if no date range is provided
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const formattedDate = oneWeekAgo.toISOString().split('T')[0];
+  const formattedDate = oneWeekAgo.toISOString().split("T")[0];
 
   let query = `
     SELECT fname, category_name, date_registered
     FROM client_tbl
-    WHERE date_registered >= ?
+    WHERE 1=1
   `;
-  const params = [formattedDate];
+  const params = [];
 
-  query = appendDateFilter(query, month, year, params);
+  // If a date range is provided, apply it; otherwise, use the default one-week filter.
+  if (from || to) {
+    query = appendDateFilter(query, from, to, params, "date_registered");
+  } else {
+    query += ` AND date_registered >= ?`;
+    params.push(formattedDate);
+  }
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching recent clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch recent clients' });
+      console.error("Error fetching recent clients:", err);
+      return res.status(500).json({ error: "Failed to fetch recent clients" });
     }
     res.json(results);
   });
@@ -5950,8 +5916,8 @@ app.get('/admin/recent-clients', (req, res) => {
 /**
  * 5. Get New Registered Clients Over Time
  */
-app.get('/admin/new-registered', (req, res) => {
-  const { month, year } = req.query;
+app.get("/admin/new-registered", (req, res) => {
+  const { from, to } = req.query;
   let query = `
     SELECT DATE_FORMAT(date_registered, '%Y-%m-%d') AS day, COUNT(*) AS count
     FROM client_tbl
@@ -5959,7 +5925,7 @@ app.get('/admin/new-registered', (req, res) => {
   `;
   const params = [];
 
-  query = appendDateFilter(query, month, year, params);
+  query = appendDateFilter(query, from, to, params, "date_registered");
 
   query += `
     GROUP BY day
@@ -5968,8 +5934,8 @@ app.get('/admin/new-registered', (req, res) => {
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching new registered clients:', err);
-      return res.status(500).json({ error: 'Failed to fetch new registered clients' });
+      console.error("Error fetching new registered clients:", err);
+      return res.status(500).json({ error: "Failed to fetch new registered clients" });
     }
     res.json(results);
   });
@@ -5977,11 +5943,9 @@ app.get('/admin/new-registered', (req, res) => {
 
 /**
  * 6. Get Category Count
- * 
  * Note: Assuming category counts are not dependent on registration dates.
- * If they are, apply the date filters similarly.
  */
-app.get('/admin/category-count', (req, res) => {
+app.get("/admin/category-count", (req, res) => {
   let query = `
     SELECT category_name, COUNT(*) AS count
     FROM client_tbl
@@ -5991,8 +5955,8 @@ app.get('/admin/category-count', (req, res) => {
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching category data:', err);
-      return res.status(500).json({ error: 'Failed to fetch category data' });
+      console.error("Error fetching category data:", err);
+      return res.status(500).json({ error: "Failed to fetch category data" });
     }
     res.json(results);
   });
@@ -6000,11 +5964,9 @@ app.get('/admin/category-count', (req, res) => {
 
 /**
  * 7. Get Age Segmentation Data
- * 
- * **Updated:** Now applies month and year filters.
  */
-app.get('/admin/age-segmentation', (req, res) => {
-  const { month, year } = req.query;
+app.get("/admin/age-segmentation", (req, res) => {
+  const { from, to } = req.query;
   let query = `
     SELECT
       CASE
@@ -6022,7 +5984,7 @@ app.get('/admin/age-segmentation', (req, res) => {
   `;
   const params = [];
 
-  query = appendDateFilter(query, month, year, params);
+  query = appendDateFilter(query, from, to, params, "date_registered");
 
   query += `
     GROUP BY ageGroup
@@ -6039,8 +6001,8 @@ app.get('/admin/age-segmentation', (req, res) => {
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching age segmentation data:', err);
-      return res.status(500).json({ error: 'Failed to fetch age segmentation data' });
+      console.error("Error fetching age segmentation data:", err);
+      return res.status(500).json({ error: "Failed to fetch age segmentation data" });
     }
     res.json(results);
   });
@@ -6048,12 +6010,9 @@ app.get('/admin/age-segmentation', (req, res) => {
 
 /**
  * 8. Get Updates Line Graph Data
- * 
- * Note: Assuming all the involved tables have an 'updated_at' field.
- * Apply date filters only if applicable.
  */
-app.get('/admin/updates-line-graph', (req, res) => {
-  const { month, year } = req.query;
+app.get("/admin/updates-line-graph", (req, res) => {
+  const { from, to } = req.query;
   let query = `
     SELECT DATE(updated_at) AS date, COUNT(*) AS count
     FROM (
@@ -6087,16 +6046,8 @@ app.get('/admin/updates-line-graph', (req, res) => {
   `;
   const params = [];
 
-  // Apply date filters if provided
-  if (month && year) {
-    query += ` AND MONTH(updated_at) = ? AND YEAR(updated_at) = ?`;
-    params.push(parseInt(month, 10), parseInt(year, 10));
-  } else if (year) {
-    query += ` AND YEAR(updated_at) = ?`;
-    params.push(parseInt(year, 10));
-  } else if (month) {
-    query += ` AND MONTH(updated_at) = ?`;
-    params.push(parseInt(month, 10));
+  if (from || to) {
+    query = appendDateFilter(query, from, to, params, "updated_at");
   }
 
   query += `
@@ -6106,8 +6057,8 @@ app.get('/admin/updates-line-graph', (req, res) => {
 
   db.query(query, params, (err, results) => {
     if (err) {
-      console.error('Error fetching updates data:', err);
-      return res.status(500).json({ error: 'Failed to fetch updates data' });
+      console.error("Error fetching updates data:", err);
+      return res.status(500).json({ error: "Failed to fetch updates data" });
     }
     res.json(results);
   });
@@ -6115,16 +6066,15 @@ app.get('/admin/updates-line-graph', (req, res) => {
 
 /**
  * 9. Get Count of Medicines
- * 
  * Note: Medicines count is independent of date filters.
  */
-app.get('/admin/count-medicines', (req, res) => {
+app.get("/admin/count-medicines", (req, res) => {
   const query = `SELECT COUNT(*) AS count FROM medicines`;
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching total medicines:', err);
-      return res.status(500).json({ error: 'Failed to fetch total medicines' });
+      console.error("Error fetching total medicines:", err);
+      return res.status(500).json({ error: "Failed to fetch total medicines" });
     }
     res.json(results[0]);
   });
@@ -6132,10 +6082,9 @@ app.get('/admin/count-medicines', (req, res) => {
 
 /**
  * 10. Get Count of Workers
- * 
  * Note: Workers count is independent of date filters.
  */
-app.get('/admin/count-worker', (req, res) => {
+app.get("/admin/count-worker", (req, res) => {
   const query = `
     SELECT COUNT(*) AS totalWorkers 
     FROM user_tbl 
@@ -6144,18 +6093,19 @@ app.get('/admin/count-worker', (req, res) => {
 
   db.query(query, (err, results) => {
     if (err) {
-      console.error('Error fetching total workers:', err);
-      return res.status(500).json({ error: 'Failed to fetch total workers' });
+      console.error("Error fetching total workers:", err);
+      return res.status(500).json({ error: "Failed to fetch total workers" });
     }
-    console.log('Total Workers:', results[0].totalWorkers); // Log the count
+    console.log("Total Workers:", results[0].totalWorkers);
     res.json(results[0]);
   });
 });
 
-// server.js or admin-routes.js
-
-app.get('/admin/condition-count', (req, res) => {
-  const { month, year } = req.query;
+/**
+ * 11. Get Condition Count
+ */
+app.get("/admin/condition-count", (req, res) => {
+  const { from, to } = req.query;
 
   let query = `
     SELECT \`condition_status\` AS client_condition,
@@ -6165,21 +6115,11 @@ app.get('/admin/condition-count', (req, res) => {
   `;
   const params = [];
 
-  // If you want date filtering on date_registered
-  if (month && year) {
-    query += ` AND MONTH(date_registered) = ? AND YEAR(date_registered) = ?`;
-    params.push(parseInt(month, 10), parseInt(year, 10));
-  } else if (year) {
-    query += ` AND YEAR(date_registered) = ?`;
-    params.push(parseInt(year, 10));
-  } else if (month) {
-    query += ` AND MONTH(date_registered) = ?`;
-    params.push(parseInt(month, 10));
-  }
+  query = appendDateFilter(query, from, to, params, "date_registered");
 
   query += `
     GROUP BY \`condition_status\`
-    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased', 'temporary')
+    ORDER BY FIELD(client_condition, 'permanent residence', 'temporary', 'deceased', 'transfer')
   `;
 
   db.query(query, params, (err, results) => {
@@ -6187,10 +6127,6 @@ app.get('/admin/condition-count', (req, res) => {
       console.error("Error fetching condition count:", err);
       return res.status(500).json({ error: "Failed to fetch condition count" });
     }
-    // Example: 
-    // [ { client_condition: 'permanent residence', count: 10 },
-    //   { client_condition: 'deceased', count: 2 } ]
-    // 'temporary' might be missing if 0
     res.json(results);
   });
 });
@@ -10700,10 +10636,11 @@ app.post('/add-client', async (req, res) => {
     phil_id,
     gender,
     worker_id,
-    birthdate
+    birthdate,
+    place_assign  // New field from client
   } = req.body;
 
-  // Log the data to verify that all fields are correctly received
+  // Log received data for verification
   console.log('Received data:', {
     category_name,
     fname,
@@ -10712,13 +10649,14 @@ app.post('/add-client', async (req, res) => {
     phil_id,
     gender,
     worker_id,
-    birthdate
+    birthdate,
+    place_assign
   });
 
   // Validate required fields
-  if (!fname || !address || !category_name || !worker_id || !gender || !birthdate) {
-    console.error('Missing required fields:', { fname, address, category_name, worker_id, gender, birthdate });
-    return res.status(400).json({ error: "Full name, address, category, gender, worker ID, and birthdate are required" });
+  if (!fname || !address || !category_name || !worker_id || !gender || !birthdate || !place_assign) {
+    console.error('Missing required fields:', { fname, address, category_name, worker_id, gender, birthdate, place_assign });
+    return res.status(400).json({ error: "Full name, address, category, gender, worker ID, birthdate, and place_assign are required" });
   }
 
   // Calculate age from birthdate
@@ -10730,8 +10668,8 @@ app.post('/add-client', async (req, res) => {
   }
 
   try {
-    // **Duplicate Detection**
-    let duplicateCheckSql = `
+    // Duplicate Detection
+    const duplicateCheckSql = `
       SELECT * FROM client_tbl 
       WHERE fname = ? AND phil_id = ?
       LIMIT 1
@@ -10747,61 +10685,72 @@ app.post('/add-client', async (req, res) => {
         return res.status(400).json({ error: "A client with the same name and PhilHealth ID already exists." });
       }
 
-      // **Geocode the address using ArcGIS API**
-      axios.get(`https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates`, {
-        params: {
-          f: 'json',
-          SingleLine: address,
-          outFields: 'Match_addr,Addr_type'
+      // Mapping of place_assign values (in lowercase) to their center coordinates
+      const purokCenters = {
+        "purok1": { lat: 7.184687, lon: 125.421865 },
+        "purok2a": { lat: 7.189484, lon: 125.429046 },
+        "purok2b": { lat: 7.187365, lon: 125.424273 },
+        "purok3a1": { lat: 7.190170, lon: 125.434261 },
+        "purok3a2": { lat: 7.185844, lon: 125.435457 },
+        "purok3b": { lat: 7.193792, lon: 125.441987 },
+        "purok4a": { lat: 7.193098, lon: 125.410386 },
+        "purok4b": { lat: 7.188746, lon: 125.416939 },
+        "purok5": { lat: 7.183062, lon: 125.417355 },
+        "purok6": { lat: 7.180492, lon: 125.430114 },
+      };
+
+      const purokKey = place_assign.toLowerCase();
+      const center = purokCenters[purokKey];
+      if (!center) {
+        console.error('Invalid place_assign:', place_assign);
+        return res.status(400).json({ error: "Invalid place_assign value" });
+      }
+
+      // Generate random coordinate within a fixed radius (in degrees)
+      const getRandomCoordinate = (center, radius) => {
+        const u = Math.random();
+        const v = Math.random();
+        const w = radius * Math.sqrt(u);
+        const t = 2 * Math.PI * v;
+        const offsetLat = w * Math.cos(t);
+        const offsetLon = w * Math.sin(t);
+        return { latitude: center.lat + offsetLat, longitude: center.lon + offsetLon };
+      };
+
+      // For example, using a radius of 0.001 degrees (~111m)
+      const randomCoord = getRandomCoordinate(center, 0.001);
+
+      // Insert client into the database using the generated random coordinates
+      const insertSql = `
+        INSERT INTO client_tbl 
+        (category_name, fname, address, phone_no, phil_id, gender, latitude, longitude, date_registered, status, worker_id, birthdate, age)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Active', ?, ?, ?)
+      `;
+
+      db.query(insertSql, [
+        category_name,
+        fname,
+        address,
+        phone_no || '',
+        phil_id || '',
+        gender,
+        randomCoord.latitude,
+        randomCoord.longitude,
+        worker_id,
+        birthdate,
+        age
+      ], (insertErr, insertResult) => {
+        if (insertErr) {
+          console.error('Database error during client insertion:', insertErr);
+          return res.status(500).json({ error: "Database error during client insertion" });
         }
-      })
-      .then(geoResponse => {
-        const candidates = geoResponse.data.candidates;
-        if (candidates.length === 0) {
-          console.error('Unable to geocode address:', address);
-          return res.status(400).json({ error: "Unable to geocode address" });
-        }
-
-        // Get latitude and longitude from the first candidate
-        const { y: latitude, x: longitude } = candidates[0].location;
-
-        // **Insert client into the database**
-        const insertSql = `
-          INSERT INTO client_tbl 
-          (category_name, fname, address, phone_no, phil_id, gender, latitude, longitude, date_registered, status, worker_id, birthdate, age)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Active', ?, ?, ?)
-        `;
-
-        db.query(insertSql, [
-          category_name,
-          fname,
-          address,
-          phone_no || '',
-          phil_id || '',
-          gender,
-          latitude,
-          longitude,
-          worker_id,
-          birthdate,
-          age
-        ], (insertErr, insertResult) => {
-          if (insertErr) {
-            console.error('Database error during client insertion:', insertErr);
-            return res.status(500).json({ error: "Database error during client insertion" });
-          }
-
-          console.log('Client added successfully:', insertResult.insertId);
-          return res.json({ message: "Client added successfully", clientId: insertResult.insertId });
-        });
-      })
-      .catch(geoError => {
-        console.error('Error during geocoding:', geoError);
-        return res.status(500).json({ error: "Failed to geocode address" });
+        console.log('Client added successfully:', insertResult.insertId);
+        return res.json({ message: "Client added successfully", clientId: insertResult.insertId });
       });
     });
 
   } catch (error) {
-    console.error('Error during the duplicate check or database operation:', error);
+    console.error('Error during client addition:', error);
     return res.status(500).json({ error: "Failed to add client" });
   }
 });

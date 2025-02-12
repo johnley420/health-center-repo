@@ -1,3 +1,5 @@
+// AddClient.tsx
+
 import {
   Button,
   Input,
@@ -10,8 +12,8 @@ import {
   SelectItem,
 } from "@nextui-org/react";
 import React, { useState } from "react";
-import axios from "axios"; // Import AxiosError
-import Swal from "sweetalert2"; // Import SweetAlert2
+import axios from "axios";
+import Swal from "sweetalert2";
 import { categories } from "../../../constants";
 
 type propsType = {
@@ -21,12 +23,13 @@ type propsType = {
 
 const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
   const workerId = sessionStorage.getItem("id");
+  // Retrieve the worker’s assigned purok from sessionStorage.
+  const purok = sessionStorage.getItem("place_assign") || "";
+  // Construct the address using the purok value.
+  const address = `${purok} Malagos, Baguio District, Davao City`;
 
   const [category, setCategory] = useState("");
   const [fname, setFname] = useState("");
-  // The address field is now read-only and automatically set from sessionStorage
-  const purok = sessionStorage.getItem("place_assign") || "";
-  const address = `${purok} Malagos, Baguio District, Davao City`;
   const [phoneNo, setPhoneNo] = useState("");
   const [philId, setPhilId] = useState("");
   const [gender, setGender] = useState("");
@@ -35,7 +38,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [duplicateError, setDuplicateError] = useState("");
 
-  // Function to check for duplicates
+  // Function to check for duplicate clients
   const checkDuplicate = async () => {
     if (!fname || !philId) {
       setIsDuplicate(false);
@@ -86,6 +89,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
     }
 
     try {
+      // Note: We now also send the place_assign value (purok) in the request body.
       const response = await axios.post("https://health-center-repo-production.up.railway.app/add-client", {
         category_name: category,
         fname,
@@ -95,6 +99,7 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
         gender,
         worker_id: workerId,
         birthdate,
+        place_assign: purok,
       });
 
       if (response.status === 200) {
@@ -113,9 +118,12 @@ const AddClient: React.FC<propsType> = ({ isOpen, onClose }) => {
       }
     } catch (error: unknown) {
       console.error("Error adding client:", error);
-
       if (axios.isAxiosError(error)) {
-        if (error.response && error.response.data && error.response.data.error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
           const errorMessage = error.response.data.error;
           if (errorMessage.includes("already exists")) {
             Swal.fire({

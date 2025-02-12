@@ -386,7 +386,7 @@ const ManageClient = () => {
               fetchRemovedClients();
             }}
           >
-            Removed
+            Archived
           </Button>
 
           {/* NEW: Warning (Not Updated) Clients Button */}
@@ -545,7 +545,7 @@ const ManageClient = () => {
             <>
               <ModalHeader>
                 <div id="modal-title-removed" style={{ fontSize: "18px", fontWeight: "bold" }}>
-                  Removed Clients
+                  Archived Clients
                 </div>
               </ModalHeader>
               <ModalBody>

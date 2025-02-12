@@ -87,9 +87,9 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Filter State Variables
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [selectedYear, setSelectedYear] = useState<string>('');
+  // ***** Updated Filter State Variables (Date Range) *****
+  const [selectedFrom, setSelectedFrom] = useState<string>('');
+  const [selectedTo, setSelectedTo] = useState<string>('');
 
   /**
    * Fetch Data on Component Mount and When Filters Change
@@ -100,22 +100,22 @@ const Dashboard: React.FC = () => {
       setError(null);
 
       try {
-        // Build query parameters
+        // Build query parameters using the date range filter
         const params: Record<string, string> = {};
-        if (selectedMonth) params.month = selectedMonth;
-        if (selectedYear) params.year = selectedYear;
+        if (selectedFrom) params.from = selectedFrom;
+        if (selectedTo) params.to = selectedTo;
 
         const queryString = new URLSearchParams(params).toString();
         const baseURL = `https://health-center-repo-production.up.railway.app/admin`;
 
-        // Define which endpoints require date filters
+        // Define which endpoints support date filtering
         const endpointsRequiringDateFilters = [
-          'count-total-clients',
-          'recent-clients',
-          'new-registered',
-          'age-segmentation',
-          'updates-line-graph',
-          'condition-count', // NEW: if you create /admin/condition-count
+          "count-total-clients",
+          "recent-clients",
+          "new-registered",
+          "age-segmentation",
+          "updates-line-graph",
+          "condition-count", // NEW: if you create /admin/condition-count
         ];
 
         // Function to build URLs with query strings only for endpoints that support date filters
@@ -140,17 +140,17 @@ const Dashboard: React.FC = () => {
           medicineCountRes,
           conditionRes, // NEW
         ] = await Promise.all([
-          axios.get(buildURL('count-total-clients')),
-          axios.get(buildURL('count-worker')),          // no date filters
-          axios.get(buildURL('count-male-clients')),    // no date filters
-          axios.get(buildURL('count-female-clients')),  // no date filters
-          axios.get(buildURL('recent-clients')),
-          axios.get(buildURL('new-registered')),
-          axios.get(buildURL('category-count')),        // no date filters
-          axios.get(buildURL('age-segmentation')),      // filters
-          axios.get(buildURL('updates-line-graph')),
-          axios.get(buildURL('count-medicines')),       // no date filters
-          axios.get(buildURL('condition-count')),       // NEW (must exist on server)
+          axios.get(buildURL("count-total-clients")),
+          axios.get(buildURL("count-worker")),          // no date filters
+          axios.get(buildURL("count-male-clients")),      // no date filters
+          axios.get(buildURL("count-female-clients")),    // no date filters
+          axios.get(buildURL("recent-clients")),
+          axios.get(buildURL("new-registered")),
+          axios.get(buildURL("category-count")),          // no date filters
+          axios.get(buildURL("age-segmentation")),        // supports date filters
+          axios.get(buildURL("updates-line-graph")),
+          axios.get(buildURL("count-medicines")),         // no date filters
+          axios.get(buildURL("condition-count")),         // NEW (must exist on server)
         ]);
 
         // Log responses if needed
@@ -223,7 +223,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchAdminData();
-  }, [selectedMonth, selectedYear]);
+  }, [selectedFrom, selectedTo]);
 
   /**
    * Prepare Data for Line Charts
@@ -263,14 +263,14 @@ const Dashboard: React.FC = () => {
   const taskLabels = categoryData.map((category) => category.category_name);
 
   /**
-   *  NEW: Condition Chart Data
-   *  Always show permanent residence, temporary, deceased
+   * NEW: Condition Chart Data
+   * Always show permanent residence, temporary, deceased, transfer
    */
   const conditionChartData = useMemo(() => {
     if (!conditionData) return [];
 
     // 1) Define fixed categories
-    const fixedCategories = ["permanent residence", "temporary", "deceased", "transfer" ];
+    const fixedCategories = ["permanent residence", "temporary", "deceased", "transfer"];
 
     // 2) Dictionary for default zero
     const categoryDict: Record<string, number> = {
@@ -324,59 +324,42 @@ const Dashboard: React.FC = () => {
    */
   return (
     <div className="p-3">
-      {/* Filter Section */}
+      {/* Updated Filter Section: Date Range Picker */}
       <div className="flex flex-wrap items-center gap-4 mb-4">
-        {/* Month Selector */}
+        {/* From Date Picker */}
         <div>
-          <label htmlFor="month" className="block text-sm font-medium text-gray-700">
-            Month
+          <label htmlFor="fromDate" className="block text-sm font-medium text-gray-700">
+            From
           </label>
-          <select
-            id="month"
-            name="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
+          <input
+            type="date"
+            id="fromDate"
+            name="fromDate"
+            value={selectedFrom}
+            onChange={(e) => setSelectedFrom(e.target.value)}
             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="">All Months</option>
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>
-                {new Date(0, i).toLocaleString('default', { month: 'long' })}
-              </option>
-            ))}
-          </select>
+          />
         </div>
-
-        {/* Year Selector */}
+        {/* To Date Picker */}
         <div>
-          <label htmlFor="year" className="block text-sm font-medium text-gray-700">
-            Year
+          <label htmlFor="toDate" className="block text-sm font-medium text-gray-700">
+            To
           </label>
-          <select
-            id="year"
-            name="year"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
+          <input
+            type="date"
+            id="toDate"
+            name="toDate"
+            value={selectedTo}
+            onChange={(e) => setSelectedTo(e.target.value)}
             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-          >
-            <option value="">All Years</option>
-            {Array.from({ length: 10 }, (_, i) => {
-              const year = new Date().getFullYear() - i;
-              return (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              );
-            })}
-          </select>
+          />
         </div>
-
         {/* Reset Button */}
         <div className="flex items-end">
           <button
             onClick={() => {
-              setSelectedMonth('');
-              setSelectedYear('');
+              setSelectedFrom("");
+              setSelectedTo("");
             }}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
           >
@@ -415,7 +398,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* 3) Recent Clients (Right Column) */}
-        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white">
+        <div className="p-5 rounded-xl shadow-md shadow-gray-50 border border-[#e5e7e7] bg-white overflow-y-auto max-h-[400px]">
           <h1 className="text-xl font-bold mb-3 pl-2">Recent Clients</h1>
           {recentClients.length > 0 ? (
             <Table isStriped aria-label="Recent Clients Table">
@@ -477,7 +460,9 @@ const Dashboard: React.FC = () => {
           {categoryData.length > 0 ? (
             <AdminTaskPieChart taskData={taskData} taskLabels={taskLabels} />
           ) : (
-            <div className="text-center text-gray-500">No category data available.</div>
+            <div className="text-center text-gray-500">
+              No category data available.
+            </div>
           )}
         </div>
       </div>

@@ -5,7 +5,11 @@ import MapView from "@arcgis/core/views/MapView";
 import Map from "@arcgis/core/Map";
 import Graphic from "@arcgis/core/Graphic";
 import Point from "@arcgis/core/geometry/Point";
+import Polygon from "@arcgis/core/geometry/Polygon";
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol";
+import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
+import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
+import TextSymbol from "@arcgis/core/symbols/TextSymbol";
 import "@arcgis/core/assets/esri/themes/light/main.css";
 import axios from "axios";
 import { Select, SelectItem } from "@nextui-org/react";
@@ -22,19 +26,12 @@ interface ClientData {
   worker_id: number;
 }
 
-interface HighRiskPlaceAssign {
-  place_assign: string;
-  category_name: string;
-  category_count: number;
-  worker_id: number;
-  worker_name: string;
-}
+// Removed unused interface HighRiskPlaceAssign
 
 interface PurokCount {
   purok: string;
   client_count: number;
 }
-
 
 /* ------------------------ Constants ------------------------- */
 const TOTAL_POPULATION = 7621;
@@ -49,8 +46,7 @@ const categoryColors: Record<string, [number, number, number]> = {
 };
 
 /**
- * 5 categories that have high-risk data (and thus a risk table).
- * If a user selects anything else, the High-Risk panel won't appear at all.
+ * Risk thresholds for each category.
  */
 const riskReferenceMap: Record<
   string,
@@ -63,23 +59,35 @@ const riskReferenceMap: Record<
   "Current Smokers": { low: 5, medium: 25, high: 70 },
 };
 
+/**
+ * Mapping of purok keys (all lowercase, no spaces) to center coordinates.
+ */
+const purokTotalPopulation: Record<string, number> = {
+  purok1: 100,
+  purok2a: 100,
+  purok2b: 100,
+  purok3a1: 100,
+  purok3a2: 100,
+  purok3b: 100,
+  purok4a: 100,
+  purok4b: 100,
+  purok5: 100,
+  purok6: 100,
+};
+
 const ViewMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<MapView | null>(null);
+  // Ref for storing the polygon border graphic
+  const polygonGraphicRef = useRef<Graphic | null>(null);
 
   // State
   const [clients, setClients] = useState<ClientData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [highRiskInfo, setHighRiskInfo] = useState<HighRiskPlaceAssign[]>([]);
-  const [loadingHighRisk, setLoadingHighRisk] = useState<boolean>(false);
   const [purokCounts, setPurokCounts] = useState<PurokCount[]>([]);
-  const [loadingPurokCounts, setLoadingPurokCounts] = useState<boolean>(false);
-
-  // If you still need placeAssignCoordinates (optional):
 
   /* ------------------- 1) Fetch Data on Mount ------------------- */
   useEffect(() => {
-    // Fetch active clients
     axios
       .get("https://health-center-repo-production.up.railway.app/clients-admin-map")
       .then((response) => {
@@ -89,12 +97,47 @@ const ViewMap: React.FC = () => {
       .catch((error) => {
         console.error("Error fetching client data:", error);
       });
-
   }, []);
 
   /* ----------------- 2) Initialize & Update Map ----------------- */
   useEffect(() => {
+    // Define polygon coordinates and close the ring.
+    const polygonCoordinates = [
+      [125.402943, 7.195587],
+      [125.402818, 7.194207],
+      [125.401788, 7.193867],
+      [125.401475, 7.192813],
+      [125.397446, 7.18959],
+      [125.395291, 7.185066],
+      [125.405232, 7.183736],
+      [125.407903, 7.181859],
+      [125.411449, 7.175594],
+      [125.410419, 7.174251],
+      [125.413275, 7.172287],
+      [125.415711, 7.16834],
+      [125.417462, 7.168094],
+      [125.419042, 7.168699],
+      [125.423992, 7.174629],
+      [125.431663, 7.177311],
+      [125.435908, 7.181674],
+      [125.436403, 7.184035],
+      [125.441619, 7.186037],
+      [125.439201, 7.189455],
+      [125.440896, 7.191967],
+      [125.444263, 7.192913],
+      [125.449954, 7.199578],
+      [125.449457, 7.206891],
+      [125.446004, 7.205595],
+      [125.445973, 7.206151],
+      [125.442894, 7.206444],
+      [125.439488, 7.204083],
+      [125.437047, 7.203019],
+      [125.414986, 7.193245],
+    ];
+    polygonCoordinates.push(polygonCoordinates[0]);
+
     if (mapRef.current && !viewRef.current) {
+      // Initialize the map
       const map = new Map({ basemap: "osm-3d" });
       const view = new MapView({
         container: mapRef.current,
@@ -104,20 +147,92 @@ const ViewMap: React.FC = () => {
       });
       viewRef.current = view;
       console.log("Map initialized.");
+
+      // ------------------ Add Polygon Border ------------------
+      const polygon = new Polygon({
+        rings: [polygonCoordinates],
+        spatialReference: { wkid: 4326 },
+      });
+      const polygonSymbol = new SimpleFillSymbol({
+        color: [0, 0, 0, 0],
+        outline: new SimpleLineSymbol({
+          color: "gray",
+          style: "dash",
+          width: 2,
+        }),
+      });
+      const polygonGraphic = new Graphic({
+        geometry: polygon,
+        symbol: polygonSymbol,
+      });
+      polygonGraphicRef.current = polygonGraphic;
+      view.graphics.add(polygonGraphic);
+      // ------------------ End Polygon Border ------------------
+
+      // Set up click event for labels.
+      view.on("click", async (event) => {
+        const response = await view.hitTest(event);
+        if (response.results.length > 0) {
+          // Cast the first result as any to access the 'graphic' property.
+          const resultItem = response.results[0] as any;
+          if (
+            resultItem.graphic &&
+            resultItem.graphic.attributes &&
+            resultItem.graphic.attributes.purokKey
+          ) {
+            const purokKey: string = resultItem.graphic.attributes.purokKey;
+            // Look up the corresponding purok count from state.
+            const entry = purokCounts.find(
+              (e) =>
+                e.purok.toLowerCase().replace(/\s+/g, "") === purokKey
+            );
+            const totalPop = purokTotalPopulation[purokKey] || 100;
+            let riskText = "No data";
+            let riskPerc = 0;
+            if (entry && selectedCategory && riskReferenceMap[selectedCategory]) {
+              const thresholds = riskReferenceMap[selectedCategory];
+              riskPerc = (entry.client_count / totalPop) * 100;
+              if (riskPerc >= thresholds.high) {
+                riskText = "High Risk";
+              } else if (riskPerc >= thresholds.medium) {
+                riskText = "Medium Risk";
+              } else if (riskPerc >= thresholds.low) {
+                riskText = "Low Risk";
+              } else {
+                riskText = "Very Low Risk";
+              }
+            }
+            view.popup.open({
+              title: `Risk Info for ${purokKey.toUpperCase()}`,
+              content: `Risk Level: ${riskText} (${riskPerc.toFixed(
+                2
+              )}% of local population)`,
+              location: event.mapPoint,
+            });
+            return; // Prevent further processing if label was clicked.
+          }
+        }
+        // If click wasn't on a label, do nothing (or add other logic here).
+      });
     }
 
     if (viewRef.current) {
-      // Safely remove old markers
+      // Clear all graphics (clears markers, labels, etc.)
       viewRef.current.graphics.removeAll();
 
-      // Filter clients by category
+      // Re-add the polygon border.
+      if (polygonGraphicRef.current) {
+        viewRef.current.graphics.add(polygonGraphicRef.current);
+      }
+
+      // Filter clients by category.
       const filteredClients =
         selectedCategory === null
           ? clients
           : clients.filter((c) => c.category_name === selectedCategory);
 
-      // Build an array of ArcGIS Graphic objects
-      const graphicsArray = filteredClients
+      // Build client marker graphics.
+      const markerGraphics = filteredClients
         .map((client) => {
           if (!client.latitude || !client.longitude) return null;
           return new Graphic({
@@ -138,44 +253,88 @@ const ViewMap: React.FC = () => {
         })
         .filter((g) => g !== null) as Graphic[];
 
-      // Add all ArcGIS Graphics at once
-      viewRef.current.graphics.addMany(graphicsArray);
+      viewRef.current.graphics.addMany(markerGraphics);
+
+      // ------------------ Add Purok Label Graphics with Popup ------------------
+      const labelPoints = [
+        { lat: 7.184687, lon: 125.421865, label: "Purok 1" },
+        { lat: 7.189484, lon: 125.429046, label: "Purok 2A" },
+        { lat: 7.187365, lon: 125.424273, label: "Purok 2B" },
+        { lat: 7.190170, lon: 125.434261, label: "Purok 3A1" },
+        { lat: 7.185844, lon: 125.435457, label: "Purok 3A2" },
+        { lat: 7.193792, lon: 125.441987, label: "Purok 3B" },
+        { lat: 7.193098, lon: 125.410386, label: "Purok 4A" },
+        { lat: 7.188746, lon: 125.416939, label: "Purok 4B" },
+        { lat: 7.183062, lon: 125.417355, label: "Purok 5" },
+        { lat: 7.180492, lon: 125.430114, label: "Purok 6" },
+      ];
+
+      const labelGraphics = labelPoints.map((pt) => {
+        // Normalize the label text to create a key (e.g., "purok2b")
+        const key = pt.label.toLowerCase().replace(/\s+/g, "");
+        return new Graphic({
+          geometry: new Point({
+            longitude: pt.lon,
+            latitude: pt.lat,
+          }),
+          symbol: new TextSymbol({
+            text: pt.label,
+            color: "black",
+            haloColor: "white",
+            haloSize: "4px",
+            font: {
+              size: "14px",
+              family: "sans-serif",
+              weight: "bold",
+            },
+            horizontalAlignment: "center",
+            verticalAlignment: "middle",
+          }),
+          attributes: { purokKey: key },
+          popupTemplate: {
+            title: "{purokKey}",
+            content: (graphic: any) => {
+              const purokKey = graphic.attributes.purokKey;
+              // Look up the corresponding purok count data
+              const entry = purokCounts.find(
+                (e) => e.purok.toLowerCase().replace(/\s+/g, "") === purokKey
+              );
+              const totalPop = purokTotalPopulation[purokKey] || 100;
+              let riskText = "No data";
+              let riskPerc = 0;
+              if (entry && selectedCategory && riskReferenceMap[selectedCategory]) {
+                const thresholds = riskReferenceMap[selectedCategory];
+                riskPerc = (entry.client_count / totalPop) * 100;
+                if (riskPerc >= thresholds.high) {
+                  riskText = "High Risk";
+                } else if (riskPerc >= thresholds.medium) {
+                  riskText = "Medium Risk";
+                } else if (riskPerc >= thresholds.low) {
+                  riskText = "Low Risk";
+                } else {
+                  riskText = "Very Low Risk";
+                }
+                return `Risk Level: ${riskText} (${riskPerc.toFixed(2)}% of local population)`;
+              }
+              return `Risk Level: ${riskText}`;
+            },
+          },
+        });
+      });
+      viewRef.current.graphics.addMany(labelGraphics);
+      // ------------------ End Purok Label Graphics ------------------
     }
 
-    // Cleanup on unmount
     return () => {
       if (viewRef.current) {
         viewRef.current.destroy();
         viewRef.current = null;
       }
     };
-  }, [clients, selectedCategory]);
-
-  /* ------------------ 3) Fetch High-Risk Data ------------------- */
-  useEffect(() => {
-    if (selectedCategory !== null) {
-      setLoadingHighRisk(true);
-      axios
-        .get("https://health-center-repo-production.up.railway.app/clients-admin-map-high-risk", {
-          params: { category_name: selectedCategory },
-        })
-        .then((response) => {
-          setHighRiskInfo(response.data);
-          console.log("High-Risk Data:", response.data);
-          setLoadingHighRisk(false);
-        })
-        .catch((error) => {
-          console.error("Error fetching high-risk areas:", error);
-          setLoadingHighRisk(false);
-        });
-    } else {
-      setHighRiskInfo([]);
-    }
-  }, [selectedCategory]);
+  }, [clients, selectedCategory, purokCounts]);
 
   /* ----------------- 4) Fetch Purok Counts ------------------- */
   useEffect(() => {
-    setLoadingPurokCounts(true);
     axios
       .get("https://health-center-repo-production.up.railway.app/clients-admin-map-purok-counts", {
         params: { category_name: selectedCategory },
@@ -183,11 +342,9 @@ const ViewMap: React.FC = () => {
       .then((response) => {
         setPurokCounts(response.data);
         console.log("Purok Counts Data:", response.data);
-        setLoadingPurokCounts(false);
       })
       .catch((error) => {
         console.error("Error fetching purok counts:", error);
-        setLoadingPurokCounts(false);
       });
   }, [selectedCategory]);
 
@@ -202,16 +359,12 @@ const ViewMap: React.FC = () => {
     selectedCategory === null
       ? clients
       : clients.filter((c) => c.category_name === selectedCategory);
-
   const categoryCount = displayedClients.length;
   const categoryPercentage = (categoryCount / TOTAL_POPULATION) * 100;
 
   /* ---------------- 7) Risk Distribution Table ---------------- */
-  // True if the selectedCategory is one of the five "risk" categories
   const isHighRiskCategory =
     selectedCategory && riskReferenceMap[selectedCategory] !== undefined;
-
-  // Build the risk table if isHighRiskCategory is true
   let riskTable = null;
   if (isHighRiskCategory && selectedCategory) {
     const { low, medium, high } = riskReferenceMap[selectedCategory];
@@ -225,19 +378,13 @@ const ViewMap: React.FC = () => {
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-2 py-1 border border-gray-300" />
-                <th
-                  className="px-2 py-1 border border-gray-300 text-green-600"
-                >
+                <th className="px-2 py-1 border border-gray-300 text-green-600">
                   Low
                 </th>
-                <th
-                  className="px-2 py-1 border border-gray-300 text-orange-500"
-                >
+                <th className="px-2 py-1 border border-gray-300 text-orange-500">
                   Medium
                 </th>
-                <th
-                  className="px-2 py-1 border border-gray-300 text-red-600"
-                >
+                <th className="px-2 py-1 border border-gray-300 text-red-600">
                   High
                 </th>
               </tr>
@@ -262,7 +409,7 @@ const ViewMap: React.FC = () => {
   const purokTable = (
     <div className="mt-5 p-4 border border-gray-300 rounded bg-white shadow-sm">
       <h2 className="text-xl font-semibold mb-2">Purok-wise Client Distribution</h2>
-      {loadingPurokCounts ? (
+      {purokCounts.length === 0 ? (
         <p>Loading purok-wise data...</p>
       ) : (
         <div className="overflow-x-auto">
@@ -318,22 +465,13 @@ const ViewMap: React.FC = () => {
             <SelectItem key="Pregnant" value="Pregnant">
               Pregnant
             </SelectItem>
-            <SelectItem
-              key="Person With Disabilities"
-              value="Person With Disabilities"
-            >
+            <SelectItem key="Person With Disabilities" value="Person With Disabilities">
               Person With Disabilities
             </SelectItem>
-            <SelectItem
-              key="10-19 Years Old (Adolescents)"
-              value="10-19 Years Old (Adolescents)"
-            >
+            <SelectItem key="10-19 Years Old (Adolescents)" value="10-19 Years Old (Adolescents)">
               10-19 Years Old (Adolescents)
             </SelectItem>
-            <SelectItem
-              key="Schistomiasis Program Services"
-              value="Schistomiasis Program Services"
-            >
+            <SelectItem key="Schistomiasis Program Services" value="Schistomiasis Program Services">
               Schistomiasis Program Services
             </SelectItem>
             <SelectItem key="Senior Citizen" value="Senior Citizen">
@@ -342,43 +480,25 @@ const ViewMap: React.FC = () => {
             <SelectItem key="Family Planning" value="Family Planning">
               Family Planning
             </SelectItem>
-            <SelectItem
-              key="Hypertensive And Type 2 Diabetes"
-              value="Hypertensive And Type 2 Diabetes"
-            >
+            <SelectItem key="Hypertensive And Type 2 Diabetes" value="Hypertensive And Type 2 Diabetes">
               Hypertensive And Type 2 Diabetes
             </SelectItem>
-            <SelectItem
-              key="Filariasis Program Services"
-              value="Filariasis Program Services"
-            >
+            <SelectItem key="Filariasis Program Services" value="Filariasis Program Services">
               Filariasis Program Services
             </SelectItem>
             <SelectItem key="Current Smokers" value="Current Smokers">
               Current Smokers
             </SelectItem>
-            <SelectItem
-              key="0-11 Months Old Infants"
-              value="0-11 Months Old Infants"
-            >
+            <SelectItem key="0-11 Months Old Infants" value="0-11 Months Old Infants">
               0-11 Months Old Infants
             </SelectItem>
-            <SelectItem
-              key="0-59 Months Old Children"
-              value="0-59 Months Old Children"
-            >
+            <SelectItem key="0-59 Months Old Children" value="0-59 Months Old Children">
               0-59 Months Old Children
             </SelectItem>
-            <SelectItem
-              key="5-9 Years Old Children"
-              value="5-9 Years Old Children"
-            >
+            <SelectItem key="5-9 Years Old Children" value="5-9 Years Old Children">
               5-9 Years Old Children
             </SelectItem>
-            <SelectItem
-              key="10-19 Years Old (Adolescents)"
-              value="10-19 Years Old (Adolescents)"
-            >
+            <SelectItem key="10-19 Years Old (Adolescents)" value="10-19 Years Old (Adolescents)">
               10-19 Years Old (Adolescents)
             </SelectItem>
           </Select>
@@ -405,41 +525,7 @@ const ViewMap: React.FC = () => {
             )}
           </div>
 
-          {/* High-Risk Panel — Only show if 'isHighRiskCategory' is true */}
-          {isHighRiskCategory && (
-            <div className="mt-5">
-              <h2 className="text-2xl font-semibold mb-2">High-Risk Areas</h2>
-              {loadingHighRisk && (
-                <div className="p-4 bg-yellow-100 border border-yellow-400 rounded">
-                  <p>Loading high-risk areas...</p>
-                </div>
-              )}
-              {!loadingHighRisk && highRiskInfo.length > 0 && (
-                <div className="p-4 bg-red-100 border border-red-400 rounded">
-                  <ul className="list-disc list-inside">
-                    {highRiskInfo.map((area, index) => (
-                      <li key={index}>
-                        <strong>Place Assign:</strong> {area.place_assign}
-                        <br />
-                        <strong>Category:</strong> {area.category_name}
-                        <br />
-                        <strong>Count:</strong> {area.category_count}
-                        <br />
-                        <strong>Worker:</strong> {area.worker_name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {!loadingHighRisk && highRiskInfo.length === 0 && (
-                <div className="p-4 bg-green-100 border border-green-400 rounded">
-                  <p>No high-risk areas detected for the selected category.</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Risk Distribution Table (only for 5 categories) */}
+          {/* Risk Distribution Table */}
           {riskTable}
 
           {/* Purok-wise Statistics Table */}
