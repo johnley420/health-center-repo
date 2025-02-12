@@ -10637,10 +10637,9 @@ app.post('/add-client', async (req, res) => {
     gender,
     worker_id,
     birthdate,
-    place_assign  // New field from client
+    place_assign  // This field is taken from sessionStorage on the client
   } = req.body;
 
-  // Log received data for verification
   console.log('Received data:', {
     category_name,
     fname,
@@ -10653,7 +10652,6 @@ app.post('/add-client', async (req, res) => {
     place_assign
   });
 
-  // Validate required fields
   if (!fname || !address || !category_name || !worker_id || !gender || !birthdate || !place_assign) {
     console.error('Missing required fields:', { fname, address, category_name, worker_id, gender, birthdate, place_assign });
     return res.status(400).json({ error: "Full name, address, category, gender, worker ID, birthdate, and place_assign are required" });
@@ -10669,7 +10667,7 @@ app.post('/add-client', async (req, res) => {
 
   try {
     // Duplicate Detection
-    const duplicateCheckSql = `
+    let duplicateCheckSql = `
       SELECT * FROM client_tbl 
       WHERE fname = ? AND phil_id = ?
       LIMIT 1
@@ -10679,13 +10677,12 @@ app.post('/add-client', async (req, res) => {
         console.error('Database error during duplicate check:', err);
         return res.status(500).json({ error: "Database error during duplicate check" });
       }
-
       if (results.length > 0) {
         console.warn('Duplicate client detected:', results[0]);
         return res.status(400).json({ error: "A client with the same name and PhilHealth ID already exists." });
       }
 
-      // Mapping of place_assign values (in lowercase) to their center coordinates
+      // Mapping of place_assign values (lowercase) to center coordinates.
       const purokCenters = {
         "purok1": { lat: 7.184687, lon: 125.421865 },
         "purok2a": { lat: 7.189484, lon: 125.429046 },
@@ -10706,7 +10703,8 @@ app.post('/add-client', async (req, res) => {
         return res.status(400).json({ error: "Invalid place_assign value" });
       }
 
-      // Generate random coordinate within a fixed radius (in degrees)
+      // Generate random coordinate within a fixed radius.
+      // Increased radius from 0.001 to 0.005 degrees (~555 meters) for a more spread-out cluster.
       const getRandomCoordinate = (center, radius) => {
         const u = Math.random();
         const v = Math.random();
@@ -10717,16 +10715,13 @@ app.post('/add-client', async (req, res) => {
         return { latitude: center.lat + offsetLat, longitude: center.lon + offsetLon };
       };
 
-      // For example, using a radius of 0.001 degrees (~111m)
-      const randomCoord = getRandomCoordinate(center, 0.001);
+      const randomCoord = getRandomCoordinate(center, 0.005);
 
-      // Insert client into the database using the generated random coordinates
       const insertSql = `
         INSERT INTO client_tbl 
         (category_name, fname, address, phone_no, phil_id, gender, latitude, longitude, date_registered, status, worker_id, birthdate, age)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), 'Active', ?, ?, ?)
       `;
-
       db.query(insertSql, [
         category_name,
         fname,
@@ -10748,12 +10743,12 @@ app.post('/add-client', async (req, res) => {
         return res.json({ message: "Client added successfully", clientId: insertResult.insertId });
       });
     });
-
   } catch (error) {
     console.error('Error during client addition:', error);
     return res.status(500).json({ error: "Failed to add client" });
   }
 });
+
 
 ///================================UPDATE WORKER===================================//
 

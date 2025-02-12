@@ -212,7 +212,7 @@ export const categories = [
   "Person With Disabilities",
   "Schistomiasis Program Services",
   "Senior Citizen",
-  "WRA Family Planning",
+  "Family Planning",
   "Hypertensive And Type 2 Diabetes",
   "Filariasis Program Services",
   "Current Smokers",
