@@ -10703,7 +10703,7 @@ app.post('/add-client', async (req, res) => {
         return res.status(400).json({ error: "Invalid place_assign value" });
       }
 
-      // Generate random coordinate within a fixed radius of 0.003 degrees (~333m)
+      // Generate random coordinate within a fixed radius of 0.002 degrees (~222m)
       const getRandomCoordinate = (center, radius) => {
         const u = Math.random();
         const v = Math.random();
@@ -10714,7 +10714,7 @@ app.post('/add-client', async (req, res) => {
         return { latitude: center.lat + offsetLat, longitude: center.lon + offsetLon };
       };
 
-      const randomCoord = getRandomCoordinate(center, 0.003);
+      const randomCoord = getRandomCoordinate(center, 0.002);
 
       const insertSql = `
         INSERT INTO client_tbl 
