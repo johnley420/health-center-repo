@@ -26,8 +26,6 @@ interface ClientData {
   worker_id: number;
 }
 
-// Removed unused interface HighRiskPlaceAssign
-
 interface PurokCount {
   purok: string;
   client_count: number;
@@ -36,7 +34,7 @@ interface PurokCount {
 /* ------------------------ Constants ------------------------- */
 const TOTAL_POPULATION = 7621;
 
-// Marker colors (optional)
+// Marker colors
 const categoryColors: Record<string, [number, number, number]> = {
   Pregnant: [255, 0, 0],
   "Schistomiasis Program Services": [255, 165, 0],
@@ -60,7 +58,23 @@ const riskReferenceMap: Record<
 };
 
 /**
- * Mapping of purok keys (all lowercase, no spaces) to center coordinates.
+ * Mapping of purok keys (normalized) to center coordinates.
+ */
+const purokCoordinates: Record<string, { lat: number; lon: number }> = {
+  purok1: { lat: 7.184687, lon: 125.421865 },
+  purok2a: { lat: 7.189484, lon: 125.429046 },
+  purok2b: { lat: 7.187365, lon: 125.424273 },
+  purok3a1: { lat: 7.190170, lon: 125.434261 },
+  purok3a2: { lat: 7.185844, lon: 125.435457 },
+  purok3b: { lat: 7.193792, lon: 125.441987 },
+  purok4a: { lat: 7.193098, lon: 125.410386 },
+  purok4b: { lat: 7.188746, lon: 125.416939 },
+  purok5: { lat: 7.183062, lon: 125.417355 },
+  purok6: { lat: 7.180492, lon: 125.430114 },
+};
+
+/**
+ * For demonstration, assume each purok has a total population of 100.
  */
 const purokTotalPopulation: Record<string, number> = {
   purok1: 100,
@@ -75,6 +89,18 @@ const purokTotalPopulation: Record<string, number> = {
   purok6: 100,
 };
 
+/**
+ * Helper function to compute Euclidean distance between two lat/lon points.
+ */
+const distanceBetween = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number => {
+  return Math.sqrt((lat1 - lat2) ** 2 + (lon1 - lon2) ** 2);
+};
+
 const ViewMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<MapView | null>(null);
@@ -84,6 +110,8 @@ const ViewMap: React.FC = () => {
   // State
   const [clients, setClients] = useState<ClientData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // New state for purok filter; default "view-all" shows all puroks.
+  const [selectedPurok, setSelectedPurok] = useState<string>("view-all");
   const [purokCounts, setPurokCounts] = useState<PurokCount[]>([]);
 
   /* ------------------- 1) Fetch Data on Mount ------------------- */
@@ -169,11 +197,11 @@ const ViewMap: React.FC = () => {
       view.graphics.add(polygonGraphic);
       // ------------------ End Polygon Border ------------------
 
-      // Set up click event for labels.
+      // Set up click event for purok labels.
       view.on("click", async (event) => {
         const response = await view.hitTest(event);
         if (response.results.length > 0) {
-          // Cast the first result as any to access the 'graphic' property.
+          // Cast result to any so we can access .graphic
           const resultItem = response.results[0] as any;
           if (
             resultItem.graphic &&
@@ -181,10 +209,8 @@ const ViewMap: React.FC = () => {
             resultItem.graphic.attributes.purokKey
           ) {
             const purokKey: string = resultItem.graphic.attributes.purokKey;
-            // Look up the corresponding purok count from state.
             const entry = purokCounts.find(
-              (e) =>
-                e.purok.toLowerCase().replace(/\s+/g, "") === purokKey
+              (e) => e.purok.toLowerCase().replace(/\s+/g, "") === purokKey
             );
             const totalPop = purokTotalPopulation[purokKey] || 100;
             let riskText = "No data";
@@ -209,15 +235,14 @@ const ViewMap: React.FC = () => {
               )}% of local population)`,
               location: event.mapPoint,
             });
-            return; // Prevent further processing if label was clicked.
+            return;
           }
         }
-        // If click wasn't on a label, do nothing (or add other logic here).
       });
     }
 
     if (viewRef.current) {
-      // Clear all graphics (clears markers, labels, etc.)
+      // Clear all graphics.
       viewRef.current.graphics.removeAll();
 
       // Re-add the polygon border.
@@ -226,10 +251,24 @@ const ViewMap: React.FC = () => {
       }
 
       // Filter clients by category.
-      const filteredClients =
-        selectedCategory === null
-          ? clients
-          : clients.filter((c) => c.category_name === selectedCategory);
+      let filteredClients = clients;
+      if (selectedCategory) {
+        filteredClients = filteredClients.filter(
+          (c) => c.category_name === selectedCategory
+        );
+      }
+      // Filter by purok if one is selected (other than "view-all")
+      if (selectedPurok !== "view-all") {
+        const center = purokCoordinates[selectedPurok.toLowerCase()];
+        if (center) {
+          filteredClients = filteredClients.filter((c) => {
+            return (
+              distanceBetween(c.latitude, c.longitude, center.lat, center.lon) <
+              0.005
+            );
+          });
+        }
+      }
 
       // Build client marker graphics.
       const markerGraphics = filteredClients
@@ -270,7 +309,6 @@ const ViewMap: React.FC = () => {
       ];
 
       const labelGraphics = labelPoints.map((pt) => {
-        // Normalize the label text to create a key (e.g., "purok2b")
         const key = pt.label.toLowerCase().replace(/\s+/g, "");
         return new Graphic({
           geometry: new Point({
@@ -295,7 +333,6 @@ const ViewMap: React.FC = () => {
             title: "{purokKey}",
             content: (graphic: any) => {
               const purokKey = graphic.attributes.purokKey;
-              // Look up the corresponding purok count data
               const entry = purokCounts.find(
                 (e) => e.purok.toLowerCase().replace(/\s+/g, "") === purokKey
               );
@@ -331,7 +368,7 @@ const ViewMap: React.FC = () => {
         viewRef.current = null;
       }
     };
-  }, [clients, selectedCategory, purokCounts]);
+  }, [clients, selectedCategory, purokCounts, selectedPurok]);
 
   /* ----------------- 4) Fetch Purok Counts ------------------- */
   useEffect(() => {
@@ -348,18 +385,32 @@ const ViewMap: React.FC = () => {
       });
   }, [selectedCategory]);
 
-  /* ---------------------- 5) Dropdown Handler ---------------------- */
+  /* ---------------------- 5) Dropdown Handlers ---------------------- */
   const handleCategoryChange = (value: string) => {
     const category = value === "view-all" ? null : value;
     setSelectedCategory(category);
   };
 
+  const handlePurokChange = (value: string) => {
+    setSelectedPurok(value);
+  };
+
   /* ---------------------- 6) Stats for Display ---------------------- */
-  const displayedClients =
-    selectedCategory === null
-      ? clients
-      : clients.filter((c) => c.category_name === selectedCategory);
-  const categoryCount = displayedClients.length;
+  let filteredClients = clients;
+  if (selectedCategory) {
+    filteredClients = filteredClients.filter(
+      (c) => c.category_name === selectedCategory
+    );
+  }
+  if (selectedPurok !== "view-all") {
+    const center = purokCoordinates[selectedPurok.toLowerCase()];
+    if (center) {
+      filteredClients = filteredClients.filter((c) =>
+        distanceBetween(c.latitude, c.longitude, center.lat, center.lon) < 0.005
+      );
+    }
+  }
+  const categoryCount = filteredClients.length;
   const categoryPercentage = (categoryCount / TOTAL_POPULATION) * 100;
 
   /* ---------------- 7) Risk Distribution Table ---------------- */
@@ -450,8 +501,50 @@ const ViewMap: React.FC = () => {
         {/* Left Pane */}
         <div className="flex flex-col lg:w-1/4 md:w-1/3 w-full">
           <h1 className="text-3xl font-bold mb-3">Filter Map</h1>
+          {/* New Purok Dropdown */}
+          <Select
+            size="lg"
+            label="Select Purok"
+            className="w-full mb-4"
+            value={selectedPurok}
+            onChange={(e) => handlePurokChange(e.target.value)}
+          >
+            <SelectItem key="view-all" value="view-all">
+              View All Puroks
+            </SelectItem>
+            <SelectItem key="purok1" value="purok1">
+              Purok 1
+            </SelectItem>
+            <SelectItem key="purok2a" value="purok2a">
+              Purok 2A
+            </SelectItem>
+            <SelectItem key="purok2b" value="purok2b">
+              Purok 2B
+            </SelectItem>
+            <SelectItem key="purok3a1" value="purok3a1">
+              Purok 3A1
+            </SelectItem>
+            <SelectItem key="purok3a2" value="purok3a2">
+              Purok 3A2
+            </SelectItem>
+            <SelectItem key="purok3b" value="purok3b">
+              Purok 3B
+            </SelectItem>
+            <SelectItem key="purok4a" value="purok4a">
+              Purok 4A
+            </SelectItem>
+            <SelectItem key="purok4b" value="purok4b">
+              Purok 4B
+            </SelectItem>
+            <SelectItem key="purok5" value="purok5">
+              Purok 5
+            </SelectItem>
+            <SelectItem key="purok6" value="purok6">
+              Purok 6
+            </SelectItem>
+          </Select>
 
-          {/* -------------- Manual Select -------------- */}
+          {/* Existing Category Dropdown */}
           <Select
             size="lg"
             label="Select Category"
@@ -465,13 +558,22 @@ const ViewMap: React.FC = () => {
             <SelectItem key="Pregnant" value="Pregnant">
               Pregnant
             </SelectItem>
-            <SelectItem key="Person With Disabilities" value="Person With Disabilities">
+            <SelectItem
+              key="Person With Disabilities"
+              value="Person With Disabilities"
+            >
               Person With Disabilities
             </SelectItem>
-            <SelectItem key="10-19 Years Old (Adolescents)" value="10-19 Years Old (Adolescents)">
+            <SelectItem
+              key="10-19 Years Old (Adolescents)"
+              value="10-19 Years Old (Adolescents)"
+            >
               10-19 Years Old (Adolescents)
             </SelectItem>
-            <SelectItem key="Schistomiasis Program Services" value="Schistomiasis Program Services">
+            <SelectItem
+              key="Schistomiasis Program Services"
+              value="Schistomiasis Program Services"
+            >
               Schistomiasis Program Services
             </SelectItem>
             <SelectItem key="Senior Citizen" value="Senior Citizen">
@@ -480,36 +582,53 @@ const ViewMap: React.FC = () => {
             <SelectItem key="Family Planning" value="Family Planning">
               Family Planning
             </SelectItem>
-            <SelectItem key="Hypertensive And Type 2 Diabetes" value="Hypertensive And Type 2 Diabetes">
+            <SelectItem
+              key="Hypertensive And Type 2 Diabetes"
+              value="Hypertensive And Type 2 Diabetes"
+            >
               Hypertensive And Type 2 Diabetes
             </SelectItem>
-            <SelectItem key="Filariasis Program Services" value="Filariasis Program Services">
+            <SelectItem
+              key="Filariasis Program Services"
+              value="Filariasis Program Services"
+            >
               Filariasis Program Services
             </SelectItem>
             <SelectItem key="Current Smokers" value="Current Smokers">
               Current Smokers
             </SelectItem>
-            <SelectItem key="0-11 Months Old Infants" value="0-11 Months Old Infants">
+            <SelectItem
+              key="0-11 Months Old Infants"
+              value="0-11 Months Old Infants"
+            >
               0-11 Months Old Infants
             </SelectItem>
-            <SelectItem key="0-59 Months Old Children" value="0-59 Months Old Children">
+            <SelectItem
+              key="0-59 Months Old Children"
+              value="0-59 Months Old Children"
+            >
               0-59 Months Old Children
             </SelectItem>
-            <SelectItem key="5-9 Years Old Children" value="5-9 Years Old Children">
+            <SelectItem
+              key="5-9 Years Old Children"
+              value="5-9 Years Old Children"
+            >
               5-9 Years Old Children
             </SelectItem>
-            <SelectItem key="10-19 Years Old (Adolescents)" value="10-19 Years Old (Adolescents)">
+            <SelectItem
+              key="10-19 Years Old (Adolescents)"
+              value="10-19 Years Old (Adolescents)"
+            >
               10-19 Years Old (Adolescents)
             </SelectItem>
           </Select>
-          {/* -------------- End Manual Select -------------- */}
 
           {/* Category Stats */}
           <div className="mt-5">
             <h2 className="text-2xl font-semibold mb-2">Category Statistics</h2>
             {selectedCategory === null ? (
               <p>
-                Displaying all categories: <strong>{categoryCount}</strong> clients
+                Displaying all categories: <strong>{filteredClients.length}</strong> clients
                 <br />
                 That’s {categoryPercentage.toFixed(2)}% of{" "}
                 {TOTAL_POPULATION.toLocaleString()} total population.
@@ -518,7 +637,7 @@ const ViewMap: React.FC = () => {
               <p>
                 Category: <strong>{selectedCategory}</strong>
                 <br />
-                Count: {categoryCount}
+                Count: {filteredClients.length}
                 <br />
                 Percentage of total population: {categoryPercentage.toFixed(2)}%
               </p>
